@@ -1,19 +1,29 @@
-import { Controller, Get, Query } from '@nestjs/common';
-import { LinkedInService } from './linkedin.service';
+import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
+import { LinkedinService } from './linkedin.service';
 
-@Controller('api/linkedin')
-export class LinkedInController {
-  constructor(private readonly scraperService: LinkedInService) {}
+@Controller('linkedin')
+export class LinkedinController {
+  constructor(private readonly linkedinService: LinkedinService) {}
 
-  @Get('followings')
-  async getFollowings(
+  @Get('profile')
+  async getProfile(
     @Query('email') email: string,
     @Query('password') password: string,
+    @Query('profileId') profileId: string,
   ) {
-    if (!email || !password) {
-      return { error: 'Email and password are required' };
+    if (!email || !password || !profileId) {
+      throw new BadRequestException('Missing required query parameters');
     }
 
-    return await this.scraperService.scrapeFollowings(email, password);
+    try {
+      const profile = await this.linkedinService.fetchProfile(
+        email,
+        password,
+        profileId,
+      );
+      return profile;
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }
