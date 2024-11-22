@@ -7,6 +7,7 @@ export class InstagramService {
 
   constructor() {
     this.ig = new IgApiClient();
+    this.ig.request.defaults.timeout = 60000; // 60 secondes
   }
 
   async getFollowings(username: string, password: string): Promise<any[]> {
@@ -67,6 +68,12 @@ export class InstagramService {
 
       return followingDetails;
     } catch (error) {
+      if (error instanceof AggregateError) {
+        console.error('AggregateError:', error.errors); // Affiche toutes les erreurs contenues
+      } else {
+        console.error('Error:', error.message || error);
+      }
+
       console.error('Error fetching followings:', error); // Affichage des erreurs pour débogage
       throw new HttpException(
         error.message || 'Failed to fetch followings',

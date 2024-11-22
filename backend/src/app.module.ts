@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { InstagramModule } from './instagram/instagram.module';
+import { LinkedinModule } from './linkedin/linkedin.module';
 
 @Module({
   imports: [
@@ -8,16 +9,7 @@ import { InstagramModule } from './instagram/instagram.module';
       isGlobal: true,
     }),
     InstagramModule,
+    LinkedinModule,
   ],
 })
 export class AppModule {}
-
-// import { Module } from '@nestjs/common';
-// import { InstagramController } from './instagram.controller';
-// import { InstagramService } from './instagram.service';
-
-// @Module({
-//   controllers: [InstagramController],
-//   providers: [InstagramService],
-// })
-// export class InstagramModule {}
