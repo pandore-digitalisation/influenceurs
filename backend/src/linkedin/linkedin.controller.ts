@@ -1,45 +1,19 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { LinkedinService } from './linkedin.service';
-import { CreateLinkedinDto } from './dto/create-linkedin.dto';
-import { UpdateLinkedinDto } from './dto/update-linkedin.dto';
+import { Controller, Get, Query } from '@nestjs/common';
+import { LinkedInService } from './linkedin.service';
 
 @Controller('api/linkedin')
-export class LinkedinController {
-  constructor(private readonly linkedinService: LinkedinService) {}
+export class LinkedInController {
+  constructor(private readonly scraperService: LinkedInService) {}
 
-  @Post()
-  create(@Body() createLinkedinDto: CreateLinkedinDto) {
-    return this.linkedinService.create(createLinkedinDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.linkedinService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.linkedinService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateLinkedinDto: UpdateLinkedinDto,
+  @Get('followings')
+  async getFollowings(
+    @Query('email') email: string,
+    @Query('password') password: string,
   ) {
-    return this.linkedinService.update(+id, updateLinkedinDto);
-  }
+    if (!email || !password) {
+      return { error: 'Email and password are required' };
+    }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.linkedinService.remove(+id);
+    return await this.scraperService.scrapeFollowings(email, password);
   }
 }

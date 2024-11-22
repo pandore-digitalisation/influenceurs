@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { InstagramModule } from './instagram/instagram.module';
-import { LinkedinModule } from './linkedin/linkedin.module';
+import { LinkedInModule } from './linkedin/linkedin.module';
 
 @Module({
   imports: [
@@ -9,7 +9,7 @@ import { LinkedinModule } from './linkedin/linkedin.module';
       isGlobal: true,
     }),
     InstagramModule,
-    LinkedinModule,
+    LinkedInModule,
   ],
 })
 export class AppModule {}
