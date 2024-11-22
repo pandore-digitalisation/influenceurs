@@ -1,9 +1,9 @@
 import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
-import { LinkedinService } from './linkedin.service';
+import { LinkedInService } from './linkedin.service';
 
 @Controller('linkedin')
-export class LinkedinController {
-  constructor(private readonly linkedinService: LinkedinService) {}
+export class LinkedInController {
+  constructor(private readonly linkedinService: LinkedInService) {}
 
   @Get('profile')
   async getProfile(

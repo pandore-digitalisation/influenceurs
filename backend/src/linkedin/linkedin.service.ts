@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { exec } from 'child_process';
 
 @Injectable()
-export class LinkedinService {
+export class LinkedInService {
   async fetchProfile(
     email: string,
     password: string,
