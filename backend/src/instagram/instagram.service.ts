@@ -7,43 +7,35 @@ export class InstagramService {
 
   constructor() {
     this.ig = new IgApiClient();
-    this.ig.request.defaults.timeout = 60000; // 60 secondes
+    this.ig.request.defaults.timeout = 60000;
   }
 
   async getFollowings(username: string, password: string): Promise<any[]> {
     try {
-      // Authentifier l'utilisateur
       this.ig.state.generateDevice(username);
       await this.ig.account.login(username, password);
 
-      // Obtenir les ID de l'utilisateur
       const userId = await this.ig.user.getIdByUsername(username);
 
-      // Récupérer la liste des followings
       const followingFeed = this.ig.feed.accountFollowing(userId);
 
       let followings = [];
       let moreAvailable = true;
 
-      // Récupérer les informations de chaque following
       while (moreAvailable) {
         const items = await followingFeed.items();
         followings = [...followings, ...items];
 
-        // Si plus de données sont disponibles
         moreAvailable = followingFeed.isMoreAvailable();
         if (moreAvailable) {
           await followingFeed.request();
         }
       }
 
-      // Déboguer pour voir la structure complète des données de chaque following
       console.log(followings); // Afficher la structure complète des données pour chaque following
 
-      // Extraire les informations pertinentes pour chaque following
       const followingDetails = followings.map((user) => {
-        // Affichage des données récupérées de l'utilisateur suivi
-        console.log(user); // Affiche l'objet complet de l'utilisateur
+        console.log('User:', user);
 
         return {
           id: user.pk.toString(), // Utilisation de l'ID utilisateur comme id

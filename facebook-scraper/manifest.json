@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Facebook Page Data Scraper",
+  "version": "1.0",
+  "description": "Scrape Facebook page data and download it as an Excel file.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.facebook.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
