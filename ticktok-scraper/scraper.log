@@ -1,0 +1,348 @@
+2024-11-27 19:27:28,189 - INFO - Démarrage du serveur Flask.
+2024-11-27 19:27:28,238 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-27 19:27:28,238 - INFO - [33mPress CTRL+C to quit[0m
+2024-11-27 19:27:28,239 - INFO -  * Restarting with stat
+2024-11-27 19:27:55,177 - INFO - Démarrage du serveur Flask.
+2024-11-27 19:27:55,663 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.1.65:5000
+2024-11-27 19:27:55,663 - INFO - [33mPress CTRL+C to quit[0m
+2024-11-27 19:32:30,905 - INFO - Démarrage du serveur Flask.
+2024-11-27 19:32:30,947 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-27 19:32:30,948 - INFO - [33mPress CTRL+C to quit[0m
+2024-11-27 19:32:30,949 - INFO -  * Restarting with stat
+2024-11-27 19:32:46,017 - INFO - Démarrage du serveur Flask.
+2024-11-27 19:32:46,060 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-27 19:32:46,060 - INFO - [33mPress CTRL+C to quit[0m
+2024-11-27 19:32:46,061 - INFO -  * Restarting with stat
+2024-11-27 19:33:10,506 - INFO - Démarrage du serveur Flask.
+2024-11-27 19:33:10,511 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-27 19:33:10,511 - INFO - [33mPress CTRL+C to quit[0m
+2024-11-27 19:35:03,938 - INFO - Requête reçue pour le scraping.
+2024-11-27 19:35:03,939 - INFO - 127.0.0.1 - - [27/Nov/2024 19:35:03] "[31m[1mPOST /scrape HTTP/1.1[0m" 415 -
+2024-11-27 19:35:18,509 - INFO - Requête reçue pour le scraping.
+2024-11-27 19:35:18,509 - INFO - 127.0.0.1 - - [27/Nov/2024 19:35:18] "[31m[1mPOST /scrape HTTP/1.1[0m" 415 -
+2024-11-27 19:36:49,725 - INFO - Requête reçue pour le scraping.
+2024-11-27 19:36:49,726 - INFO - Scraping des données pour l'utilisateur : vianneyyovo
+2024-11-27 19:36:50,478 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 19:36:50,479 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 19:36:50,480 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:36:50,917 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:36:51,322 - WARNING - No about section found
+2024-11-27 19:36:51,323 - INFO - Données scrappées pour vianneyyovo : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Redirecting...'}
+2024-11-27 19:36:51,323 - INFO - 127.0.0.1 - - [27/Nov/2024 19:36:51] "POST /scrape HTTP/1.1" 200 -
+2024-11-27 19:38:49,960 - INFO - Requête reçue pour le scraping.
+2024-11-27 19:38:49,961 - INFO - Scraping des données pour l'utilisateur : jeanviann
+2024-11-27 19:38:50,639 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 19:38:50,640 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 19:38:50,641 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:38:50,965 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:38:51,303 - WARNING - No about section found
+2024-11-27 19:38:51,304 - INFO - Données scrappées pour jeanviann : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Redirecting...'}
+2024-11-27 19:38:51,304 - INFO - 127.0.0.1 - - [27/Nov/2024 19:38:51] "POST /scrape HTTP/1.1" 200 -
+2024-11-27 19:39:21,108 - INFO - Démarrage du serveur Flask.
+2024-11-27 19:39:21,116 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-27 19:39:21,116 - INFO - [33mPress CTRL+C to quit[0m
+2024-11-27 19:39:34,083 - INFO - Requête reçue pour le scraping.
+2024-11-27 19:39:34,083 - INFO - Scraping des données pour l'utilisateur : vianney yovo
+2024-11-27 19:39:34,839 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 19:39:34,839 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 19:39:34,840 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:39:35,266 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:39:35,788 - WARNING - No about section found
+2024-11-27 19:39:35,788 - INFO - Données scrappées pour vianney yovo : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Facebook'}
+2024-11-27 19:39:35,789 - INFO - 127.0.0.1 - - [27/Nov/2024 19:39:35] "POST /scrape HTTP/1.1" 200 -
+2024-11-27 19:43:11,788 - INFO - Requête reçue pour le scraping.
+2024-11-27 19:43:11,788 - INFO - Scraping des données pour l'utilisateur : Ahossinou Saturnin
+2024-11-27 19:43:12,535 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 19:43:12,535 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 19:43:12,536 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:43:12,896 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:43:13,358 - WARNING - No about section found
+2024-11-27 19:43:13,358 - INFO - Données scrappées pour Ahossinou Saturnin : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Facebook'}
+2024-11-27 19:43:13,359 - INFO - 127.0.0.1 - - [27/Nov/2024 19:43:13] "POST /scrape HTTP/1.1" 200 -
+2024-11-27 19:51:29,645 - WARNING - Fichier cookies.json introuvable. Les données publiques seront uniquement accessibles.
+2024-11-27 19:51:29,646 - INFO - Démarrage du serveur Flask.
+2024-11-27 19:51:29,651 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-27 19:51:29,651 - INFO - [33mPress CTRL+C to quit[0m
+2024-11-27 19:51:38,376 - INFO - Requête reçue pour le scraping.
+2024-11-27 19:51:38,376 - INFO - Scraping des données pour l'utilisateur : Ahossinou Saturnin
+2024-11-27 19:51:39,096 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 19:51:39,097 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 19:51:39,098 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:51:39,428 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:51:39,955 - WARNING - No about section found
+2024-11-27 19:51:39,957 - INFO - Données scrappées pour Ahossinou Saturnin : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Facebook'}
+2024-11-27 19:51:39,961 - INFO - 127.0.0.1 - - [27/Nov/2024 19:51:39] "POST /scrape HTTP/1.1" 200 -
+2024-11-27 19:53:39,850 - INFO - Requête reçue pour le scraping.
+2024-11-27 19:53:39,851 - INFO - Scraping des données pour l'utilisateur : Ahossinou Saturnin, cookies=cookies.txt
+2024-11-27 19:53:40,475 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 19:53:40,477 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 19:53:40,479 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:53:40,831 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:53:41,272 - WARNING - No about section found
+2024-11-27 19:53:41,273 - INFO - Données scrappées pour Ahossinou Saturnin, cookies=cookies.txt : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Facebook'}
+2024-11-27 19:53:41,274 - INFO - 127.0.0.1 - - [27/Nov/2024 19:53:41] "POST /scrape HTTP/1.1" 200 -
+2024-11-27 19:54:01,212 - INFO - Requête reçue pour le scraping.
+2024-11-27 19:54:01,212 - INFO - Scraping des données pour l'utilisateur : Ahossinou Saturnin
+2024-11-27 19:54:01,558 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 19:54:01,558 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 19:54:01,559 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:54:01,925 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 19:54:02,399 - WARNING - No about section found
+2024-11-27 19:54:02,400 - INFO - Données scrappées pour Ahossinou Saturnin : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Facebook'}
+2024-11-27 19:54:02,401 - INFO - 127.0.0.1 - - [27/Nov/2024 19:54:02] "POST /scrape HTTP/1.1" 200 -
+2024-11-27 20:00:23,721 - WARNING - Fichier cookies.json introuvable. Les données publiques seront uniquement accessibles.
+2024-11-27 20:00:23,721 - INFO - Démarrage du serveur Flask.
+2024-11-27 20:00:23,730 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-27 20:00:23,730 - INFO - [33mPress CTRL+C to quit[0m
+2024-11-27 20:00:32,079 - INFO - Requête reçue pour le scraping.
+2024-11-27 20:00:32,080 - INFO - Scraping des données pour l'utilisateur : Ahossinou Saturnin
+2024-11-27 20:00:32,790 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 20:00:32,792 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 20:00:32,793 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:00:33,147 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:00:33,763 - WARNING - No about section found
+2024-11-27 20:00:33,764 - INFO - Données scrappées pour Ahossinou Saturnin : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Facebook'}
+2024-11-27 20:00:33,765 - INFO - 127.0.0.1 - - [27/Nov/2024 20:00:33] "POST /scrape HTTP/1.1" 200 -
+2024-11-27 20:01:18,559 - INFO - Requête reçue pour le scraping.
+2024-11-27 20:01:18,559 - INFO - Scraping des données pour l'utilisateur : Zuck
+2024-11-27 20:01:18,969 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 20:01:18,970 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 20:01:18,971 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:01:19,343 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:01:19,720 - WARNING - No about section found
+2024-11-27 20:01:19,721 - INFO - Données scrappées pour Zuck : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Redirecting...'}
+2024-11-27 20:01:19,723 - INFO - 127.0.0.1 - - [27/Nov/2024 20:01:19] "POST /scrape HTTP/1.1" 200 -
+2024-11-27 20:01:31,438 - INFO - Requête reçue pour le scraping.
+2024-11-27 20:01:31,438 - INFO - Scraping des données pour l'utilisateur : Ahossinou Saturnin
+2024-11-27 20:01:31,818 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 20:01:31,821 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 20:01:31,824 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:01:32,152 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:01:32,535 - WARNING - No about section found
+2024-11-27 20:01:32,535 - INFO - Données scrappées pour Ahossinou Saturnin : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Redirecting...'}
+2024-11-27 20:01:32,536 - INFO - 127.0.0.1 - - [27/Nov/2024 20:01:32] "POST /scrape HTTP/1.1" 200 -
+2024-11-27 20:03:49,546 - WARNING - Fichier cookies.json introuvable. Les données publiques seront uniquement accessibles.
+2024-11-27 20:03:49,547 - INFO - Démarrage du serveur Flask.
+2024-11-27 20:03:49,556 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-27 20:03:49,556 - INFO - [33mPress CTRL+C to quit[0m
+2024-11-27 20:03:54,904 - INFO - Requête reçue pour le scraping.
+2024-11-27 20:03:54,905 - INFO - Scraping des données pour l'utilisateur : Ahossinou Saturnin
+2024-11-27 20:03:55,722 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 20:03:55,723 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 20:03:55,724 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:03:56,062 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:03:56,432 - WARNING - No about section found
+2024-11-27 20:03:56,433 - INFO - Données scrappées pour Ahossinou Saturnin : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Redirecting...'}
+2024-11-27 20:03:56,434 - INFO - 127.0.0.1 - - [27/Nov/2024 20:03:56] "POST /scrape HTTP/1.1" 200 -
+2024-11-27 20:07:56,066 - INFO - Démarrage du serveur Flask.
+2024-11-27 20:07:56,071 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-27 20:07:56,071 - INFO - [33mPress CTRL+C to quit[0m
+2024-11-27 20:08:06,625 - INFO - Requête reçue pour le scraping.
+2024-11-27 20:08:06,625 - INFO - Scraping des données pour l'utilisateur : Ahossinou Saturnin
+2024-11-27 20:08:07,327 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 20:08:07,328 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 20:08:07,328 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:08:07,691 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:08:08,026 - WARNING - No about section found
+2024-11-27 20:08:08,027 - INFO - Données scrappées pour Ahossinou Saturnin : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Redirecting...'}
+2024-11-27 20:08:08,030 - INFO - 127.0.0.1 - - [27/Nov/2024 20:08:08] "POST /scrape HTTP/1.1" 200 -
+2024-11-27 20:11:07,723 - INFO - Requête reçue pour le scraping.
+2024-11-27 20:11:07,723 - INFO - Scraping des données pour l'utilisateur : Togocom
+2024-11-27 20:11:08,470 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 20:11:08,471 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 20:11:08,471 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:11:08,842 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:11:09,196 - WARNING - No about section found
+2024-11-27 20:11:09,197 - INFO - Données scrappées pour Togocom : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Redirecting...'}
+2024-11-27 20:11:09,200 - INFO - 127.0.0.1 - - [27/Nov/2024 20:11:09] "POST /scrape HTTP/1.1" 200 -
+2024-11-27 20:11:43,549 - INFO - Requête reçue pour le scraping.
+2024-11-27 20:11:43,549 - INFO - Scraping des données pour l'utilisateur : Cristiano Ronaldo
+2024-11-27 20:11:44,000 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-27 20:11:44,002 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-27 20:11:44,003 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:11:44,439 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-27 20:11:44,805 - WARNING - No about section found
+2024-11-27 20:11:44,806 - INFO - Données scrappées pour Cristiano Ronaldo : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Redirecting...'}
+2024-11-27 20:11:44,808 - INFO - 127.0.0.1 - - [27/Nov/2024 20:11:44] "POST /scrape HTTP/1.1" 200 -
+2024-11-28 01:39:42,528 - INFO - Démarrage du serveur Flask.
+2024-11-28 01:39:42,540 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-28 01:39:42,541 - INFO - [33mPress CTRL+C to quit[0m
+2024-11-28 01:39:50,247 - INFO - Requête reçue pour le scraping.
+2024-11-28 01:39:50,247 - INFO - Scraping des données pour l'utilisateur : Cristiano Ronaldo
+2024-11-28 01:39:50,247 - DEBUG - Requesting page from: Cristiano Ronaldo
+2024-11-28 01:39:50,908 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-28 01:39:50,909 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-28 01:39:50,910 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-28 01:39:50,910 - DEBUG - Fetching /Cristiano Ronaldo?v=following
+2024-11-28 01:39:51,230 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-28 01:39:51,231 - DEBUG - Requesting page from: https://m.facebook.com/Cristiano Ronaldo/about/
+2024-11-28 01:39:51,568 - WARNING - No about section found
+2024-11-28 01:39:51,568 - INFO - Données scrappées pour Cristiano Ronaldo : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Redirecting...'}
+2024-11-28 01:39:51,569 - WARNING - Problème d'accès au profil de Cristiano Ronaldo.
+2024-11-28 01:39:51,569 - INFO - 127.0.0.1 - - [28/Nov/2024 01:39:51] "[31m[1mPOST /scrape HTTP/1.1[0m" 403 -
+2024-11-28 01:40:31,442 - INFO - Requête reçue pour le scraping.
+2024-11-28 01:40:31,442 - INFO - Scraping des données pour l'utilisateur : Vianney Yovo
+2024-11-28 01:40:31,442 - DEBUG - Requesting page from: Vianney Yovo
+2024-11-28 01:40:31,854 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-28 01:40:31,855 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-28 01:40:31,856 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-28 01:40:31,856 - DEBUG - Fetching /Vianney Yovo?v=following
+2024-11-28 01:40:32,265 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-28 01:40:32,268 - DEBUG - Requesting page from: https://m.facebook.com/Vianney Yovo/about/
+2024-11-28 01:40:32,620 - WARNING - No about section found
+2024-11-28 01:40:32,620 - INFO - Données scrappées pour Vianney Yovo : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Redirecting...'}
+2024-11-28 01:40:32,621 - WARNING - Problème d'accès au profil de Vianney Yovo.
+2024-11-28 01:40:32,621 - INFO - 127.0.0.1 - - [28/Nov/2024 01:40:32] "[31m[1mPOST /scrape HTTP/1.1[0m" 403 -
+2024-11-28 01:41:31,533 - INFO - Requête reçue pour le scraping.
+2024-11-28 01:41:31,533 - INFO - Scraping des données pour l'utilisateur : Vianney Yovo
+2024-11-28 01:41:31,534 - DEBUG - Requesting page from: Vianney Yovo
+2024-11-28 01:41:31,857 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-28 01:41:31,858 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-28 01:41:31,858 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-28 01:41:31,859 - DEBUG - Fetching /Vianney Yovo?v=following
+2024-11-28 01:41:32,206 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-28 01:41:32,208 - DEBUG - Requesting page from: https://m.facebook.com/Vianney Yovo/about/
+2024-11-28 01:41:32,635 - WARNING - No about section found
+2024-11-28 01:41:32,637 - INFO - Données scrappées pour Vianney Yovo : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Redirecting...'}
+2024-11-28 01:41:32,639 - WARNING - Problème d'accès au profil de Vianney Yovo.
+2024-11-28 01:41:32,641 - INFO - 127.0.0.1 - - [28/Nov/2024 01:41:32] "[31m[1mPOST /scrape HTTP/1.1[0m" 403 -
+2024-11-28 11:20:51,284 - INFO - Démarrage du serveur Flask.
+2024-11-28 11:20:51,292 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2024-11-28 11:20:51,292 - INFO - [33mPress CTRL+C to quit[0m
+2024-11-28 11:20:56,823 - INFO - Requête reçue pour le scraping.
+2024-11-28 11:20:56,824 - INFO - Scraping des données pour l'utilisateur : Vianney Yovo
+2024-11-28 11:20:56,824 - DEBUG - Requesting page from: Vianney Yovo
+2024-11-28 11:20:58,887 - ERROR - Unable to extract top_post <class 'AssertionError'>:
+2024-11-28 11:20:58,888 - ERROR - Friend_count extraction failed: list index out of range
+2024-11-28 11:20:58,889 - ERROR - Follower_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-28 11:20:58,891 - DEBUG - Fetching /Vianney Yovo?v=following
+2024-11-28 11:20:59,293 - ERROR - Following_count extraction failed: 'NoneType' object has no attribute 'text'
+2024-11-28 11:20:59,299 - DEBUG - Requesting page from: https://m.facebook.com/Vianney Yovo/about/
+2024-11-28 11:20:59,925 - WARNING - No about section found
+2024-11-28 11:20:59,927 - INFO - Données scrappées pour Vianney Yovo : {'Friend_count': None, 'Follower_count': None, 'Following_count': None, 'Name': 'Facebook'}
+2024-11-28 11:20:59,928 - INFO - 127.0.0.1 - - [28/Nov/2024 11:20:59] "POST /scrape HTTP/1.1" 200 -
+
+
+document.getElementById("scrapeBtn").addEventListener("click", async () => {
+    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+      const pageUrl = tabs[0].url;
+  
+      if (pageUrl.includes("facebook.com")) {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/scrape_facebook_page?url=${pageUrl}`
+          );
+  
+          const scrapedData = await response.json();
+
+          alert(JSON.stringify("Scraped Data:", scrapedData, null, 2)); // Vérifiez les données récupérées
+  
+          if (scrapedData) {
+            // Assurez-vous que scrapedData est un tableau
+            const newDataArray = Array.isArray(scrapedData)
+              ? scrapedData
+              : [scrapedData];
+  
+            // Charger les données existantes
+            const existingData = loadDataFromLocalStorage();
+            alert(JSON.stringify("Existing Data:", existingData, null, 2)); // Vérifiez les données existantes
+  
+            // Fusionner les nouvelles données avec les anciennes
+            const updatedData = mergeData(existingData, newDataArray);
+            alert(JSON.stringify("Updated Data:", updatedData, null, 2)); // Vérifiez les données fusionnées
+  
+            // Sauvegarder les données mises à jour
+            saveDataToLocalStorage(updatedData);
+  
+            // Afficher le bouton de téléchargement
+            toggleUIForDownload();
+  
+            // Assurez-vous que le bouton "Download" télécharge toujours les données cumulées
+            document
+              .getElementById("downloadBtn")
+              .addEventListener("click", () => downloadCSV(updatedData), {
+                once: true,
+              });
+          }
+        } catch (error) {
+          alert("Error scraping data: " + error);
+        }
+      } else {
+        alert("This is not a Facebook page.");
+      }
+    });
+  });
+  
+  // Fonction pour afficher le bouton de téléchargement
+  function toggleUIForDownload() {
+    document.getElementById("scrapeBtn").style.display = "none";
+    document.getElementById("status").style.display = "none";
+    document.getElementById("status-download").style.display = "block";
+    document.getElementById("downloadBtn").style.display = "block";
+  }
+  
+  // Fonction pour convertir JSON en CSV
+  function jsonToCSV(data) {
+    const rows = [];
+    const headers = Object.keys(data[0]);
+    rows.push(headers.join(",")); // Ajouter les en-têtes
+  
+    data.forEach((row) => {
+      const values = headers.map((header) => JSON.stringify(row[header] || ""));
+      rows.push(values.join(",")); // Ajouter chaque ligne
+    });
+  
+    return rows.join("\n"); // Retourner le contenu CSV
+  }
+  
+  // Fonction pour télécharger les données sous forme de fichier CSV
+  function downloadCSV(data) {
+    const csvData = jsonToCSV(data);
+    const blob = new Blob([csvData], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+  
+    const fileName = "facebook_pages_data.csv";
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = fileName;
+    link.click();
+  
+    URL.revokeObjectURL(url);
+  }
+  
+  // Fonction pour charger les données depuis localStorage
+  function loadDataFromLocalStorage() {
+    const data = localStorage.getItem("facebookPagesData");
+    return data ? JSON.parse(data) : [];
+  }
+  
+  // Fonction pour sauvegarder les données dans localStorage
+  function saveDataToLocalStorage(data) {
+    localStorage.setItem("facebookPagesData", JSON.stringify(data));
+  }
+  
+  // Fonction pour fusionner les nouvelles données avec les données existantes
+  function mergeData(existingData, newData) {
+    const existingUrls = new Set(existingData.map((item) => item.page_url));
+    const filteredNewData = newData.filter(
+      (item) => !existingUrls.has(item.page_url)
+    );
+    return [...existingData, ...filteredNewData];
+  }
+
+
+

@@ -1,0 +1,46 @@
+body {
+  width: 300px;
+  padding: 15px;
+  font-family: Arial, sans-serif;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+#scrapeBtn {
+  background-color: #0861F2;
+  color: white;
+}
+#scrapeButton:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+#downloadBtn {
+  display: none;
+  background-color: #2e7d32;
+  color: white;
+}
+#status, #status-download {
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  text-align: center;
+  font-size: 14px;
+  min-height: 20px;
+}
+.title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #0861F2;
+  margin-bottom: 10px;
+  text-align: center;
+}
