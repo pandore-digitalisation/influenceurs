@@ -30,10 +30,16 @@ async def scrape_tiktok_profile(profile_url):
         async with async_playwright() as p:
             browser = await p.chromium.launch(headless=True)  # Lance Chromium en mode headless
             page = await browser.new_page()
+            
+             # Appliquer les en-têtes HTTP
+            await page.set_extra_http_headers(headers)
+            
+            # Charger l'URL
+            logger.info(f"Scraping page information for: {profile_url}")
             await page.goto(profile_url, timeout=30000)  # Timeout à 30 secondes pour charger la page
 
             # Attendre un moment pour que la page soit complètement rendue
-            await page.wait_for_timeout(5000)  # Attendre 5 secondes supplémentaires si nécessaire
+            await page.wait_for_timeout(5000)
 
             # Extraire les informations du profil TikTok
             name = await page.query_selector('h2[data-e2e="user-subtitle"]')  # Sélecteur pour le nom d'utilisateur
@@ -44,7 +50,6 @@ async def scrape_tiktok_profile(profile_url):
 
             
             verified_svg = await page.query_selector('svg[width="20"][height="20"]')  # Identifier le badge par ses attributs
-            is_verified = True if verified_svg else False
 
             # Si les éléments sont trouvés, extraire leur texte
             name_text = await name.inner_text() if name else 'N/A'
@@ -52,6 +57,7 @@ async def scrape_tiktok_profile(profile_url):
             likes_text = await likes.inner_text() if likes else 'N/A'
             following_text = await following.inner_text() if following else 'N/A'
             bio_text = await bio.inner_text() if bio else 'N/A'
+            is_verified = 'Vérifié' if verified_svg else 'Pas Vérifié'
 
 
 
@@ -81,8 +87,6 @@ async def get_profile_data():
     if not profile_url:
         return jsonify({"error": "Le lien du profil est requis"}), 400
     
-    logger.info(f"Scraping page information for: {profile_url}")
-
 
     # Scraper les données du profil
     data = await scrape_tiktok_profile(profile_url)

@@ -4,6 +4,8 @@ document.getElementById("scrapeBtn").addEventListener("click", async () => {
 
     if (pageUrl.includes("facebook.com")) {
       try {
+        const statusDiv = document.getElementById("status");
+        statusDiv.textContent = "Starting scraping...";
         const response = await fetch(
           `http://localhost:5000/scrape_facebook_page?url=${pageUrl}`
         );
