@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Facebooks Page Data Scraper",
+  "name": "Tiktok Page Data Scraper",
   "version": "1.1",
-  "description": "Scrape Facebook page data and download it as an Excel file.",
+  "description": "Scrape Tiktok page data and download it as an Excel file.",
   "permissions": [
     "activeTab",
     "scripting",
@@ -18,7 +18,8 @@
     "default_icon": "icons/icon-48.png"
   },
   "host_permissions": [
-    "*://*.facebook.com/*"
+    "*://*.tiktok.com/*",
+    "http://127.0.0.1:5001/*"
   ],
   "background": {
     "service_worker": "background.js"

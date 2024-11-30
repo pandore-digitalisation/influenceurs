@@ -1,8 +1,15 @@
+import logging
 from quart import Quart, jsonify, request
+from quart_cors import cors
 from playwright.async_api import async_playwright
 from fake_useragent import UserAgent
 
+# Configuration des logs
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger()
+
 app = Quart(__name__)
+app = cors(app, allow_origin="*")
 
 # Initialisation de l'agent utilisateur pour simuler un navigateur
 user_agent = UserAgent()
@@ -29,27 +36,37 @@ async def scrape_tiktok_profile(profile_url):
             await page.wait_for_timeout(5000)  # Attendre 5 secondes supplémentaires si nécessaire
 
             # Extraire les informations du profil TikTok
-            # username = await page.query_selector('h1.share-sub-title')
-            username = await page.query_selector('h1[data-e2e="user-title"]')  # Sélecteur pour le nom d'utilisateur
+            name = await page.query_selector('h2[data-e2e="user-subtitle"]')  # Sélecteur pour le nom d'utilisateur
             followers = await page.query_selector('strong[data-e2e="followers-count"]')
             likes = await page.query_selector('strong[data-e2e="likes-count"]')
             following = await page.query_selector('strong[data-e2e="following-count"]')  # Sélecteur pour les abonnements
+            bio = await page.query_selector('h2[data-e2e="user-bio"]')  # Biographie du profil
+
+            
+            verified_svg = await page.query_selector('svg[width="20"][height="20"]')  # Identifier le badge par ses attributs
+            is_verified = True if verified_svg else False
 
             # Si les éléments sont trouvés, extraire leur texte
-            username_text = await username.inner_text() if username else 'N/A'
+            name_text = await name.inner_text() if name else 'N/A'
             followers_text = await followers.inner_text() if followers else 'N/A'
             likes_text = await likes.inner_text() if likes else 'N/A'
             following_text = await following.inner_text() if following else 'N/A'
+            bio_text = await bio.inner_text() if bio else 'N/A'
+
+
 
             # Fermer le navigateur après extraction
             await browser.close()
 
             return {
-                "username": username_text.strip(),
+                "name": name_text.strip(),
                 "followers_count": followers_text.strip(),
                 "likes_count": likes_text.strip(),
                 "profile_url": profile_url,
-                "following_count": following_text.strip()
+                "following_count": following_text.strip(),
+                "is_verified": is_verified,
+                "bio": bio_text.strip(),
+
             }
 
     except Exception as e:
@@ -63,6 +80,9 @@ async def get_profile_data():
     profile_url = request.args.get('profile_url')
     if not profile_url:
         return jsonify({"error": "Le lien du profil est requis"}), 400
+    
+    logger.info(f"Scraping page information for: {profile_url}")
+
 
     # Scraper les données du profil
     data = await scrape_tiktok_profile(profile_url)

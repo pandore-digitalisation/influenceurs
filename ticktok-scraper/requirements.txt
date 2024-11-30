@@ -1,2 +1,1 @@
 Flask==2.3.0
-facebook-scraper==0.2.59

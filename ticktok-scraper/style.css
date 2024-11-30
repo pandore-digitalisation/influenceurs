@@ -17,7 +17,7 @@ button {
   transition: background-color 0.2s;
 }
 #scrapeBtn {
-  background-color: #0861F2;
+  background-color: #000000;
   color: white;
 }
 #scrapeButton:disabled {
@@ -40,7 +40,7 @@ button {
 .title {
   font-size: 16px;
   font-weight: bold;
-  color: #0861F2;
+  color: #000000;
   margin-bottom: 10px;
   text-align: center;
 }
