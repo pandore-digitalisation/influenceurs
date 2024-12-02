@@ -42,7 +42,8 @@ async def scrape_tiktok_profile(profile_url):
             await page.wait_for_timeout(5000)
 
             # Extraire les informations du profil TikTok
-            name = await page.query_selector('h2[data-e2e="user-subtitle"]')  # Sélecteur pour le nom d'utilisateur
+            # name = await page.query_selector('h2[data-e2e="user-subtitle"]')  # Sélecteur pour le nom d'utilisateur
+            name = await page.query_selector('h1[data-e2e="user-title"]')  # Sélecteur pour le nom d'utilisateur
             followers = await page.query_selector('strong[data-e2e="followers-count"]')
             likes = await page.query_selector('strong[data-e2e="likes-count"]')
             following = await page.query_selector('strong[data-e2e="following-count"]')  # Sélecteur pour les abonnements
