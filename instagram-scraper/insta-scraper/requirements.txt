@@ -1,0 +1,5 @@
+flask
+flask-cors
+instagrapi
+pandas
+Pillow>=8.1.1

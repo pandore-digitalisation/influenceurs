@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instagram Scraper</title>
+  <style>
+    :root {
+      --primary-color: #4a90e2;
+      --secondary-color: #f8f9fa;
+      --text-color: #2c3e50;
+      --border-color: #e1e8ed;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f8fa;
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--text-color);
+      margin-bottom: 30px;
+      font-weight: 600;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .data-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .total-count {
+      background-color: var(--secondary-color);
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    #scraper-form {
+      display: grid;
+      gap: 20px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    label {
+      font-weight: 500;
+      color: var(--text-color);
+    }
+
+    input {
+      padding: 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #357abd;
+    }
+
+    .loader {
+      display: none;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid var(--primary-color);
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #result {
+      display: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th {
+      background-color: var(--secondary-color);
+      font-weight: 600;
+      position: relative;
+    }
+
+    th.sorted::after {
+      content: ' ↓';
+      color: var(--primary-color);
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    td.followers {
+      text-align: right;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background-color: #f8f9fa;
+    }
+
+    #export-csv {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Instagram Hashtag Scraper</h1>
+    <div class="card">
+      <form id="scraper-form">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="username" required placeholder="Enter Instagram username">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" required placeholder="Enter Instagram password">
+        </div>
+        <div class="form-group">
+          <label>Hashtag</label>
+          <input type="text" id="hashtag" required placeholder="Enter hashtag without #">
+        </div>
+        <div class="form-group">
+          <label>Max Posts</label>
+          <input type="number" id="max-posts" value="20" min="1" required>
+        </div>
+        <button type="submit">Start Scraping</button>
+      </form>
+    </div>
+    <div class="loader" id="loader"></div>
+    <div id="result">
+      <div class="card">
+        <div class="data-header">
+          <h2>Scraped Data</h2>
+          <div class="total-count">Total Rows: <span id="row-count">0</span></div>
+        </div>
+        <button id="export-csv">Export to CSV</button>
+        <table id="data-table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th class="sorted">Followers</th>
+              <th>Location</th>
+              <th>Private</th>
+              <th>Verified</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script>
+    const form = document.getElementById('scraper-form');
+    const loader = document.getElementById('loader');
+    const resultDiv = document.getElementById('result');
+    const tableBody = document.getElementById('data-table').querySelector('tbody');
+    const exportBtn = document.getElementById('export-csv');
+
+    function displayData(data) {
+      console.log('Displaying data:', data);
+      tableBody.innerHTML = '';
+      
+      if (!data || data.length === 0) {
+        console.log('No data to display');
+        document.getElementById('row-count').textContent = '0';
+        return;
+      }
+
+      resultDiv.style.display = 'block';
+      document.getElementById('row-count').textContent = data.length;
+      
+      data.forEach(item => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.username || ''}</td>
+          <td class="followers">${item.followers?.toLocaleString() || 0}</td>
+          <td>${item.location || 'Unknown'}</td>
+          <td>${item.is_private ? 'Yes' : 'No'}</td>
+          <td>${item.is_verified ? 'Yes' : 'No'}</td>
+        `;
+        tableBody.appendChild(row);
+      });
+      console.log('Data displayed successfully');
+    }
+
+    async function loadExistingData() {
+      console.log('Loading existing data...');
+      try {
+        const response = await fetch('http://127.0.0.1:5000/data');
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Received data:', data);
+        
+        if (data && data.length > 0) {
+          displayData(data);
+        } else {
+          console.log('No data received from server');
+          resultDiv.style.display = 'none';
+        }
+      } catch (error) {
+        console.error('Error loading existing data:', error);
+        resultDiv.style.display = 'none';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Page loaded, fetching data...');
+      loadExistingData();
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const hashtag = document.getElementById('hashtag').value;
+      const maxPosts = parseInt(document.getElementById('max-posts').value);
+
+      loader.style.display = 'block';
+      resultDiv.style.display = 'none';
+      tableBody.innerHTML = '';
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/scrape', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password, hashtag, max_posts: maxPosts }),
+        });
+
+        const result = await response.json();
+        
+        if (result.error) {
+          throw new Error(result.error);
+        }
+
+        displayData(result.data);
+        resultDiv.style.display = 'block';
+      } catch (error) {
+        alert('Error: ' + error.message);
+      } finally {
+        loader.style.display = 'none';
+      }
+    });
+
+    exportBtn.addEventListener('click', async () => {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/export');
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || 'Failed to export data');
+        }
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'scraped_data.csv';
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } catch (error) {
+        alert('Error exporting data: ' + error.message);
+      }
+    });
+  </script>
+</body>
+</html>
