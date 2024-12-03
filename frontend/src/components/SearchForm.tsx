@@ -30,7 +30,7 @@ export default function SearchForm({
         type="text"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Nom d'utilisateur ou URL"
+        placeholder="Nom d'utilisateur"
         className="border px-2 py-1 rounded flex-1"
       />
       <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">

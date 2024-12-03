@@ -17,7 +17,8 @@ interface Profile {
   name: string;
   profilePicture: string;
   platform: string;
-  profile_url: string
+  profile_url: string;
+  page_name: string
   // [key: string]: any;
 }
 

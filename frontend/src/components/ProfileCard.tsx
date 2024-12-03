@@ -8,15 +8,16 @@ interface Profile {
   name: string;
   profilePicture: string;
   platform: string;
-  profile_url: string
+  profile_url: string,
+  page_name: string
   // [key: string]: any;
 }
 
 export default function ProfileCard({ profile }: { profile: Profile }) {
     return (
       <div className="border rounded p-4 shadow">
-        <h2 className="text-lg font-bold">{profile.name || "Nom inconnu"}</h2>
-        <p>Plateforme : {profile.platform}</p>
+        <h2 className="text-lg font-bold">{profile.name || profile.page_name}</h2>
+        <p>Plateforme : {profile.platform ?  profile.platform : "Facebook"}</p>
         <p>Verified : {profile.is_verified}</p>
         <p>Followers : {profile.followers_count || "N/A"}</p>
         <p>Following : {profile.following_count || "N/A"}</p>

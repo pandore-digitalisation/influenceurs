@@ -116,18 +116,36 @@ async def scrape_instagram():
         return jsonify({"error": str(e)}), 500
 
 
+# @app.route('/facebook', methods=['GET'])
+# async def scrape_facebook():
+#     page_url = request.args.get('url')
+#     if not page_url:
+#         return jsonify({"error": "Le paramètre 'url' est requis"}), 400
+#     try:
+#         scraper = FacebookPageInfoScraper(link=page_url)
+#         data = scraper.get_page_info()
+#         return jsonify(data), 200
+#     except Exception as e:
+#         logger.error(f"Erreur lors du scraping Facebook : {e}")
+#         return jsonify({"error": str(e)}), 500
+    
 @app.route('/facebook', methods=['GET'])
 async def scrape_facebook():
-    page_url = request.args.get('url')
-    if not page_url:
-        return jsonify({"error": "Le paramètre 'url' est requis"}), 400
+    username = request.args.get('username')
+    if not username:
+        return jsonify({"error": "Le paramètre 'username' est requis"}), 400
     try:
+        # Construire l'URL de la page Facebook à partir du nom d'utilisateur
+        page_url = f"https://www.facebook.com/{username}"
+        
+        # Utiliser le scraper pour récupérer les informations de la page
         scraper = FacebookPageInfoScraper(link=page_url)
         data = scraper.get_page_info()
         return jsonify(data), 200
     except Exception as e:
         logger.error(f"Erreur lors du scraping Facebook : {e}")
         return jsonify({"error": str(e)}), 500
+
 
 
 @app.route('/tiktok', methods=['GET'])
