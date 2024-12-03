@@ -8,13 +8,17 @@ import axios from "axios";
 
 
 interface Profile {
-  // id: string; // Identifiant unique du profil
-  name: string; // Nom de l'utilisateur
-  profilePicture: string; // URL de la photo de profil
-  platform: string; // Plateforme (Instagram, Facebook, etc.)
-  followers: string,
-  posts: string,
-  // [key: string]: any; // (Optionnel) Autres champs dynamiques
+  followers_count: string;
+  following_count: string;
+  is_verified: string,
+  posts_count: string,
+  posts: string;
+  bio: string;
+  name: string;
+  profilePicture: string;
+  platform: string;
+  profile_url: string
+  // [key: string]: any;
 }
 
 export default function Home() {
@@ -41,7 +45,7 @@ export default function Home() {
 
   return (
     <main>
-      <h1 className="text-2xl font-bold">Scraper Frontend</h1>
+      <h1 className="text-2xl font-bold"> Influencer Search </h1>
       <SearchForm onSearch={handleSearch} />
       <button
         onClick={handleExport}

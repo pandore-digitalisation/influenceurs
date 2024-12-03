@@ -3,7 +3,7 @@ import axios from "axios";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const username = searchParams.get("username");
+  const username = searchParams.get("url");
 
   if (!username) {
     return NextResponse.json({ error: "Nom d'utilisateur requis" }, { status: 400 });

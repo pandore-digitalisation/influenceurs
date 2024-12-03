@@ -10,14 +10,18 @@ export async function GET(request: Request) {
   }
 
   try {
-    const response = await axios.get(`https://your-api-url/instagram`, {
+    const response = await axios.get(`http://localhost:5000/instagram`, {
       params: { username },
     });
     return NextResponse.json(response.data);
-  } catch (error: any) {
-    console.error("Erreur API Instagram :", error.message);
+  }  catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      console.error("Erreur API Facebook :", error.message);
+    } else {
+      console.error("Erreur inconnue :", error);
+    }
     return NextResponse.json(
-      { error: "Impossible de récupérer les données Instagram" },
+      { error: "Impossible de récupérer les données Facebook" },
       { status: 500 }
     );
   }

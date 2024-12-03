@@ -1,10 +1,14 @@
 interface Profile {
-  followers: string;
+  followers_count: string;
+  following_count: string;
+  is_verified: string,
+  posts_count: string,
   posts: string;
-  // id: string;
+  bio: string;
   name: string;
   profilePicture: string;
   platform: string;
+  profile_url: string
   // [key: string]: any;
 }
 
@@ -13,8 +17,12 @@ export default function ProfileCard({ profile }: { profile: Profile }) {
       <div className="border rounded p-4 shadow">
         <h2 className="text-lg font-bold">{profile.name || "Nom inconnu"}</h2>
         <p>Plateforme : {profile.platform}</p>
-        <p>Suiveurs : {profile.followers || "N/A"}</p>
-        <p>Posts : {profile.posts || "N/A"}</p>
+        <p>Verified : {profile.is_verified}</p>
+        <p>Followers : {profile.followers_count || "N/A"}</p>
+        <p>Following : {profile.following_count || "N/A"}</p>
+        {profile.posts_count ? (<p>Posts : { profile.posts_count}</p>) : ("")}
+        <p>Bio : {profile.bio || "N/A"}</p>
+        <p>Url : {profile.profile_url || "N/A"}</p>
       </div>
     );
   }  
