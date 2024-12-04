@@ -1,5 +1,5 @@
 export const metadata = {
-  title: "Scraper Frontend",
+  title: "Influencer Search",
   description: "Recherche et exportation de profils depuis différentes plateformes.",
 };
 

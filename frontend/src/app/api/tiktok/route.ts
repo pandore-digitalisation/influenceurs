@@ -3,19 +3,23 @@ import axios from "axios";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const profileUrl = searchParams.get("profile_url");
+  const username = searchParams.get("username");
 
-  if (!profileUrl) {
-    return NextResponse.json({ error: "URL de profil requise" }, { status: 400 });
+  if (!username) {
+    return NextResponse.json({ error: "Nom d'utilisateur requis" }, { status: 400 });
   }
 
   try {
-    const response = await axios.get(`https://your-api-url/tiktok`, {
-      params: { profile_url: profileUrl },
+    const response = await axios.get(`http://localhost:5000/tiktok`, {
+      params: { username },
     });
     return NextResponse.json(response.data);
-  } catch (error: any) {
-    console.error("Erreur API TikTok :", error.message);
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      console.error("Erreur API TikTok :", error.message);
+    } else {
+      console.error("Erreur inconnue :", error);
+    }
     return NextResponse.json(
       { error: "Impossible de récupérer les données TikTok" },
       { status: 500 }

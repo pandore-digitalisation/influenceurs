@@ -148,13 +148,30 @@ async def scrape_facebook():
 
 
 
+# @app.route('/tiktok', methods=['GET'])
+# async def scrape_tiktok():
+#     profile_url = request.args.get('profile_url')
+#     if not profile_url:
+#         return jsonify({"error": "Le paramètre 'profile_url' est requis"}), 400
+#     data = await scrape_tiktok_profile(profile_url)
+#     return jsonify(data), 200
+
 @app.route('/tiktok', methods=['GET'])
 async def scrape_tiktok():
-    profile_url = request.args.get('profile_url')
-    if not profile_url:
-        return jsonify({"error": "Le paramètre 'profile_url' est requis"}), 400
-    data = await scrape_tiktok_profile(profile_url)
-    return jsonify(data), 200
+    username = request.args.get('username')
+    if not username:
+        return jsonify({"error": "Le paramètre 'username' est requis"}), 400
+    try:
+        # Construire l'URL du profil TikTok à partir du nom d'utilisateur
+        profile_url = f"https://www.tiktok.com/@{username}"
+
+        # Utiliser le scraper pour récupérer les informations du profil
+        data = await scrape_tiktok_profile(profile_url)
+        
+        return jsonify(data), 200
+    except Exception as e:
+        logger.error(f"Erreur lors du scraping TikTok : {e}")
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/')

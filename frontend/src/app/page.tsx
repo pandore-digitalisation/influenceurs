@@ -30,8 +30,7 @@ export default function Home() {
   const handleSearch = async (platform: string, query: string) => {
     try {
       const endpoint = `/api/${platform}`;
-      const params =
-        platform === "tiktok" ? { profile_url: query } : { username: query };
+      const params = { username: query };
 
       const response = await axios.get(endpoint, { params });
       setProfiles([...profiles, response.data]);
