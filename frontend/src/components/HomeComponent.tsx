@@ -5,7 +5,6 @@ import SearchForm from "../components/SearchForm";
 import ProfileCard from "../components/ProfileCard";
 import { exportToCSV } from "../utils/csvExporter";
 import axios from "axios";
-import { Button } from "@/components/ui/button"
 
 interface Profile {
     [key: string]: string | number | boolean | null;
@@ -61,8 +60,6 @@ export default function ClientComponent() {
           <ProfileCard key={index} profile={profile} />
         ))}
       </div>
-      <Button>Click me</Button>
-
     </div>
   );
 }
