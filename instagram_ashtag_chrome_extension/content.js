@@ -52,7 +52,7 @@
               url,
               name,
               post,
-              relevantData: child.textContent.trim().replace(/\n|\r/g, " "),
+              Followers: child.textContent.trim().replace(/\n|\r/g, " "),
           });
       });
   });
