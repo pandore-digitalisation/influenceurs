@@ -1,4 +1,4 @@
-document.getElementById("get-data-button").addEventListener("click", () => {
+document.getElementById("scrapeBtn").addEventListener("click", () => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       chrome.scripting.executeScript({
         target: { tabId: tabs[0].id },
