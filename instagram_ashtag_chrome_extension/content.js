@@ -12,7 +12,9 @@
     for (let i = 0; i < iterator.snapshotLength; i++) {
       nodes.push(iterator.snapshotItem(i));
     }
+
     return nodes;
+
   }
 
   // Define the XPaths
