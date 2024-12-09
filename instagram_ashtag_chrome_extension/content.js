@@ -68,7 +68,7 @@
         url,
         name,
         post,
-        followers : followers_split
+        followers
       });
     });
   });
