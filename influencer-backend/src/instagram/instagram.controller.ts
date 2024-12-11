@@ -16,8 +16,8 @@ export class InstagramController {
   constructor(private readonly instagramService: InstagramService) {}
 
   @Post()
-  create(@Body() createInstagramDto: CreateInstagramDto) {
-    return this.instagramService.create(createInstagramDto);
+  async create(@Body() createInstagramDto: CreateInstagramDto) {
+    return await this.instagramService.create(createInstagramDto);
   }
 
   @Get()

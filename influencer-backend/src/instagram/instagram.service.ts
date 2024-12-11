@@ -10,10 +10,9 @@ export class InstagramService {
   constructor(
     @InjectModel(Instagram.name) private instagramModel: Model<Instagram>,
   ) {}
-
-  create(createInstagramDto: CreateInstagramDto) {
-    const instagram = new this.instagramModel(createInstagramDto);
-    return instagram.save();
+  async create(createInstagramDto: CreateInstagramDto): Promise<Instagram> {
+    const instagram = await this.instagramModel.create(createInstagramDto);
+    return instagram; // Return document.
   }
 
   findAll() {

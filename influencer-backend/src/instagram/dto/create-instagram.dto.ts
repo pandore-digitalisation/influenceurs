@@ -1,7 +1,8 @@
 export class CreateInstagramDto {
   name: string;
-  followers?: number;
-  following?: number;
-  posts?: number;
-  url: string;
+  followers?: string;
+  following?: string;
+  posts?: string;
+  profileUrl: string;
+  plateform: string;
 }

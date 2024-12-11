@@ -7,7 +7,7 @@ export type DataDocument = HydratedDocument<Instagram>;
 @Schema()
 export class Instagram {
   @Prop({ required: false })
-  url: string;
+  profileUrl: string;
 
   @Prop({ required: false })
   name: string;
@@ -16,10 +16,13 @@ export class Instagram {
   followers: string;
 
   @Prop({ required: false })
-  post: string;
+  posts: string;
 
   @Prop({ required: false })
   following: string;
+
+  @Prop({ required: false })
+  plateform: string;
 }
 
-export const DataSchema = SchemaFactory.createForClass(Instagram);
+export const InstagramSchema = SchemaFactory.createForClass(Instagram);
