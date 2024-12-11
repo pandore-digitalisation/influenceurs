@@ -11,8 +11,17 @@ export class InstagramService {
     @InjectModel(Instagram.name) private instagramModel: Model<Instagram>,
   ) {}
   async create(createInstagramDto: CreateInstagramDto): Promise<Instagram> {
-    const instagram = await this.instagramModel.create(createInstagramDto);
-    return instagram; // Return document.
+    const { name } = createInstagramDto;
+
+    const existingInstagram = await this.instagramModel.findOne({ name });
+
+    if (existingInstagram) {
+      Object.assign(existingInstagram, createInstagramDto);
+      return existingInstagram.save();
+    } else {
+      const newInstagram = new this.instagramModel(createInstagramDto);
+      return newInstagram.save();
+    }
   }
 
   findAll() {
