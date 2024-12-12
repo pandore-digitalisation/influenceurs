@@ -95,65 +95,22 @@
 
       if (response.ok) {
         console.log("Data successfully sent to the backend.");
-        // alert("ok");
-        // document.getElementById("status").style.display = "true"
+        return true;
+      
       } else {
         console.error("Error sending data to the backend.");
+        return false;
       }
     } catch (error) {
       console.error("Network error:", error);
+      return false;
     }
   }
 
-  // Post the data to the backend
-  // await sendToBackend(extractedData);
+  //Post the data to the backend
+  const success = await sendToBackend(extractedData);
+  console.log("success", success)
 
-  // Convert the combined data to CSV format
-  if (storedData.length > 0) {
-    const headers = Object.keys(storedData[0]);
-    const csvContent =
-      headers.join(",") +
-      "\n" +
-      storedData
-        .map((row) =>
-          headers
-            .map((header) => `"${(row[header] || "").replace(/"/g, '""')}"`)
-            .join(",")
-        )
-        .join("\n");
-
-    try {
-      // Post the data to the backend
-      await sendToBackend(extractedData);
-
-      // console.log(sendToBackend(extractedData))
-
-      // if (extractedData) {
-      //   const download = document.getElementById("downloadBtn");
-      //   download.style.color = "red";
-      // }
-
-      // Save file locally
-      // const fileHandle = await window.showSaveFilePicker({
-      //   suggestedName: "data.csv",
-      //   types: [
-      //     {
-      //       description: "CSV Files",
-      //       accept: { "text/csv": [".csv"] },
-      //     },
-      //   ],
-      // });
-
-      // Write the CSV content to the file
-      // const writable = await fileHandle.createWritable();
-      // await writable.write(csvContent);
-      // await writable.close();
-
-      // console.log("File successfully saved locally.");
-    } catch (error) {
-      console.error("Error during export or backend request:", error);
-    }
-  } else {
-    console.log("No data extracted.");
-  }
+   // Communiquez l'état au popup.js
+   chrome.runtime.sendMessage({ success });
 })();
