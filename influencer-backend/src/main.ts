@@ -6,7 +6,10 @@ async function bootstrap() {
 
   // Activer CORS avec une origine spécifique (Instagram dans ce cas)
   app.enableCors({
-    origin: 'https://www.instagram.com', // Remplacez par l'origine exacte
+    origin: [
+      'https://www.instagram.com',
+      'chrome-extension://kabjhgpchbndlaignhbiibcdfpcddpml',
+    ], // Remplacez par l'origine exacte
     methods: 'GET,POST', // Méthodes autorisées
     allowedHeaders: 'Content-Type', // En-têtes autorisés
   });

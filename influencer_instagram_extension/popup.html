@@ -9,14 +9,36 @@
 </head>
 
 <body>
+  <div class="title">Influencer Instagram Extension</div>
+
   <div class="container">
+    <div id="dataContainer">
+      <div id="status" style="display: none;">Your Data Saved Successfully</div>
+
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th>Select</th>
+            <th>Name</th>
+            <th>Posts</th>
+            <th>Followers</th>
+            <th>Following</th>
+            <th>Profile URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Data rows will be inserted here -->
+        </tbody>
+      </table>
+      <button id="exportCsvBtn" disabled>Export Selected to CSV</button>
+    </div>
     <!-- <button id="get-data-button" style="position: fixed; top: 10px; right: 10px; z-index: 9999;">Get the Data</button> -->
 
-    <div class="title">Influencer Instagram Extension</div>
-    <div id="status" style="display: none;">Your Data Saved Successfully</div>
+    <!-- <div class="title">Influencer Instagram Extension</div> -->
+    <!-- <div id="status" style="display: none;">Your Data Saved Successfully</div> -->
     <button id="scrapeBtn">Get Data</button>
     <!-- <div id="status-download" style="display: none;">Your data is ready to download</div> -->
-    <button id="downloadBtn">Download CSV</button>
+    <button id="downloadBtn">Download All In CSV</button>
   </div>
 
   <script src="popup.js"></script>

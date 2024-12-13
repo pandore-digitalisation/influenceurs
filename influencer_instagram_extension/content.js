@@ -110,7 +110,7 @@
   //Post the data to the backend
   const success = await sendToBackend(extractedData);
   console.log("success", success)
-
    // Communiquez l'état au popup.js
    chrome.runtime.sendMessage({ success });
+
 })();
