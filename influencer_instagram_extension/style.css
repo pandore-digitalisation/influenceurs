@@ -17,7 +17,7 @@ body {
     transition: background-color 0.2s;
   }
   #scrapeBtn {
-    background-color: #000000;
+    background-color: #FF673E;
     color: white;
   }
   #scrapeButton:disabled {

@@ -5,16 +5,18 @@ document.getElementById("scrapeBtn").addEventListener("click", () => {
       files: ["content.js"],
     });
   });
+  document.getElementById("scrapeBtn").textContent = "In process..."
 });
 
 // Écouter les messages envoyés par content.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.success) {
     document.getElementById("downloadBtn").style.display = "block";
-    document.getElementById("scrapeBtn").style.display = "none"
+    document.getElementById("scrapeBtn").style.display = "none";
+    document.getElementById("status").style.display = "block";
     
   } else {
-    alert("Failed to send data to backend.");
+    alert("Please connect to Instagram profile");
   }
 });
 
