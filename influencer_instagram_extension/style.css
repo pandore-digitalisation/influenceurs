@@ -1,12 +1,12 @@
 body {
-    width: 500px;
+    width: 600px;
     padding: 15px;
     font-family: Arial, sans-serif;
   }
   .container {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
   }
   button {
     padding: 8px 12px;

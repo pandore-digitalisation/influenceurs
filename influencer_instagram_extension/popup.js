@@ -68,9 +68,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     .getElementById("dataTable")
     .querySelector("tbody");
   const exportButton = document.getElementById("exportCsvBtn");
+  const loader = document.getElementById("loader");
 
   let data = [];
 
+  // Afficher le loader
+  loader.style.display = "block";
 
   // Récupérer les données (localStorage ou backend)
   async function fetchData() {
@@ -82,12 +85,24 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
       console.error("Error fetching data:", error);
       return [];
+    } finally {
+      // Masquer le loader après le chargement
+      loader.style.display = "none";
     }
   }
 
   // Afficher les données dans la table
   async function displayData() {
     data = await fetchData();
+    console.log("data log:", data);
+
+    if (data.length === 0) {
+      const noDataMessage = document.createElement("tr");
+      noDataMessage.innerHTML =
+        '<td colspan="6" style="text-align: center;">No data available.</td>';
+      dataContainer.appendChild(noDataMessage);
+      return;
+    }
 
     data.forEach((item, index) => {
       const row = document.createElement("tr");
@@ -126,7 +141,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // Générer le CSV
-    const headers = Object.keys(selectedRows[0]);
+    // const headers = Object.keys(selectedRows[0]);
+
+    const headers = Object.keys(selectedRows[0]).filter(
+      (key) => key !== "_id" && key !== "__v"
+    );
     const csvContent =
       headers.join(",") +
       "\n" +

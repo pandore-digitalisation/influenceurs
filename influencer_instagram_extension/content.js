@@ -25,12 +25,15 @@
     "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[2]/div/a/span/span";
   const followingXpath =
     "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[3]/div/a/span/span";
+  const profileImageXPath = "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/div/span/img";
+
 
   // Extract data
   const nameElements = evaluateXPath(nameXPath);
   const postElements = evaluateXPath(postXPath);
   const followersElements = evaluateXPath(followersXPath);
   const followingElements = evaluateXPath(followingXpath);
+  const profileImageElement = evaluateXPath(profileImageXPath)
 
   const name =
     nameElements.length > 0 ? nameElements[0].textContent.trim() : "None";

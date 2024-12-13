@@ -23,6 +23,9 @@ export class Instagram {
 
   @Prop({ required: false })
   plateform: string;
+
+  @Prop({ required: false })
+  profileImg: string;
 }
 
 export const InstagramSchema = SchemaFactory.createForClass(Instagram);
