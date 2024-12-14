@@ -25,7 +25,7 @@ export class Instagram {
   plateform: string;
 
   @Prop({ required: false })
-  profileImg: string;
+  profileImage: string;
 }
 
 export const InstagramSchema = SchemaFactory.createForClass(Instagram);

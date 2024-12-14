@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function fetchData() {
     try {
       const response = await fetch(
-        "https://influenceurs.onrender.com/instagram"
+        "http://localhost:3000/instagram"
       );
       return await response.json();
     } catch (error) {

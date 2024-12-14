@@ -5,5 +5,5 @@ export class CreateInstagramDto {
   posts?: string;
   profileUrl: string;
   plateform: string;
-  profileImg: string;
+  profileImage: string;
 }

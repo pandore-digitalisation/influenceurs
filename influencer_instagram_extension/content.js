@@ -25,15 +25,15 @@
     "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[2]/div/a/span/span";
   const followingXpath =
     "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[3]/div/a/span/span";
-  const profileImageXPath = "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/div/span/img";
-
+  const profileImageXPath =
+    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/div/span/img";
 
   // Extract data
   const nameElements = evaluateXPath(nameXPath);
   const postElements = evaluateXPath(postXPath);
   const followersElements = evaluateXPath(followersXPath);
   const followingElements = evaluateXPath(followingXpath);
-  const profileImageElement = evaluateXPath(profileImageXPath)
+  const profileImageElements = evaluateXPath(profileImageXPath);
 
   const name =
     nameElements.length > 0 ? nameElements[0].textContent.trim() : "None";
@@ -47,6 +47,10 @@
     followingElements.length > 0
       ? followingElements[0].textContent.trim()
       : "0";
+  const profileImage =
+    profileImageElements.length > 0
+      ? profileImageElements[0].src
+      : " ";
 
   // Get the profile URL
   const profileUrl = window.location.href;
@@ -57,6 +61,7 @@
     followers,
     following,
     plateform: "Instagram",
+    profileImage,
     profileUrl,
   };
 
@@ -85,21 +90,17 @@
   // Send data to the backend
   async function sendToBackend(data) {
     try {
-      const response = await fetch(
-        "https://influenceurs.onrender.com/instagram",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+      const response = await fetch("http://localhost:3000/instagram", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
 
       if (response.ok) {
         console.log("Data successfully sent to the backend.");
         return true;
-      
       } else {
         console.error("Error sending data to the backend.");
         return false;
@@ -112,8 +113,7 @@
 
   //Post the data to the backend
   const success = await sendToBackend(extractedData);
-  console.log("success", success)
-   // Communiquez l'état au popup.js
-   chrome.runtime.sendMessage({ success });
-
+  console.log("success", success);
+  // Communiquez l'état au popup.js
+  chrome.runtime.sendMessage({ success });
 })();
