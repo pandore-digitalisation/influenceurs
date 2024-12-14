@@ -69,6 +69,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     .querySelector("tbody");
   const exportButton = document.getElementById("exportCsvBtn");
   const loader = document.getElementById("loader");
+  const selectAllCheckbox = document.getElementById("selectAll");
+
 
   let data = [];
 
@@ -121,14 +123,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.querySelectorAll(".dataCheckbox").forEach((checkbox) => {
       checkbox.addEventListener("change", handleSelectionChange);
     });
+
+    selectAllCheckbox.addEventListener("change", handleSelectAll);
+
   }
 
-  // Mettre à jour l'état du bouton Export
+  function handleSelectAll() {
+    const isChecked = selectAllCheckbox.checked;
+    const checkboxes = document.querySelectorAll(".dataCheckbox");
+    checkboxes.forEach((checkbox) => {
+      checkbox.checked = isChecked;
+    });
+    updateExportButtonState();
+  }
+
   function handleSelectionChange() {
-    const selected =
-      document.querySelectorAll(".dataCheckbox:checked").length > 0;
+    const checkboxes = document.querySelectorAll(".dataCheckbox");
+    const allChecked = Array.from(checkboxes).every((checkbox) => checkbox.checked);
+    selectAllCheckbox.checked = allChecked;
+    updateExportButtonState();
+  }
+
+
+  // Mettre à jour l'état du bouton Export
+  function updateExportButtonState() {
+    const selected = document.querySelectorAll(".dataCheckbox:checked").length > 0;
     exportButton.disabled = !selected;
   }
+  // function handleSelectionChange() {
+  //   const selected =
+  //     document.querySelectorAll(".dataCheckbox:checked").length > 0;
+  //   exportButton.disabled = !selected;
+  // }
 
   // Exporter les données sélectionnées en CSV
   function exportToCsv() {
@@ -144,7 +170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // const headers = Object.keys(selectedRows[0]);
 
     const headers = Object.keys(selectedRows[0]).filter(
-      (key) => key !== "_id" && key !== "__v"
+      (key) => key !== "_id" && key !== "__v" && key !== "profileImage"
     );
     const csvContent =
       headers.join(",") +

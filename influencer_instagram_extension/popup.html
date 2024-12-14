@@ -16,19 +16,17 @@
 
   <div class="container">
     <div id="dataContainer" class="">
-      
-
       <div id="status" style="display: none;">Your Data Saved Successfully</div>
-
       <table id="dataTable">
         <thead>
           <tr>
-            <th>Select</th>
+            <th><input type="checkbox" id="selectAll" />Select all</th>
             <th>Name</th>
             <th>Posts</th>
             <th>Followers</th>
             <th>Following</th>
-            <th>Profile URL</th>
+            <th>Profile URL</th> <br>
+
           </tr>
         </thead>
         
@@ -36,7 +34,7 @@
           <!-- Data rows will be inserted here -->
         </tbody>
       </table>
-      
+     
       <div class="text-center"id="loader">
         <div class="spinner-border" role="status">
           <span class="visually-hidden">Loading...</span>
