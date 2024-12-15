@@ -5,7 +5,7 @@ document.getElementById("scrapeBtn").addEventListener("click", () => {
       files: ["content.js"],
     });
   });
-  document.getElementById("scrapeBtn").textContent = "In process...";
+  document.getElementById("scrapeBtn").textContent = "Getting...";
 });
 
 // Écouter les messages envoyés par content.js
@@ -71,7 +71,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const loader = document.getElementById("loader");
   const selectAllCheckbox = document.getElementById("selectAll");
 
-
   let data = [];
 
   // Afficher le loader
@@ -80,9 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Récupérer les données (localStorage ou backend)
   async function fetchData() {
     try {
-      const response = await fetch(
-        "http://localhost:3000/instagram"
-      );
+      const response = await fetch("http://localhost:3000/instagram");
       return await response.json();
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -125,7 +122,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     selectAllCheckbox.addEventListener("change", handleSelectAll);
-
   }
 
   function handleSelectAll() {
@@ -139,22 +135,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function handleSelectionChange() {
     const checkboxes = document.querySelectorAll(".dataCheckbox");
-    const allChecked = Array.from(checkboxes).every((checkbox) => checkbox.checked);
+    const allChecked = Array.from(checkboxes).every(
+      (checkbox) => checkbox.checked
+    );
     selectAllCheckbox.checked = allChecked;
     updateExportButtonState();
   }
 
-
   // Mettre à jour l'état du bouton Export
   function updateExportButtonState() {
-    const selected = document.querySelectorAll(".dataCheckbox:checked").length > 0;
+    const selected =
+      document.querySelectorAll(".dataCheckbox:checked").length > 0;
     exportButton.disabled = !selected;
   }
-  // function handleSelectionChange() {
-  //   const selected =
-  //     document.querySelectorAll(".dataCheckbox:checked").length > 0;
-  //   exportButton.disabled = !selected;
-  // }
 
   // Exporter les données sélectionnées en CSV
   function exportToCsv() {
