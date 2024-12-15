@@ -48,6 +48,10 @@ body {
     color: white;
   }
 
+  .spinner-border {
+    color: #FF6086;
+  }
+
   #createList {
     background-color: green;
     color: white;

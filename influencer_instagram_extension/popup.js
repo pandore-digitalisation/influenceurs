@@ -1,3 +1,5 @@
+const BASE_URL ="https://influenceurs.onrender.com"
+
 document.getElementById("scrapeBtn").addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     chrome.scripting.executeScript({
@@ -79,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Récupérer les données (localStorage ou backend)
   async function fetchData() {
     try {
-      const response = await fetch("https://influenceurs.onrender.com/instagram");
+      const response = await fetch(`${BASE_URL}/instagram`);
       return await response.json();
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -107,7 +109,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const row = document.createElement("tr");
 
       row.innerHTML = `
-        <td><input type="checkbox" class="dataCheckbox" data-index="${index}" /></td>
+        <td><input type="checkbox" class="dataCheckbox" data-index="${index}" style="margin-right: 25px;"/> ${index + 1} </td>
         <td>${item.name}</td>
         <td>${item.posts}</td>
         <td>${item.followers}</td>
@@ -213,34 +215,3 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Charger et afficher les données
   displayData();
 });
-
-// document.addEventListener("DOMContentLoaded", async () => {
-//   const dataContainer = document
-//     .getElementById("dataTable")
-//     .querySelector("tbody");
-//   const exportButton = document.getElementById("exportCsvBtn");
-
-//   try {
-//     // Récupérer les données depuis le backend
-//     const response = await fetch("https://influenceurs.onrender.com/instagram");
-//     const data = await response.json();
-
-//     // Insérer les données dans la table
-//     data.forEach((item, index) => {
-//       const row = document.createElement("tr");
-//       row.innerHTML = `
-//         <td><input type="checkbox" class="dataCheckbox" data-index="${index}" /></td>
-//         <td>${item.name}</td>
-//         <td>${item.posts}</td>
-//         <td>${item.followers}</td>
-//         <td>${item.following}</td>
-//         <td><a href="${item.profileUrl}" target="_blank">View Profile</a></td>
-//       `;
-//       dataContainer.appendChild(row);
-//     });
-
-//   } catch (error) {
-//     console.error("Error fetching data from backend:", error);
-//   }
-
-// });

@@ -16,6 +16,9 @@
     return nodes;
   }
 
+  const BASE_URL ="https://influenceurs.onrender.com"
+
+
   // Define the XPaths
   const nameXPath =
     "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[2]/div/div/div[1]/div/a/h2/span";
@@ -90,7 +93,7 @@
   // Send data to the backend
   async function sendToBackend(data) {
     try {
-      const response = await fetch("https://influenceurs.onrender.com/instagram", {
+      const response = await fetch(`${BASE_URL}/instagram`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
