@@ -90,7 +90,7 @@
   // Send data to the backend
   async function sendToBackend(data) {
     try {
-      const response = await fetch("http://localhost:3000/instagram", {
+      const response = await fetch("https://influenceurs.onrender.com/instagram", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Récupérer les données (localStorage ou backend)
   async function fetchData() {
     try {
-      const response = await fetch("http://localhost:3000/instagram");
+      const response = await fetch("https://influenceurs.onrender.com/instagram");
       return await response.json();
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -112,7 +112,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         <td>${item.posts}</td>
         <td>${item.followers}</td>
         <td>${item.following}</td>
-        <td><a href="${item.profileUrl}" target="_blank" >View</a></td>
+        <td><a href="${item.profileUrl}" target="_blank" ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <g clip-path="url(#clip0_2104_123)">
+          <path d="M21.3995 2.59791L21.3995 7.79435M21.3995 2.59791H16.2031M21.3995 2.59791L17.2856 6.71176L15.2287 8.76868L13.1718 10.8256" stroke="url(#paint0_linear_2104_123)" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M12.7067 5H9.29333C6.72873 5 5.44642 5 4.534 5.63061C4.1808 5.87473 3.87473 6.1808 3.63061 6.534C3 7.44642 3 8.72873 3 11.2933V14.7067C3 17.2713 3 18.5536 3.63061 19.466C3.87473 19.8192 4.1808 20.1253 4.534 20.3694C5.44642 21 6.72873 21 9.29333 21H12.7067C15.2713 21 16.5536 21 17.466 20.3694C17.8192 20.1253 18.1253 19.8192 18.3694 19.466C19 18.5536 19 17.2713 19 14.7067V11.2933" stroke="url(#paint1_linear_2104_123)" stroke-width="1.5" stroke-linecap="round"/>
+        </g>
+        <defs>
+          <linearGradient id="paint0_linear_2104_123" x1="12.4371" y1="0.815925" x2="22.0399" y2="8.83541" gradientUnits="userSpaceOnUse">
+            <stop offset="0.175" stop-color="#7739DC"/>
+            <stop offset="0.605" stop-color="#FF6086"/>
+          </linearGradient>
+          <linearGradient id="paint1_linear_2104_123" x1="12.0183" y1="29.5411" x2="15.8317" y2="2.73485" gradientUnits="userSpaceOnUse">
+            <stop offset="0.175" stop-color="#7739DC"/>
+            <stop offset="0.605" stop-color="#FF6086"/>
+          </linearGradient>
+          <clipPath id="clip0_2104_123">
+            <rect width="24" height="24" fill="white"/>
+          </clipPath>
+        </defs>
+      </svg></a></td>
       `;
       dataContainer.appendChild(row);
     });

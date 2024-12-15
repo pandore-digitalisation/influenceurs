@@ -16,19 +16,19 @@
     <span class="left">PIE</span>
     <span class="right">
       <span><button class="btn btn btn-sm" id="scrapeBtn">Get Data</button></span>
-      <span><button class="btn btn-primary btn-sm" id="exportCsvBtn" disabled>
-          Export
-        </button></span>
+      <span><button class="btn btn btn-sm" id="createList" disabled>Create List</button></span>
+      <span><button class="btn btn-primary btn-sm" id="exportCsvBtn" disabled>Export</button></span>
     </span>
   </div>
   <div class="progress" style="height: 5px; margin-top: 15px; margin-bottom: 15px;">
     <div class="progress-bar w-0" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
   </div>
+
   <div id="dataContainer">
     <div id="status" style="display: none">
       Your Data Saved Successfully
     </div>
-    <table class="table" id="dataTable">
+    <table class="table table-striped" id="dataTable">
       <thead>
         <tr>
           <th scope="col"><input type="checkbox" id="selectAll" /> Select All</th>
