@@ -98,20 +98,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (data.length === 0) {
       const noDataMessage = document.createElement("tr");
       noDataMessage.innerHTML =
-        '<td colspan="6" style="text-align: center;">No data available.</td>';
+        '<td colspan="6" style="text-align: center;"><div class="alert alert-danger" role="alert">No data available.</div></td>';
       dataContainer.appendChild(noDataMessage);
       return;
     }
 
     data.forEach((item, index) => {
       const row = document.createElement("tr");
+
       row.innerHTML = `
         <td><input type="checkbox" class="dataCheckbox" data-index="${index}" /></td>
         <td>${item.name}</td>
         <td>${item.posts}</td>
         <td>${item.followers}</td>
         <td>${item.following}</td>
-        <td><a href="${item.profileUrl}" target="_blank">View Profile</a></td>
+        <td><a href="${item.profileUrl}" target="_blank" >View</a></td>
       `;
       dataContainer.appendChild(row);
     });

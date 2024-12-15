@@ -4,16 +4,20 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Activer CORS avec une origine spécifique (Instagram dans ce cas)
+  // Activer CORS pour des origines spécifiques (exemple : Instagram et une extension Chrome)
   app.enableCors({
     origin: [
       'https://www.instagram.com',
       'chrome-extension://kabjhgpchbndlaignhbiibcdfpcddpml',
-    ], // Remplacez par l'origine exacte
-    methods: 'GET,POST', // Méthodes autorisées
+    ], // Liste des origines autorisées
+    methods: 'GET,POST', // Méthodes HTTP autorisées
     allowedHeaders: 'Content-Type', // En-têtes autorisés
   });
 
-  await app.listen(process.env.PORT ?? 3000);
+  const port = process.env.PORT ?? 3000;
+  console.log(`Application is running on: http://localhost:${port}`);
+
+  await app.listen(port);
 }
+
 bootstrap();
