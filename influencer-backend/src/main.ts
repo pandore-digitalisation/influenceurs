@@ -9,6 +9,8 @@ async function bootstrap() {
     origin: [
       'https://www.instagram.com',
       'chrome-extension://kabjhgpchbndlaignhbiibcdfpcddpml',
+      'https://www.facebook.com',
+      'chrome-extension://poojmfapemijoppakejdkcpjgefmldgb',
     ], // Liste des origines autorisées
     methods: 'GET,POST', // Méthodes HTTP autorisées
     allowedHeaders: 'Content-Type', // En-têtes autorisés

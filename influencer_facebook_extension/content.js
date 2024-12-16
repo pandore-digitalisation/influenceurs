@@ -1,5 +1,4 @@
 (async () => {
-  // Helper function to evaluate an XPath expression and return nodes
   function evaluateXPath(xpath, context = document) {
     const iterator = document.evaluate(
       xpath,
@@ -16,32 +15,27 @@
     return nodes;
   }
 
-  const BASE_URL ="https://influenceurs.onrender.com"
+  const BASE_URL ="http://localhost:3000"
 
 
   // Define the XPaths
   const nameXPath =
-    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[2]/div/div/div[1]/div/a/h2/span";
-  const postXPath =
-    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[1]/div/span/span";
+    "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]";
   const followersXPath =
-    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[2]/div/a/span/span";
+    "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[1]/text()[1]";
   const followingXpath =
-    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[3]/div/a/span/span";
+    "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]";
   const profileImageXPath =
-    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/div/span/img";
+    "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/a/div/svg/g/image";
 
   // Extract data
   const nameElements = evaluateXPath(nameXPath);
-  const postElements = evaluateXPath(postXPath);
   const followersElements = evaluateXPath(followersXPath);
   const followingElements = evaluateXPath(followingXpath);
   const profileImageElements = evaluateXPath(profileImageXPath);
 
   const name =
     nameElements.length > 0 ? nameElements[0].textContent.trim() : "None";
-  const posts =
-    postElements.length > 0 ? postElements[0].textContent.trim() : "0";
   const followers =
     followersElements.length > 0
       ? followersElements[0].textContent.trim()
@@ -60,10 +54,9 @@
 
   const extractedData = {
     name,
-    posts,
     followers,
     following,
-    plateform: "Instagram",
+    plateform: "Facebook",
     profileImage,
     profileUrl,
   };
@@ -93,7 +86,7 @@
   // Send data to the backend
   async function sendToBackend(data) {
     try {
-      const response = await fetch(`${BASE_URL}/instagram`, {
+      const response = await fetch(`${BASE_URL}/facebook`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

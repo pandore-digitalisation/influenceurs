@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // document.getElementById("downloadBtn").style.display = "block";
     }, 1000);
   } else {
-    alert("Please connect to Instagram profile");
+    alert("Please connect to Facebook profile");
     window.location.reload();
 
   }
@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Récupérer les données (localStorage ou backend)
   async function fetchData() {
     try {
-      const response = await fetch(`${BASE_URL}/instagram`);
+      const response = await fetch(`${BASE_URL}/facebook`);
       return await response.json();
     } catch (error) {
       console.error("Error fetching data:", error);
