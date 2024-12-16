@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { InstagramModule } from './instagram/instagram.module';
 import { ListModule } from './list/list.module';
+import { FacebookModule } from './facebook/facebook.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ListModule } from './list/list.module';
     ),
     InstagramModule,
     ListModule,
+    FacebookModule,
   ],
   controllers: [AppController],
   providers: [AppService],

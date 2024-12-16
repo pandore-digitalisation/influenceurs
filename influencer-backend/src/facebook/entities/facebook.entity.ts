@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
 
-export type DataDocument = HydratedDocument<Instagram>;
+export type DataDocument = HydratedDocument<Facebook>;
 
 @Schema()
-export class Instagram {
+export class Facebook {
   @Prop({ required: false })
   profileUrl: string;
 
@@ -13,9 +13,6 @@ export class Instagram {
 
   @Prop({ required: false })
   followers: string;
-
-  @Prop({ required: false })
-  posts: string;
 
   @Prop({ required: false })
   following: string;
@@ -27,4 +24,4 @@ export class Instagram {
   profileImage: string;
 }
 
-export const InstagramSchema = SchemaFactory.createForClass(Instagram);
+export const FacebookSchema = SchemaFactory.createForClass(Facebook);
