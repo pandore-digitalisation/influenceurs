@@ -22,6 +22,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }, 1000);
   } else {
     alert("Please connect to Instagram profile");
+    window.location.reload();
+
   }
 });
 
