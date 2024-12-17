@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { InstagramModule } from './instagram/instagram.module';
 import { ListModule } from './list/list.module';
 import { FacebookModule } from './facebook/facebook.module';
+import { LinkedinModule } from './linkedin/linkedin.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { FacebookModule } from './facebook/facebook.module';
     InstagramModule,
     ListModule,
     FacebookModule,
+    LinkedinModule,
   ],
   controllers: [AppController],
   providers: [AppService],

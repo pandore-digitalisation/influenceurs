@@ -15,7 +15,8 @@
     return nodes;
   }
 
-  const BASE_URL = "https://influenceurs.onrender.com";
+  const BASE_URL ="https://influenceurs.onrender.com"
+
 
   // Define the XPaths
   const nameXPath =
@@ -25,7 +26,7 @@
   const followingXpath =
     "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]";
   const profileImageXPath =
-    "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div";
+    "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/a/div/svg";
 
   // Extract data
   const nameElements = evaluateXPath(nameXPath);
@@ -43,12 +44,11 @@
     followingElements.length > 0
       ? followingElements[0].textContent.trim()
       : "0";
-
-  const profileImage =
-    profileImageElements.length > 0
-      ? profileImageElements[0].getAttribute("href") ||
-        profileImageElements[0].getAttribute("xlink:href")
+  const profileImage = profileImageElements.length > 0
+      ? profileImageElements.getAttribute("href") || profileImageElements.getAttribute("xlink:href")
       : "Not found";
+
+  console.log("profile image: ", profileImage)
 
   // Get the profile URL
   const profileUrl = window.location.href;
