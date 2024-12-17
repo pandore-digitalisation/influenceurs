@@ -18,7 +18,7 @@ export class Linkedin {
   location: string;
 
   @Prop({ required: false })
-  following: string;
+  connection: string;
 
   @Prop({ required: false })
   plateform: string;

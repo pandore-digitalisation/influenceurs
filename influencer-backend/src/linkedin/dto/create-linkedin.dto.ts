@@ -1,7 +1,7 @@
 export class CreateLinkedinDto {
   name: string;
   followers?: string;
-  following?: string;
+  connection?: string;
   location?: string;
   description?: string;
   profileUrl: string;
