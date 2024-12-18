@@ -9,7 +9,7 @@ import { Model } from 'mongoose';
 export class XService {
   constructor(@InjectModel(X.name) private xModel: Model<X>) {}
   async create(createXDto: CreateXDto): Promise<X> {
-    const { name } = CreateXDto;
+    const { name } = createXDto;
 
     const existingX = await this.xModel.findOne({ name });
 

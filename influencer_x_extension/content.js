@@ -16,32 +16,33 @@
     return nodes;
   }
 
-  const BASE_URL ="http://localhost:3000"
-
+  const BASE_URL = "http://localhost:3000";
 
   // Define the XPaths
   const nameXPath =
-    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[2]/div/div/div[1]/div/a/h2/span";
-  const postXPath =
-    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[1]/div/span/span";
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/span/span[1]";
+  const descriptionXPath =
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[3]/div/div/span[6]";
   const followersXPath =
-    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[2]/div/a/span/span";
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[5]/div[2]/a/span[1]/span";
   const followingXpath =
-    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[3]/div/a/span/span";
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[5]/div[1]/a/span[1]/span";
   const profileImageXPath =
-    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/div/span/img";
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div/div/div/div[1]/div[1]/div[2]/div/div[2]/div/a";
 
   // Extract data
   const nameElements = evaluateXPath(nameXPath);
-  const postElements = evaluateXPath(postXPath);
+  const descriptionElements = evaluateXPath(descriptionXPath);
   const followersElements = evaluateXPath(followersXPath);
   const followingElements = evaluateXPath(followingXpath);
   const profileImageElements = evaluateXPath(profileImageXPath);
 
   const name =
     nameElements.length > 0 ? nameElements[0].textContent.trim() : "None";
-  const posts =
-    postElements.length > 0 ? postElements[0].textContent.trim() : "0";
+  const description =
+    descriptionElements.length > 0
+      ? descriptionElements[0].textContent.trim()
+      : "0";
   const followers =
     followersElements.length > 0
       ? followersElements[0].textContent.trim()
@@ -52,19 +53,21 @@
       : "0";
   const profileImage =
     profileImageElements.length > 0
-      ? profileImageElements[0].src
+      ? profileImageElements[0].getAttribute("href") ||
+        profileImageElements[0].getAttribute("src")
       : " ";
 
   // Get the profile URL
   const profileUrl = window.location.href;
+  const base = "https://x.com"
 
   const extractedData = {
     name,
-    posts,
+    description,
     followers,
     following,
     plateform: "X",
-    profileImage,
+    profileImage: `${base}${profileImage}`,
     profileUrl,
   };
 
