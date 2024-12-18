@@ -30,7 +30,7 @@ export class LinkedinController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.linkedinService.findOne(+id);
+    return this.linkedinService.findOne(id);
   }
 
   @Patch(':id')
@@ -38,11 +38,11 @@ export class LinkedinController {
     @Param('id') id: string,
     @Body() updateLinkedinDto: UpdateLinkedinDto,
   ) {
-    return this.linkedinService.update(+id, updateLinkedinDto);
+    return this.linkedinService.update(id, updateLinkedinDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.linkedinService.remove(+id);
+    return this.linkedinService.remove(id);
   }
 }

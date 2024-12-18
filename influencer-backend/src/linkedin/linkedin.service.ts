@@ -28,15 +28,15 @@ export class LinkedinService {
     return this.linkedinModel.find().exec();
   }
 
-  findOne(id: number) {
+  findOne(id: string) {
     return this.linkedinModel.findById(id).exec();
   }
 
-  update(id: number, updateLinkedinDto: UpdateLinkedinDto) {
+  update(id: string, updateLinkedinDto: UpdateLinkedinDto) {
     return this.linkedinModel.findByIdAndUpdate(id, updateLinkedinDto);
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return this.linkedinModel.findByIdAndDelete(id).exec();
   }
 }

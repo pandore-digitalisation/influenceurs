@@ -6,6 +6,7 @@ import { InstagramModule } from './instagram/instagram.module';
 import { ListModule } from './list/list.module';
 import { FacebookModule } from './facebook/facebook.module';
 import { LinkedinModule } from './linkedin/linkedin.module';
+import { XModule } from './x/x.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { LinkedinModule } from './linkedin/linkedin.module';
     ListModule,
     FacebookModule,
     LinkedinModule,
+    XModule,
   ],
   controllers: [AppController],
   providers: [AppService],
