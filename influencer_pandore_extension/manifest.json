@@ -1,0 +1,50 @@
+{
+    "manifest_version": 3,
+    "name": "Pandore Influencer",
+    "version": "O.1",
+    "description": "Get X, Instagram, Facebook, Linkedin page data and export in csv format",
+    "permissions": ["activeTab", "scripting", "storage"],
+    "host_permissions": [
+      "https://x.com/*",
+      "https://instagram.com/*",
+      "https://facebook.com/*",
+      "https://linkedin.com/*",
+      "http://127.0.0.1:5001/*",
+      "https://influenceurs.onrender.com/*"
+    ],
+    "background": {
+      "service_worker": "scripts/background.js"
+    },
+    "action": {
+      "default_popup": "popup/popup.html",
+      "default_icon": {
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+      }
+    },
+    "content_scripts": [
+      {
+        "matches": ["https://x.com/*"],
+        "js": ["scripts/content_x.js"]
+      },
+      {
+        "matches": ["https://instagram.com/*"],
+        "js": ["scripts/content_instagram.js"]
+      },
+      {
+        "matches": ["https://facebook.com/*"],
+        "js": ["scripts/content_facebook.js"]
+      },
+      {
+        "matches": ["https://linkedin.com/*"],
+        "js": ["scripts/content_linkedin.js"]
+      }
+    ],
+    "icons": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  }
+  

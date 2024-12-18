@@ -16,13 +16,13 @@
     return nodes;
   }
 
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = "https://influenceurs.onrender.com";
 
   // Define the XPaths
   const nameXPath =
     "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/span/span[1]";
   const descriptionXPath =
-    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[3]/div/div/span[6]";
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[3]";
   const followersXPath =
     "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[5]/div[2]/a/span[1]/span";
   const followingXpath =
@@ -42,7 +42,7 @@
   const description =
     descriptionElements.length > 0
       ? descriptionElements[0].textContent.trim()
-      : "0";
+      : "Données incomplètes ou manquantes";
   const followers =
     followersElements.length > 0
       ? followersElements[0].textContent.trim()
@@ -56,6 +56,12 @@
       ? profileImageElements[0].getAttribute("href") ||
         profileImageElements[0].getAttribute("src")
       : " ";
+
+  // Get data before send to backend
+  if (!name || !followers || !following) {
+    console.error("Données incomplètes ou manquantes. Requête annulée.");
+    return;
+  }
 
   // Get the profile URL
   const profileUrl = window.location.href;

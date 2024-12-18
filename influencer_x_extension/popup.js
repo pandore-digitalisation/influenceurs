@@ -21,7 +21,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       // document.getElementById("downloadBtn").style.display = "block";
     }, 1000);
   } else {
-    alert("Please connect to Instagram profile");
+    alert("Please connect to X profile");
     window.location.reload();
 
   }
@@ -115,6 +115,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <td>${item.name}</td>
         <td>${item.followers}</td>
         <td>${item.following}</td>
+        <td>${item.plateform}</td>
         <td><a href="${item.profileUrl}" target="_blank" ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
         <g clip-path="url(#clip0_2104_123)">
           <path d="M21.3995 2.59791L21.3995 7.79435M21.3995 2.59791H16.2031M21.3995 2.59791L17.2856 6.71176L15.2287 8.76868L13.1718 10.8256" stroke="url(#paint0_linear_2104_123)" stroke-width="1.5" stroke-linecap="round"/>
