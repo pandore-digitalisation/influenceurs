@@ -16,7 +16,7 @@
     return nodes;
   }
 
-  const BASE_URL ="https://influenceurs.onrender.com"
+  const BASE_URL ="http://localhost:3000"
 
 
   // Define the XPaths
@@ -63,7 +63,7 @@
     posts,
     followers,
     following,
-    plateform: "Instagram",
+    plateform: "X",
     profileImage,
     profileUrl,
   };
@@ -93,7 +93,7 @@
   // Send data to the backend
   async function sendToBackend(data) {
     try {
-      const response = await fetch(`${BASE_URL}/instagram`, {
+      const response = await fetch(`${BASE_URL}/x`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

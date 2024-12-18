@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Récupérer les données (localStorage ou backend)
   async function fetchData() {
     try {
-      const response = await fetch(`${BASE_URL}/instagram`);
+      const response = await fetch(`${BASE_URL}/x`);
       return await response.json();
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       row.innerHTML = `
         <td><input type="checkbox" class="dataCheckbox" data-index="${index}" style="margin-right: 25px;"/> ${index + 1} </td>
         <td>${item.name}</td>
-        <td>${item.posts}</td>
+        <td>${item.location}</td>
         <td>${item.followers}</td>
         <td>${item.following}</td>
         <td><a href="${item.profileUrl}" target="_blank" ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
