@@ -57,7 +57,7 @@ document.getElementById("downloadBtn").addEventListener("click", () => {
 function downloadCSV() {
   const storedData = JSON.parse(localStorage.getItem("exportedData") || "[]");
 
-  if (storedData.length === 0) {
+  if (!storedData.length || storedData.length === 0) {
     alert("Aucune donnée disponible pour téléchargement.");
     return;
   }
@@ -74,15 +74,22 @@ function downloadCSV() {
       )
       .join("\n");
 
-  const blob = new Blob([csvContent], { type: "text/csv" });
-  const url = URL.createObjectURL(blob);
-
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "data.csv";
-  link.click();
-
-  URL.revokeObjectURL(url);
+      try {
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+    
+        // Téléchargement du fichier
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `data_export_${new Date().toISOString().slice(0, 10)}.csv`;
+        link.click();
+    
+        // Nettoyage de l'URL blob
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error("Erreur lors de l'exportation des données en CSV :", error);
+        alert("Une erreur s'est produite lors de l'exportation des données.");
+      }
 }
 
 // Gestion des données pour chaque plateforme
@@ -230,7 +237,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   exportButton.addEventListener("click", () => exportToCsv(data));
 
   // Charger les données pour la plateforme X par défaut
-  await displayData("x");
+  await displayData();
 });
   
   
