@@ -13,6 +13,8 @@ async function bootstrap() {
       'chrome-extension://poojmfapemijoppakejdkcpjgefmldgb',
       'https://www.linkedin.com',
       'chrome-extension://mmbnkjbihbociakkafncmhkffhniaiff',
+      'https://x.com/',
+      'chrome-extension://pkahcggjmbhmpgmdhkemgfnblpjidgpa',
     ], // Liste des origines autorisées
     methods: 'GET,POST', // Méthodes HTTP autorisées
     allowedHeaders: 'Content-Type', // En-têtes autorisés
