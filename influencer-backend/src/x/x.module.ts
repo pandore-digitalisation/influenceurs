@@ -8,5 +8,6 @@ import { X, XSchema } from './entities/x.entity';
   imports: [MongooseModule.forFeature([{ name: X.name, schema: XSchema }])],
   controllers: [XController],
   providers: [XService],
+  exports: [XService],
 })
 export class XModule {}

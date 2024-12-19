@@ -1,4 +1,4 @@
-const BASE_URL = "https://influenceurs.onrender.com";
+const BASE_URL = "http://localhost:3000";
 
 // Bouton Scraper
 document.getElementById("scrapeBtn").addEventListener("click", () => {
@@ -74,22 +74,22 @@ function downloadCSV() {
       )
       .join("\n");
 
-      try {
-        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-        const url = URL.createObjectURL(blob);
-    
-        // Téléchargement du fichier
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `data_export_${new Date().toISOString().slice(0, 10)}.csv`;
-        link.click();
-    
-        // Nettoyage de l'URL blob
-        URL.revokeObjectURL(url);
-      } catch (error) {
-        console.error("Erreur lors de l'exportation des données en CSV :", error);
-        alert("Une erreur s'est produite lors de l'exportation des données.");
-      }
+  try {
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+
+    // Téléchargement du fichier
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `data_export_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+
+    // Nettoyage de l'URL blob
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Erreur lors de l'exportation des données en CSV :", error);
+    alert("Une erreur s'est produite lors de l'exportation des données.");
+  }
 }
 
 // Gestion des données pour chaque plateforme
@@ -106,22 +106,36 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Afficher le loader
   loader.style.display = "block";
 
-  async function fetchData(platform) {
+  async function fetchData() {
     try {
-      const response = await fetch(`${BASE_URL}/${platform}`);
-      return await response.json();
+      const response = await fetch(`${BASE_URL}/platforms/all`);
+      const json = await response.json();
+      console.log("API Response:", json);
+      return Array.isArray(json.data) ? json.data : [];
     } catch (error) {
       console.error("Erreur lors de la récupération des données :", error);
       return [];
     } finally {
-      loader.style.display = "none";
+      loader.style.display = 'none';
     }
   }
 
+  // async function fetchData() {
+  //   try {
+  //     const response = await fetch(`${BASE_URL}/platforms`);
+  //     return await response.json();
+  //   } catch (error) {
+  //     console.error("Erreur lors de la récupération des données :", error);
+  //     return [];
+  //   } finally {
+  //     loader.style.display = "none";
+  //   }
+  // }
+
   // Afficher les données selon la plateforme
-  async function displayData(platform = "x") {
-    data = await fetchData(platform);
-    console.log(`Données récupérées pour ${platform}:`, data);
+  async function displayData() {
+    data = await fetchData();
+    console.log(`Data log:`, data);
 
     if (data.length === 0) {
       const noDataMessage = document.createElement("tr");
@@ -135,12 +149,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       const row = document.createElement("tr");
 
       row.innerHTML = `
-        <td><input type="checkbox" class="dataCheckbox" data-index="${index}" style="margin-right: 25px;"/> ${index + 1} </td>
+        <td><input type="checkbox" class="dataCheckbox" data-index="${index}" style="margin-right: 0px;"/> ${
+        index + 1
+      } </td>
         <td>${item.name}</td>
         <td>${item.followers}</td>
-        <td>${item.following}</td>
+        <td>${item.following || item.connection}</td>
         <td>${item.plateform}</td>
-         <td><a href="${item.profileUrl}" target="_blank" ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+         <td><a href="${
+           item.profileUrl
+         }" target="_blank" ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
         <g clip-path="url(#clip0_2104_123)">
           <path d="M21.3995 2.59791L21.3995 7.79435M21.3995 2.59791H16.2031M21.3995 2.59791L17.2856 6.71176L15.2287 8.76868L13.1718 10.8256" stroke="url(#paint0_linear_2104_123)" stroke-width="1.5" stroke-linecap="round"/>
           <path d="M12.7067 5H9.29333C6.72873 5 5.44642 5 4.534 5.63061C4.1808 5.87473 3.87473 6.1808 3.63061 6.534C3 7.44642 3 8.72873 3 11.2933V14.7067C3 17.2713 3 18.5536 3.63061 19.466C3.87473 19.8192 4.1808 20.1253 4.534 20.3694C5.44642 21 6.72873 21 9.29333 21H12.7067C15.2713 21 16.5536 21 17.466 20.3694C17.8192 20.1253 18.1253 19.8192 18.3694 19.466C19 18.5536 19 17.2713 19 14.7067V11.2933" stroke="url(#paint1_linear_2104_123)" stroke-width="1.5" stroke-linecap="round"/>
@@ -239,5 +257,3 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Charger les données pour la plateforme X par défaut
   await displayData();
 });
-  
-  

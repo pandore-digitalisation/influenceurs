@@ -12,5 +12,6 @@ import { Facebook, FacebookSchema } from './entities/facebook.entity';
   ],
   controllers: [FacebookController],
   providers: [FacebookService],
+  exports: [FacebookService],
 })
 export class FacebookModule {}

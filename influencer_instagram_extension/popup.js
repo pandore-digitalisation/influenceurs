@@ -217,3 +217,126 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Charger et afficher les données
   displayData();
 });
+
+
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const dataContainer = document
+    .getElementById("dataTable")
+    .querySelector("tbody");
+  const exportButton = document.getElementById("exportCsvBtn");
+  const loader = document.getElementById("loader");
+  const selectAllCheckbox = document.getElementById("selectAll");
+
+  let data = [];
+
+  // Afficher le loader
+  loader.style.display = "block";
+
+  async function fetchData() {
+    try {
+      const response = await fetch(`${BASE_URL}/platforms/all`);
+      const json = await response.json();
+      console.log("API Response:", json);
+      return Array.isArray(json.data) ? json.data : [];
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données :", error);
+      return [];
+    } finally {
+      loader.style.display = "none";
+    }
+  }
+
+  // Afficher les données
+  async function displayData() {
+    data = await fetchData();
+
+    if (data.length === 0) {
+      const noDataMessage = document.createElement("tr");
+      noDataMessage.innerHTML =
+        '<td colspan="6" style="text-align: center;">Aucune donnée disponible.</td>';
+      dataContainer.appendChild(noDataMessage);
+      return;
+    }
+
+    data.forEach((item, index) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>
+          <input type="checkbox" class="dataCheckbox" data-index="${index}" />
+          ${index + 1}
+        </td>
+        <td>${item.name || "N/A"}</td>
+        <td>${item.followers || "N/A"}</td>
+        <td>${item.following || "N/A"}</td>
+        <td>${item.plateform || "N/A"}</td>
+        <td><a href="${item.profileUrl}" target="_blank">Voir le profil</a></td>
+      `;
+      dataContainer.appendChild(row);
+    });
+
+    document.querySelectorAll(".dataCheckbox").forEach((checkbox) => {
+      checkbox.addEventListener("change", updateExportButtonState);
+    });
+
+    selectAllCheckbox.addEventListener("change", handleSelectAll);
+  }
+
+  function handleSelectAll() {
+    const isChecked = selectAllCheckbox.checked;
+    document
+      .querySelectorAll(".dataCheckbox")
+      .forEach((checkbox) => (checkbox.checked = isChecked));
+    updateExportButtonState();
+  }
+
+  function updateExportButtonState() {
+    const selected =
+      document.querySelectorAll(".dataCheckbox:checked").length > 0;
+    exportButton.disabled = !selected;
+  }
+
+  // Exporter les données sélectionnées en CSV
+  function exportToCsv() {
+    const selectedRows = [];
+    document.querySelectorAll(".dataCheckbox:checked").forEach((checkbox) => {
+      const rowIndex = checkbox.getAttribute("data-index");
+      selectedRows.push(data[rowIndex]);
+    });
+
+    if (selectedRows.length === 0) {
+      alert("Aucune donnée sélectionnée pour l'exportation.");
+      return;
+    }
+
+    const headers = Object.keys(selectedRows[0]).filter(
+      (key) => !["_id", "__v", "profileImage"].includes(key)
+    );
+
+    const csvContent =
+      headers.join(",") +
+      "\n" +
+      selectedRows
+        .map((row) =>
+          headers
+            .map((header) => `"${(row[header] || "").replace(/"/g, '""')}"`)
+            .join(",")
+        )
+        .join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `export_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // Attacher l'événement pour l'exportation
+  exportButton.addEventListener("click", exportToCsv);
+
+  // Charger les données
+  displayData();
+});

@@ -12,5 +12,6 @@ import { Instagram, InstagramSchema } from './entities/instagram.entity';
   ],
   controllers: [InstagramController],
   providers: [InstagramService],
+  exports: [InstagramService],
 })
 export class InstagramModule {}

@@ -12,5 +12,6 @@ import { Linkedin, LinkedinSchema } from './entities/linkedin.entity';
   ],
   controllers: [LinkedinController],
   providers: [LinkedinService],
+  exports: [LinkedinService],
 })
 export class LinkedinModule {}
