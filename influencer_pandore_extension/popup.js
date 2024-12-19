@@ -106,31 +106,31 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Afficher le loader
   loader.style.display = "block";
 
-  async function fetchData() {
-    try {
-      const response = await fetch(`${BASE_URL}/platforms/all`);
-      const json = await response.json();
-      console.log("API Response:", json);
-      return Array.isArray(json.data) ? json.data : [];
-    } catch (error) {
-      console.error("Erreur lors de la récupération des données :", error);
-      return [];
-    } finally {
-      loader.style.display = 'none';
-    }
-  }
-
   // async function fetchData() {
   //   try {
-  //     const response = await fetch(`${BASE_URL}/platforms`);
-  //     return await response.json();
+  //     const response = await fetch(`${BASE_URL}/platforms/all`);
+  //     const json = await response.json();
+  //     console.log("API Response:", json);
+  //     return Array.isArray(json.data) ? json.data : [];
   //   } catch (error) {
   //     console.error("Erreur lors de la récupération des données :", error);
   //     return [];
   //   } finally {
-  //     loader.style.display = "none";
+  //     loader.style.display = 'none';
   //   }
   // }
+
+  async function fetchData() {
+    try {
+      const response = await fetch(`${BASE_URL}/platforms/all`);
+      return await response.json();
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données :", error);
+      return [];
+    } finally {
+      loader.style.display = "none";
+    }
+  }
 
   // Afficher les données selon la plateforme
   async function displayData() {
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const row = document.createElement("tr");
 
       row.innerHTML = `
-        <td><input type="checkbox" class="dataCheckbox" data-index="${index}" style="margin-right: 0px;"/> ${
+        <td><input type="checkbox" class="dataCheckbox" data-index="${index}"/> ${
         index + 1
       } </td>
         <td>${item.name}</td>
