@@ -131,37 +131,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     dataToShow.forEach((item, index) => {
-      // function expandValue(value) {
-      //   // Vérifier que la valeur est une chaîne
-      //   if (typeof value !== 'string') {
-      //     return null; // Ignorer les valeurs non valides
-      //   }
-      
-      //   // Regex pour détecter les formats valides (chiffres avec K ou M, ou juste un nombre)
-      //   const validFormat = /^(\d+(\.\d+)?)([KM]?)$/;
-      
-      //   const match = value.match(validFormat);
-      //   if (!match) {
-      //     return null; // Ignorer les valeurs non valides
-      //   }
-      
-      //   const num = parseFloat(match[1]); // Récupérer la partie numérique
-      //   const suffix = match[3]; // Récupérer le suffixe (K, M, ou vide)
-      
-      //   if (suffix === 'K') {
-      //     return num * 1000;
-      //   } else if (suffix === 'M') {
-      //     return num * 1000000;
-      //   }
-      //   return num; // Pas de suffixe, retourne le nombre directement
-      // }
+      const followers = item.followers
+      const following = item.following
+      const connection = item.connection
+      const followersValue = followers.replace(/[^\dKM]/g, '');
+      const followingValue = following ? following.replace(/[^\dKM]/g, ''): '';
+      const connectionValue = connection ? connection.replace(/[^\dKM]/g, '') : '';
 
-      // const followers = item.followers;
-      // const following = item.following;
-      // const connection = item.connection;
-      // const followersValue = expandValue(followers);
-      // const followingValue = expandValue(following);
-      // const connectionValue = expandValue(connection);
+      function expandValue(value) {
+        if (value.endsWith('K')) {
+          // Supprime 'K' et multiplie par 1 000
+          return parseFloat(value.replace('K', '')) * 1000;
+        } else if (value.endsWith('M')) {
+          // Supprime 'M' et multiplie par 1 000 000
+          return parseFloat(value.replace('M', '')) * 1000000;
+        }
+        // Retourne la valeur d'origine si aucun suffixe
+        return parseFloat(value);
+      }
+
+      const expandFollowersValue = expandValue(followersValue)
+      const expandFollowingValue = expandValue(followingValue)
+      const expandConnectionValue = expandValue(connectionValue)
+
+
+
+      console.log("following and connection expanded values", expandFollowingValue || expandConnectionValue || 0)
 
       const row = document.createElement("tr");
       row.innerHTML = `
@@ -169,8 +164,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         index + 1
       }</td>
         <td>${item.name}</td>
-        <td>${item.followers}</td>
-        <td>${item.following || item.connection}</td>
+        <td>${expandFollowersValue}</td>
+        <td>${expandFollowingValue || expandConnectionValue || 0}</td>
         <td>${item.plateform}</td>
          <td><a href="${
            item.profileUrl
