@@ -4,88 +4,94 @@ body {
   padding: 15px;
   margin: 0;
   font-family: Arial, sans-serif;
- 
 }
 
-  .head {
-    display: flex; /* Utilise Flexbox pour aligner les éléments sur une ligne */
-    justify-content: space-between; /* Place les éléments aux extrémités */
-    align-items: center; /* Aligne verticalement les éléments */
-  }
-  
-  .left {
-    font-weight: bold;
-  }
-  
-  .right {
-    display: flex; /* Permet d'aligner les "yes yes" sur une ligne */
-    gap: 5px; /* Ajoute un espacement entre les deux "yes yes" */
-    justify-content: flex-end; /* S'assure qu'ils restent alignés à droite */
-  }
+.input:focus {
+  outline: none;
+  box-shadow: none;
+  border-color:gray;
+}
 
-  .center {
-    display: flex;
-  }
+.head {
+  display: flex; /* Utilise Flexbox pour aligner les éléments sur une ligne */
+  justify-content: space-between; /* Place les éléments aux extrémités */
+  align-items: center; /* Aligne verticalement les éléments */
+}
 
-  .header{
-    /* background-color: green; */
-    padding-left: 40px;
-  }
+.left {
+  font-size: 17px;
+  color: #ed7e11;
+  font-weight: bolder;
+}
 
-  .container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
+.right {
+  display: flex; /* Permet d'aligner les "yes yes" sur une ligne */
+  gap: 5px; /* Ajoute un espacement entre les deux "yes yes" */
+  justify-content: flex-end; /* S'assure qu'ils restent alignés à droite */
+}
 
-  button {
-    padding: 0px 0px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.2s;
-  }
+.center {
+  display: flex;
+}
 
-  #scrapeBtn {
-    background-color: #FF673E;
-    color: white;
-  }
+.header {
+  /* background-color: green; */
+  padding-left: 40px;
+}
 
-  .spinner-border {
-    color: #FF6086;
-  }
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 
-  #createList {
-    background-color: green;
-    color: white;
-  }
-  
-  #downloadBtn {
-    display: none;
-    background-color: #2e7d32;
-    color: white;
-  }
-  #status, #savedData /*#status-download*/ { 
-    margin-top: 5px;
-    padding: 10px;
-    border-radius: 4px;
-    background-color: #f5f5f5;
-    text-align: center;
-    font-size: 14px;
-    min-height: 20px;
-    color: #25D366;
-  }
+button {
+  padding: 0px 0px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
 
-  .title {
-    font-size: 16px;
-    font-weight: bold;
-    color: #000000;
-    margin-bottom: 10px;
-    text-align: center;
-  }
+#scrapeBtn {
+  background-color: #ff673e;
+  color: white;
+}
 
-  .buttons {
-    padding-left: 0px;
-  }
+.spinner-border {
+  color: #ff6086;
+}
 
+#createList {
+  background-color: green;
+  color: white;
+}
+
+#downloadBtn {
+  display: none;
+  background-color: #2e7d32;
+  color: white;
+}
+#status, #savedData /*#status-download*/ {
+  margin-top: 5px;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  text-align: center;
+  font-size: 14px;
+  min-height: 20px;
+  color: #25d366;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.buttons {
+  padding-left: 0px;
+}
