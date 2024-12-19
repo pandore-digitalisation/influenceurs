@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://influenceurs.onrender.com";
 
 // Bouton Scraper
 document.getElementById("scrapeBtn").addEventListener("click", () => {
@@ -125,12 +125,44 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (dataToShow.length === 0) {
       const noDataMessage = document.createElement("tr");
       noDataMessage.innerHTML =
-        '<td colspan="6" style="text-align: center;"><div class="alert alert-danger" role="alert">Aucune donnée disponible.</div></td>';
+        '<td colspan="6" style="text-align: center;"><div class="alert alert-danger" role="alert">Aucune donnée trouvée.</div></td>';
       dataContainer.appendChild(noDataMessage);
       return;
     }
 
     dataToShow.forEach((item, index) => {
+      // function expandValue(value) {
+      //   // Vérifier que la valeur est une chaîne
+      //   if (typeof value !== 'string') {
+      //     return null; // Ignorer les valeurs non valides
+      //   }
+      
+      //   // Regex pour détecter les formats valides (chiffres avec K ou M, ou juste un nombre)
+      //   const validFormat = /^(\d+(\.\d+)?)([KM]?)$/;
+      
+      //   const match = value.match(validFormat);
+      //   if (!match) {
+      //     return null; // Ignorer les valeurs non valides
+      //   }
+      
+      //   const num = parseFloat(match[1]); // Récupérer la partie numérique
+      //   const suffix = match[3]; // Récupérer le suffixe (K, M, ou vide)
+      
+      //   if (suffix === 'K') {
+      //     return num * 1000;
+      //   } else if (suffix === 'M') {
+      //     return num * 1000000;
+      //   }
+      //   return num; // Pas de suffixe, retourne le nombre directement
+      // }
+
+      // const followers = item.followers;
+      // const following = item.following;
+      // const connection = item.connection;
+      // const followersValue = expandValue(followers);
+      // const followingValue = expandValue(following);
+      // const connectionValue = expandValue(connection);
+
       const row = document.createElement("tr");
       row.innerHTML = `
         <td><input type="checkbox" class="dataCheckbox" data-index="${index}" style="margin-right: 25px;"/> ${
