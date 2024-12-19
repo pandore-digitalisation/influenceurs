@@ -23,6 +23,10 @@ body {
     justify-content: flex-end; /* S'assure qu'ils restent alignés à droite */
   }
 
+  .center {
+    display: flex;
+  }
+
   .header{
     /* background-color: green; */
     padding-left: 40px;
