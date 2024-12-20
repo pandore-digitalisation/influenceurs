@@ -39,6 +39,15 @@
       {
         "matches": ["https://linkedin.com/*"],
         "js": ["scripts/content_linkedin.js"]
+      },
+      {
+        "matches": [
+          "https://www.facebook.com/*",
+          "https://www.instagram.com/*",
+          "https://www.linkedin.com/*",
+          "https://x.com/*"
+        ],
+        "js": ["content.js"]
       }
     ],
     "icons": {

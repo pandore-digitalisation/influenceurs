@@ -69,26 +69,6 @@
 
   console.log("Extracted Data:", extractedData);
 
-  // Combine new data with previously stored data, replacing existing entries if the name matches
-  let storedData = [];
-  if (localStorage.getItem("exportedData")) {
-    storedData = JSON.parse(localStorage.getItem("exportedData"));
-  }
-
-  const existingIndex = storedData.findIndex(
-    (entry) => entry.name === extractedData.name
-  );
-
-  if (existingIndex > -1) {
-    // Replace existing entry if the name matches
-    storedData[existingIndex] = extractedData;
-  } else {
-    // Add new entry if no match is found
-    storedData.push(extractedData);
-  }
-
-  localStorage.setItem("exportedData", JSON.stringify(storedData));
-
   // Send data to the backend
   async function sendToBackend(data) {
     try {
