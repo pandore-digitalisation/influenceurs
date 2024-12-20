@@ -29,7 +29,7 @@ function detectPlatform() {
       targetElement = getElementByXPath(facebookXPath);
     } else if (platform === "Instagram") {
       const instagramXPath =
-        "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[4]/div/a/span";
+        "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[4]/div";
       targetElement = getElementByXPath(instagramXPath);
     } else if (platform === "X") {
         const xXPatch = "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[3]"
@@ -73,33 +73,35 @@ function detectPlatform() {
     // Ajouter une action au clic
     button.addEventListener("click", () => {
       console.log(`Fetching ${platform} data...`);
+
+      alert(`i am cliked on ${platform}`)
   
-      const pageData = {
-        platform,
-        title: document.title,
-        url: window.location.href,
-        timestamp: new Date().toISOString(),
-      };
+    //   const pageData = {
+    //     platform,
+    //     title: document.title,
+    //     url: window.location.href,
+    //     timestamp: new Date().toISOString(),
+    //   };
   
       // Envoyer les données au backend
-      fetch("http://127.0.0.1:5001/api/collect", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(pageData),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Data sent successfully:", data);
-          alert("Data collected successfully!");
-        })
-        .catch((error) => {
-          console.error("Error sending data:", error);
-          alert("Failed to send data.");
-        });
-    });
-  }
+    //   fetch("http://127.0.0.1:5001/api/collect", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify(pageData),
+    //   })
+    //     .then((response) => response.json())
+    //     .then((data) => {
+    //       console.log("Data sent successfully:", data);
+    //       alert("Data collected successfully!");
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error sending data:", error);
+    //       alert("Failed to send data.");
+    //     });
+    })
+  };
   
   // Fonction pour observer les modifications du DOM
   function observeDOM(platform) {
