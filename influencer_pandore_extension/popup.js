@@ -39,10 +39,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       window.location.reload();
     }, 1000);
   } else {
-    alert("Erreur : Veuillez vous connecter à la plateforme cible.");
-    window.location.reload();
+    alert("Timeout reached, please reload the page and trying again");
+    window.location.href = window.location.href
+    // window.location.reload();
   }
 });
+
+// Écouter les messages d'echec envoyés par le content.js
+// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//   if(message.failed) {
+//     console.log("failed")
+//   }
+// })
+
 
 // Bouton Télécharger CSV
 document.getElementById("downloadBtn").addEventListener("click", () => {
@@ -134,17 +143,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       const followers = item.followers
       const following = item.following
       const connection = item.connection
-      const followersValue = followers.replace(/[^\dKM]/g, '');
-      const followingValue = following ? following.replace(/[^\dKM]/g, ''): '';
-      const connectionValue = connection ? connection.replace(/[^\dKM]/g, '') : '';
+      const followersValue = followers.replace(/[^\dKM.]/g, '');
+      const followingValue = following ? following.replace(/[^\dKM.]/g, ''): '';
+      const connectionValue = connection ? connection.replace(/[^\dKM.]/g, '') : '';
 
       function expandValue(value) {
         if (value.endsWith('K')) {
           // Supprime 'K' et multiplie par 1 000
-          return parseFloat(value.replace('K', '')) * 1000;
+          return parseFloat(value.replace('K', '')) + " 000";
         } else if (value.endsWith('M')) {
           // Supprime 'M' et multiplie par 1 000 000
-          return parseFloat(value.replace('M', '')) * 1000000;
+          return parseFloat(value.replace('M', '')) + " 000 000";
         }
         // Retourne la valeur d'origine si aucun suffixe
         return parseFloat(value);
@@ -156,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 
-      console.log("following and connection expanded values", expandFollowingValue || expandConnectionValue || 0)
+      console.log("followers", expandFollowersValue)
 
       const row = document.createElement("tr");
       row.innerHTML = `

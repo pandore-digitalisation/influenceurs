@@ -16,7 +16,7 @@ async function bootstrap() {
       'https://x.com',
       'chrome-extension://pkahcggjmbhmpgmdhkemgfnblpjidgpa',
     ], // Liste des origines autorisées
-    methods: 'GET,POST', // Méthodes HTTP autorisées
+    methods: 'GET,POST, DELETE, PATCH', // Méthodes HTTP autorisées
     allowedHeaders: 'Content-Type', // En-têtes autorisés
   });
 
