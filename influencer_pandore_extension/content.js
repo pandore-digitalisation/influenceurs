@@ -8,17 +8,48 @@ function detectPlatform() {
     return null; // Autres sites non supportés
   }
   
+  // Fonction pour trouver un élément avec XPath
+  function getElementByXPath(xpath) {
+    return document.evaluate(
+      xpath,
+      document,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    ).singleNodeValue;
+  }
+  
   // Fonction pour injecter un bouton
   function injectButton(platform) {
-    const existingButton = document.getElementById("scrapeBtn");
-    if (existingButton) return; // Éviter d'injecter plusieurs fois
+    let targetElement = null;
   
-    const button = document.createElement("scrapeBtn");
-    button.id = "pandore-btn";
+    if (platform === "Facebook") {
+      const facebookXPath =
+        "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[3]";
+      targetElement = getElementByXPath(facebookXPath);
+    } else if (platform === "Instagram") {
+      const instagramXPath =
+        "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[4]/div/a/span";
+      targetElement = getElementByXPath(instagramXPath);
+    } else if (platform === "X") {
+        const xXPatch = "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[3]"
+        targetElement = getElementByXPath(xXPatch);
+    }else if (platform === "LinkedIn") {
+        const linkedinXPatch = "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/div[2]";
+        targetElement = getElementByXPath(linkedinXPatch);
+    }
+  
+    if (!targetElement) return;
+
+    const scrapeBtn = document.getElementById("scrapeBtn");
+    console.log("scrape btn: ", scrapeBtn)
+  
+    // Éviter d'injecter plusieurs fois
+    if (document.getElementById("get-btn")) return;
+  
+    const button = document.createElement("button");
+    button.id = "get-btn";
     button.textContent = `Get ${platform} Data`;
-    button.style.position = "fixed";
-    button.style.bottom = "20px";
-    button.style.right = "20px";
     button.style.padding = "10px 15px";
     button.style.backgroundColor =
       platform === "X"
@@ -34,15 +65,15 @@ function detectPlatform() {
     button.style.border = "none";
     button.style.borderRadius = "5px";
     button.style.cursor = "pointer";
-    button.style.zIndex = "9999";
+    button.style.marginTop = "10px";
   
-    document.body.appendChild(button);
+    // Ajouter le bouton au bon endroit
+    targetElement.appendChild(button);
   
     // Ajouter une action au clic
     button.addEventListener("click", () => {
       console.log(`Fetching ${platform} data...`);
   
-      // Collecter des données spécifiques à la plateforme
       const pageData = {
         platform,
         title: document.title,
@@ -70,12 +101,110 @@ function detectPlatform() {
     });
   }
   
+  // Fonction pour observer les modifications du DOM
+  function observeDOM(platform) {
+    const observer = new MutationObserver(() => {
+      injectButton(platform);
+    });
+  
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  
+    // Injecter initialement
+    injectButton(platform);
+  }
+  
   // Exécution principale
   const platform = detectPlatform();
   if (platform) {
     if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", () => injectButton(platform));
+      document.addEventListener("DOMContentLoaded", () => observeDOM(platform));
     } else {
-      injectButton(platform);
+      observeDOM(platform);
     }
   }  
+  
+
+// // Fonction pour détecter la plateforme actuelle
+// function detectPlatform() {
+//     const url = window.location.href;
+//     if (url.includes("x.com")) return "X";
+//     if (url.includes("instagram.com")) return "Instagram";
+//     if (url.includes("facebook.com")) return "Facebook";
+//     if (url.includes("linkedin.com")) return "LinkedIn";
+//     return null; // Autres sites non supportés
+//   }
+  
+//   // Fonction pour injecter un bouton
+//   function injectButton(platform) {
+//     const existingButton = document.getElementById("scrapeBtn");
+//     if (existingButton) return; // Éviter d'injecter plusieurs fois
+  
+//     const button = document.createElement("scrapeBtn");
+//     button.id = "pandore-btn";
+//     button.textContent = `Get ${platform} Data`;
+//     button.style.position = "fixed";
+//     button.style.bottom = "20px";
+//     button.style.right = "20px";
+//     button.style.padding = "10px 15px";
+//     button.style.backgroundColor =
+//       platform === "X"
+//         ? "#1da1f2"
+//         : platform === "Instagram"
+//         ? "#E1306C"
+//         : platform === "Facebook"
+//         ? "#1877F2"
+//         : platform === "LinkedIn"
+//         ? "#0077B5"
+//         : "#000";
+//     button.style.color = "#fff";
+//     button.style.border = "none";
+//     button.style.borderRadius = "5px";
+//     button.style.cursor = "pointer";
+//     button.style.zIndex = "9999";
+  
+//     document.body.appendChild(button);
+  
+//     // Ajouter une action au clic
+//     button.addEventListener("click", () => {
+//       console.log(`Fetching ${platform} data...`);
+  
+//       // Collecter des données spécifiques à la plateforme
+//       const pageData = {
+//         platform,
+//         title: document.title,
+//         url: window.location.href,
+//         timestamp: new Date().toISOString(),
+//       };
+  
+//       // Envoyer les données au backend
+//       fetch("http://127.0.0.1:5001/api/collect", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(pageData),
+//       })
+//         .then((response) => response.json())
+//         .then((data) => {
+//           console.log("Data sent successfully:", data);
+//           alert("Data collected successfully!");
+//         })
+//         .catch((error) => {
+//           console.error("Error sending data:", error);
+//           alert("Failed to send data.");
+//         });
+//     });
+//   }
+  
+//   // Exécution principale
+//   const platform = detectPlatform();
+//   if (platform) {
+//     if (document.readyState === "loading") {
+//       document.addEventListener("DOMContentLoaded", () => injectButton(platform));
+//     } else {
+//       injectButton(platform);
+//     }
+//   }  

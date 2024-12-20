@@ -143,9 +143,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       const followers = item.followers
       const following = item.following
       const connection = item.connection
-      const followersValue = followers.replace(/[^\dKM.]/g, '');
-      const followingValue = following ? following.replace(/[^\dKM.]/g, ''): '';
-      const connectionValue = connection ? connection.replace(/[^\dKM.]/g, '') : '';
+      const followersValue = followers.replace(/[^\dKM.+]/g, '');
+      const followingValue = following ? following.replace(/[^\dKM.+]/g, ''): '';
+      const connectionValue = connection ? connection.replace(/[^\dKM.+]/g, '') : '';
 
       function expandValue(value) {
         if (value.endsWith('K')) {
