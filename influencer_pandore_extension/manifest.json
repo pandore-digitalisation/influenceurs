@@ -3,7 +3,7 @@
     "name": "Pandore Influencer",
     "version": "1.0",
     "description": "Get X, Instagram, Facebook, Linkedin page data and export in csv format",
-    "permissions": ["activeTab", "scripting", "storage"],
+    "permissions": ["activeTab", "scripting", "storage", "tabs"],
     "host_permissions": [
       "https://x.com/*",
       "https://instagram.com/*",
@@ -13,7 +13,7 @@
       "https://influenceurs.onrender.com/*"
     ],
     "background": {
-      "service_worker": "scripts/background.js"
+      "service_worker": "background.js"
     },
     "action": {
       "default_popup": "popup.html",
@@ -50,6 +50,17 @@
         "js": ["content.js"]
       }
     ],
+    "web_accessible_resources": [
+    {
+      "resources": ["scripts/content_facebook.js"],
+      "matches": [
+        "https://www.facebook.com/*",
+        "https://www.instagram.com/*",
+        "https://www.linkedin.com/*",
+        "https://x.com/*"
+      ]
+    }
+  ],
     "icons": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
