@@ -10,8 +10,7 @@
       "https://facebook.com/*",
       "https://linkedin.com/*",
       "http://127.0.0.1:5001/*",
-      "https://influenceurs.onrender.com/*",
-      "https://www.facebook.com/outkast/*"
+      "https://influenceurs.onrender.com/*"
     ],
     "background": {
       "service_worker": "background.js"
