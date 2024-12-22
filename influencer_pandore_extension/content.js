@@ -87,29 +87,18 @@ function injectButton(platform) {
     // Modifier le texte du bouton pendant l'exécution
     button.textContent = "Getting...";
   });
-
-  //   // Ajouter une action au clic
-  //   document.getElementById("getData").addEventListener("click", () => {
-  //     console.log(`Fetching ${platform} data...`);
-
-  //     chrome.tabs.query({ active: true, currentWinndow: true }, (tabs) => {
-  //       let pageScriptFile;
-
-  //       if (platform == "FAcebook") {
-  //         pageScriptFile = "scripts/content_facebook.js";
-  //         alert("facebook")
-  //       }
-
-  //       // Injecter et exécuter le script correspondant
-  //       chrome.scripting.executeScript({
-  //         target: { tabId: tabs[0].id },
-  //         files: [pageScriptFile],
-  //       });
-  //     });
-
-  //     button.textContent = "Getting...";
-  //   });
 }
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "scriptInjected") {
+    alert(`Data for ${message.platform} getted successfully!`);
+    window.location.reload();
+
+  } else if (message.action === "scriptInjetedFailed") {
+    alert("Data not ready to scrape, Please reload the page and trying again")
+    window.location.reload();
+  }
+});
 
 // Fonction pour observer les modifications du DOM
 function observeDOM(platform) {

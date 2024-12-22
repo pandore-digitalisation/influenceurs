@@ -130,7 +130,7 @@
   // Communiquez l'état au popup.js
   chrome.runtime.sendMessage({ success });
 
-  const pageButton = document.getElementById("scrapeBtn");
+  // const pageButton = document.getElementById("scrapeBtn");
 
-  document.body.appendChild(pageButton);
+  // document.body.appendChild(pageButton);
 })();
