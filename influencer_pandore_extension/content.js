@@ -44,7 +44,7 @@ function injectButton(platform) {
   if (!targetElement) return;
 
   const scrapeBtn = document.getElementById("getData");
-//   console.log("scrape btn: ", scrapeBtn);
+  //   console.log("scrape btn: ", scrapeBtn);
 
   // Éviter d'injecter plusieurs fois
   if (document.getElementById("getData")) return;
@@ -68,6 +68,33 @@ function injectButton(platform) {
   button.style.borderRadius = "5px";
   button.style.cursor = "pointer";
   button.style.marginTop = "10px";
+
+  // Ajouter les styles hover
+  button.addEventListener("mouseenter", () => {
+    button.style.backgroundColor =
+      platform === "X"
+        ? "#1a91da" // Couleur plus sombre pour X
+        : platform === "Instagram"
+        ? "#c82357" // Couleur plus sombre pour Instagram
+        : platform === "Facebook"
+        ? "#155cbd" // Couleur plus sombre pour Facebook
+        : platform === "LinkedIn"
+        ? "#005f8e" // Couleur plus sombre pour LinkedIn
+        : "#333"; // Couleur plus sombre par défaut
+  });
+
+  button.addEventListener("mouseleave", () => {
+    button.style.backgroundColor =
+      platform === "X"
+        ? "#1da1f2"
+        : platform === "Instagram"
+        ? "#E1306C"
+        : platform === "Facebook"
+        ? "#1877F2"
+        : platform === "LinkedIn"
+        ? "#0077B5"
+        : "#000";
+  });
 
   // Ajouter le bouton au bon endroit
   targetElement.appendChild(button);
@@ -93,9 +120,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "scriptInjected") {
     alert(`Data for ${message.platform} getted successfully!`);
     window.location.reload();
-
   } else if (message.action === "scriptInjetedFailed") {
-    alert("Data not ready to scrape, Please reload the page and trying again")
+    alert("Data not ready to scrape, Please reload the page and trying again");
     window.location.reload();
   }
 });

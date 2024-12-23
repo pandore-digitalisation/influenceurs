@@ -55,8 +55,16 @@ button {
 }
 
 #scrapeBtn {
-  background-color: #ff673e;
+  background-color: #ff683e;
   color: white;
+}
+
+#exportCsvBtn:hover {
+  background-color: #0000CC;
+}
+
+#scrapeBtn:hover {
+  background-color: #cc5432;
 }
 
 .spinner-border {
@@ -66,6 +74,10 @@ button {
 #createList {
   background-color: green;
   color: white;
+}
+
+#createList:hover {
+  background-color: #006600;
 }
 
 #downloadBtn {
