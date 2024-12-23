@@ -36,6 +36,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
               platform: message.platform,
             });
             sendResponse({ message: "Script injected successfully" });
+            console.log("success")
           }
         }
       );
