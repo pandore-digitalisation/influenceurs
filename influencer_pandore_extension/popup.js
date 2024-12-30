@@ -311,152 +311,26 @@ document.addEventListener("DOMContentLoaded", async () => {
   platformSelect.addEventListener("change", updateFilters);
 });
 
-// // Gestion des données pour chaque plateforme
-// document.addEventListener("DOMContentLoaded", async () => {
-//   const dataContainer = document
-//     .getElementById("dataTable")
-//     .querySelector("tbody");
-//   const exportButton = document.getElementById("exportCsvBtn");
-//   const loader = document.getElementById("loader");
-//   const selectAllCheckbox = document.getElementById("selectAll");
+// Login
+document.getElementById("loginBtn").addEventListener("click", () => {
+  alert("ok");
 
-//   let data = [];
+  const backendUrl = "https://influenceurs.onrender.com/auth/google";
 
-//   // Afficher le loader
-//   loader.style.display = "block";
+  chrome.tabs.create({url: backendUrl}, (tab) => {
+    chrome.runtime.onMessage.addEventListener((message, sender, sendResponse) => {
+      if(message.type == "authSeucess") {
+        const token = message.token;
+        console.log("JWT reçu:", token);
 
-//   async function fetchData() {
-//     try {
-//       const response = await fetch(`${BASE_URL}/platforms/all`);
-//       return await response.json();
-//     } catch (error) {
-//       console.error("Erreur lors de la récupération des données :", error);
-//       return [];
-//     } finally {
-//       loader.style.display = "none";
-//     }
-//   }
+        chrome.storage.local.self({jwt: token}, () => {
+          console.log("JWT: saved");
+          document.getElementById("authStatus").innerText = "Loged successfully!";
+        });
 
-//   // Afficher les données selon la plateforme
-//   async function displayData() {
-//     data = await fetchData();
-//     console.log(`Data log:`, data);
+        sendResponse( {success: true} );
+      }
+    })
+  })
 
-//     if (data.length === 0) {
-//       const noDataMessage = document.createElement("tr");
-//       noDataMessage.innerHTML =
-//         '<td colspan="6" style="text-align: center;"><div class="alert alert-danger" role="alert">Aucune donnée disponible.</div></td>';
-//       dataContainer.appendChild(noDataMessage);
-//       return;
-//     }
-
-//     data.forEach((item, index) => {
-//       const row = document.createElement("tr");
-
-//       row.innerHTML = `
-//         <td><input type="checkbox" class="dataCheckbox" data-index="${index}" style="margin-right: 25px;"/> ${
-//         index + 1
-//       } </td>
-//         <td>${item.name}</td>
-//         <td>${item.followers}</td>
-//         <td>${item.following || item.connection}</td>
-//         <td>${item.plateform}</td>
-//          <td><a href="${
-//            item.profileUrl
-//          }" target="_blank" ><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-//         <g clip-path="url(#clip0_2104_123)">
-//           <path d="M21.3995 2.59791L21.3995 7.79435M21.3995 2.59791H16.2031M21.3995 2.59791L17.2856 6.71176L15.2287 8.76868L13.1718 10.8256" stroke="url(#paint0_linear_2104_123)" stroke-width="1.5" stroke-linecap="round"/>
-//           <path d="M12.7067 5H9.29333C6.72873 5 5.44642 5 4.534 5.63061C4.1808 5.87473 3.87473 6.1808 3.63061 6.534C3 7.44642 3 8.72873 3 11.2933V14.7067C3 17.2713 3 18.5536 3.63061 19.466C3.87473 19.8192 4.1808 20.1253 4.534 20.3694C5.44642 21 6.72873 21 9.29333 21H12.7067C15.2713 21 16.5536 21 17.466 20.3694C17.8192 20.1253 18.1253 19.8192 18.3694 19.466C19 18.5536 19 17.2713 19 14.7067V11.2933" stroke="url(#paint1_linear_2104_123)" stroke-width="1.5" stroke-linecap="round"/>
-//         </g>
-//         <defs>
-//           <linearGradient id="paint0_linear_2104_123" x1="12.4371" y1="0.815925" x2="22.0399" y2="8.83541" gradientUnits="userSpaceOnUse">
-//             <stop offset="0.175" stop-color="#7739DC"/>
-//             <stop offset="0.605" stop-color="#FF6086"/>
-//           </linearGradient>
-//           <linearGradient id="paint1_linear_2104_123" x1="12.0183" y1="29.5411" x2="15.8317" y2="2.73485" gradientUnits="userSpaceOnUse">
-//             <stop offset="0.175" stop-color="#7739DC"/>
-//             <stop offset="0.605" stop-color="#FF6086"/>
-//           </linearGradient>
-//           <clipPath id="clip0_2104_123">
-//             <rect width="24" height="24" fill="white"/>
-//           </clipPath>
-//         </defs>
-//       </svg></a></td>
-//       `;
-//       dataContainer.appendChild(row);
-//     });
-
-//     document.querySelectorAll(".dataCheckbox").forEach((checkbox) => {
-//       checkbox.addEventListener("change", handleSelectionChange);
-//     });
-
-//     selectAllCheckbox.addEventListener("change", handleSelectAll);
-//   }
-
-//   function handleSelectAll() {
-//     const isChecked = selectAllCheckbox.checked;
-//     const checkboxes = document.querySelectorAll(".dataCheckbox");
-//     checkboxes.forEach((checkbox) => {
-//       checkbox.checked = isChecked;
-//     });
-//     updateExportButtonState();
-//   }
-
-//   function handleSelectionChange() {
-//     const checkboxes = document.querySelectorAll(".dataCheckbox");
-//     const allChecked = Array.from(checkboxes).every(
-//       (checkbox) => checkbox.checked
-//     );
-//     selectAllCheckbox.checked = allChecked;
-//     updateExportButtonState();
-//   }
-
-//   function updateExportButtonState() {
-//     const selected =
-//       document.querySelectorAll(".dataCheckbox:checked").length > 0;
-//     exportButton.disabled = !selected;
-//   }
-
-//   // Exporter les données sélectionnées en CSV
-//   function exportToCsv() {
-//     const selectedRows = [];
-//     const checkboxes = document.querySelectorAll(".dataCheckbox:checked");
-
-//     checkboxes.forEach((checkbox) => {
-//       const rowIndex = checkbox.getAttribute("data-index");
-//       selectedRows.push(data[rowIndex]);
-//     });
-
-//     // Générer le CSV
-//     // const headers = Object.keys(selectedRows[0]);
-//     const headers = Object.keys(selectedRows[0]).filter(
-//       (key) => key !== "_id" && key !== "__v" && key !== "profileImage"
-//     );
-//     const csvContent =
-//       headers.join(",") +
-//       "\n" +
-//       selectedRows
-//         .map((row) =>
-//           headers
-//             .map((header) => `"${(row[header] || "").replace(/"/g, '""')}"`)
-//             .join(",")
-//         )
-//         .join("\n");
-
-//     // Créer un blob pour téléchargement
-//     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-//     const url = URL.createObjectURL(blob);
-//     const link = document.createElement("a");
-//     link.setAttribute("href", url);
-//     link.setAttribute("download", "selected_data.csv");
-//     link.style.visibility = "hidden";
-//     document.body.appendChild(link);
-//     link.click();
-//     document.body.removeChild(link);
-//   }
-
-//   // Activer l'exportation des données
-//   exportButton.addEventListener("click", () => exportToCsv(data));
-
-//   await displayData();
-// });
+})

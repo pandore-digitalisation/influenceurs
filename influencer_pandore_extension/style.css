@@ -1,9 +1,12 @@
 body {
   max-width: 100%;
   width: 800px;
-  padding: 15px;
   margin: 0;
   font-family: Arial, sans-serif;
+}
+
+section {
+  padding: 15px;
 }
 
 .input:focus {
@@ -25,9 +28,9 @@ body {
 }
 
 .right {
-  display: flex; /* Permet d'aligner les "yes yes" sur une ligne */
-  gap: 5px; /* Ajoute un espacement entre les deux "yes yes" */
-  justify-content: flex-end; /* S'assure qu'ils restent alignés à droite */
+  display: flex;
+  gap: 5px;
+  justify-content: flex-end;
 }
 
 .center {
@@ -96,6 +99,11 @@ button {
   color: #25d366;
 }
 
+#authStatus {
+  text-align: center;
+  color: #25d366;
+}
+
 .title {
   font-size: 16px;
   font-weight: bold;
@@ -106,4 +114,15 @@ button {
 
 .buttons {
   padding-left: 0px;
+}
+
+.auth {
+  justify-content: flex-end;
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.version {
+  justify-content: flex-end;
+  display: flex;
 }

@@ -8,6 +8,7 @@ import { FacebookModule } from './facebook/facebook.module';
 import { LinkedinModule } from './linkedin/linkedin.module';
 import { XModule } from './x/x.module';
 import { AllModule } from './all/all.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AllModule } from './all/all.module';
     LinkedinModule,
     XModule,
     AllModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
