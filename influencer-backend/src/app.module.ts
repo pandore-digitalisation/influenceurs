@@ -9,6 +9,7 @@ import { LinkedinModule } from './linkedin/linkedin.module';
 import { XModule } from './x/x.module';
 import { AllModule } from './all/all.module';
 import { AuthModule } from './auth/auth.module';
+import { TiktokModule } from './tiktok/tiktok.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
     XModule,
     AllModule,
     AuthModule,
+    TiktokModule,
   ],
   controllers: [AppController],
   providers: [AppService],

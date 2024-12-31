@@ -102,7 +102,7 @@
   // Send data to the backend
   async function sendToBackend(data) {
     try {
-      const response = await fetch(`${BASE_URL}/linkedin`, {
+      const response = await fetch(`${BASE_URL}/tiktok`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
