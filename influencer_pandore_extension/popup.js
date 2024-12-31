@@ -15,6 +15,8 @@ document.getElementById("scrapeBtn").addEventListener("click", () => {
       scriptFile = "scripts/content_facebook.js";
     } else if (url.hostname.includes("linkedin.com")) {
       scriptFile = "scripts/content_linkedin.js";
+    } else if(url.hostname.includes("tiktok.com")) {
+      scriptFile = "scripts/content_tiktok.js";
     } else {
       alert("This platform is not supported.");
       window.location.reload();

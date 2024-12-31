@@ -15,6 +15,7 @@ async function bootstrap() {
       'chrome-extension://mmbnkjbihbociakkafncmhkffhniaiff',
       'https://x.com',
       'chrome-extension://pkahcggjmbhmpgmdhkemgfnblpjidgpa',
+      'https://tiktok.com',
     ], // Liste des origines autorisées
     methods: 'GET,POST, DELETE, PATCH', // Méthodes HTTP autorisées
     allowedHeaders: 'Content-Type', // En-têtes autorisés

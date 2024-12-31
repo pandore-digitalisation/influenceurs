@@ -46,8 +46,6 @@
     descriptionElements.length > 0
       ? descriptionElements[0].textContent.trim()
       : "None";
-  const location =
-    locationElements.length > 0 ? locationElements[0].textContent.trim() : "0";
   const followers =
     followersElements.length > 0
       ? followersElements[0].textContent.trim()

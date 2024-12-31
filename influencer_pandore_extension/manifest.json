@@ -2,13 +2,14 @@
     "manifest_version": 3,
     "name": "Pandore Influencer",
     "version": "1.0",
-    "description": "Get X, Instagram, Facebook, Linkedin page data and export in csv format",
+    "description": "Get X, Instagram, Facebook, Linkedin, Tiktok page data and export in csv format",
     "permissions": ["activeTab", "scripting", "storage", "tabs"],
     "host_permissions": [
       "https://x.com/*",
       "https://instagram.com/*",
       "https://facebook.com/*",
       "https://linkedin.com/*",
+      "https://tiktok.com/*",
       "http://127.0.0.1:5001/*",
       "https://influenceurs.onrender.com/*"
     ],
@@ -41,11 +42,17 @@
         "js": ["scripts/content_linkedin.js"]
       },
       {
+        "matches": ["https://tiktok.com/*"],
+        "js": ["scripts/content_tiktok.js"]
+      },
+      {
         "matches": [
           "https://www.facebook.com/*",
           "https://www.instagram.com/*",
           "https://www.linkedin.com/*",
-          "https://x.com/*"
+          "https://x.com/*",
+          "https://tiktok.com/*"
+
         ],
         "js": ["content.js"]
       }
@@ -57,7 +64,9 @@
         "https://www.facebook.com/*",
         "https://www.instagram.com/*",
         "https://www.linkedin.com/*",
-        "https://x.com/*"
+        "https://x.com/*",
+        "https://tiktok.com/*"
+
       ]
     }
   ],
