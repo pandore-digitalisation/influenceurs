@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         index + 1
       }</td>
         <td>${item.name}</td>
-        <td>${expandFollowersValue}</td>
+        <td>${expandFollowersValue || 0}</td>
         <td>${expandFollowingValue || expandConnectionValue || 0}</td>
         <td>${item.plateform}</td>
          <td><a href="${
