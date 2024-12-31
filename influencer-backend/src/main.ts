@@ -13,9 +13,9 @@ async function bootstrap() {
       'chrome-extension://poojmfapemijoppakejdkcpjgefmldgb',
       'https://www.linkedin.com',
       'chrome-extension://mmbnkjbihbociakkafncmhkffhniaiff',
-      'https://x.com',
+      'https://www.x.com',
       'chrome-extension://pkahcggjmbhmpgmdhkemgfnblpjidgpa',
-      'https://tiktok.com',
+      'https://www.tiktok.com',
     ], // Liste des origines autorisées
     methods: 'GET,POST, DELETE, PATCH', // Méthodes HTTP autorisées
     allowedHeaders: 'Content-Type', // En-têtes autorisés
