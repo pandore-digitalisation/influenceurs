@@ -3,6 +3,7 @@ import { XService } from '../x/x.service';
 import { InstagramService } from '../instagram/instagram.service';
 import { FacebookService } from '../facebook/facebook.service';
 import { LinkedinService } from '../linkedin/linkedin.service';
+import { TiktokService } from 'src/tiktok/tiktok.service';
 
 @Injectable()
 export class AllService {
@@ -11,6 +12,7 @@ export class AllService {
     private readonly instagramService: InstagramService,
     private readonly facebookService: FacebookService,
     private readonly linkedInService: LinkedinService,
+    private readonly tiktokService: TiktokService,
   ) {}
 
   async getAllPlatformData() {
@@ -18,8 +20,15 @@ export class AllService {
     const instagramData = await this.instagramService.findAll();
     const facebookData = await this.facebookService.findAll();
     const linkedInData = await this.linkedInService.findAll();
+    const tiktokData = await this.tiktokService.findAll();
 
-    return [...xData, ...instagramData, ...facebookData, ...linkedInData];
+    return [
+      ...xData,
+      ...instagramData,
+      ...facebookData,
+      ...linkedInData,
+      ...tiktokData,
+    ];
   }
 }
 

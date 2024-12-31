@@ -5,9 +5,16 @@ import { XModule } from '../x/x.module';
 import { InstagramModule } from '../instagram/instagram.module';
 import { FacebookModule } from '../facebook/facebook.module';
 import { LinkedinModule } from '../linkedin/linkedin.module';
+import { TiktokModule } from 'src/tiktok/tiktok.module';
 
 @Module({
-  imports: [XModule, InstagramModule, FacebookModule, LinkedinModule], // Importer les modules nécessaires
+  imports: [
+    XModule,
+    InstagramModule,
+    FacebookModule,
+    LinkedinModule,
+    TiktokModule,
+  ], // Importer les modules nécessaires
   controllers: [AllController],
   providers: [AllService],
 })
