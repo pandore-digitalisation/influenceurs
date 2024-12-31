@@ -5,7 +5,9 @@ function detectPlatform() {
   if (url.includes("instagram.com")) return "Instagram";
   if (url.includes("facebook.com")) return "Facebook";
   if (url.includes("linkedin.com")) return "LinkedIn";
-  return null; // Autres sites non supportés
+  if (url.includes("tiktok.com")) return "TikTok";
+
+  return null;
 }
 
 // Fonction pour trouver un élément avec XPath
@@ -40,9 +42,17 @@ function injectButton(platform) {
     const linkedinXPatch =
       "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/div[2]";
     targetElement = getElementByXPath(linkedinXPatch);
+  } else if (platform === "TikTok") {
+    const tiktokXPatch =
+      "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/div";
+    targetElement = getElementByXPath(tiktokXPatch);
   }
 
-  if (!targetElement) return;
+  if (!targetElement) {
+    console.error(`Target element not found for ${platform}`);
+  } else {
+    console.log(`Target element found for ${platform}:`, targetElement);
+  }
 
   // const scrapeBtn = document.getElementById("getData");
   //   console.log("scrape btn: ", scrapeBtn);
@@ -51,6 +61,7 @@ function injectButton(platform) {
   if (document.getElementById("getData")) return;
 
   const button = document.createElement("button");
+
   button.id = "getData";
   button.textContent = `Get ${platform} Data`;
   button.style.padding = "10px 15px";
@@ -63,6 +74,8 @@ function injectButton(platform) {
       ? "#1877F2"
       : platform === "LinkedIn"
       ? "#0077B5"
+      : platform === "TikTok"
+      ? "#1877F2"
       : "#000";
   button.style.color = "#fff";
   button.style.border = "none";
@@ -88,6 +101,8 @@ function injectButton(platform) {
         : platform === "Facebook"
         ? "#155cbd" // Couleur plus sombre pour Facebook
         : platform === "LinkedIn"
+        ? "#005f8e"
+        : platform === "TikTok"
         ? "#005f8e" // Couleur plus sombre pour LinkedIn
         : "#333"; // Couleur plus sombre par défaut
   });
@@ -102,11 +117,15 @@ function injectButton(platform) {
         ? "#1877F2"
         : platform === "LinkedIn"
         ? "#0077B5"
+        : platform === "TikTok"
+        ? "#005f8e"
         : "#000";
   });
 
   // Ajouter le bouton au bon endroit
   targetElement.appendChild(button);
+
+  console.log("btn", button);
 
   // Ajouter une action au clic
   button.addEventListener("click", () => {
@@ -160,6 +179,7 @@ if (platform) {
   }
 }
 
+console.log("platform", platform);
 
 // // Fonction pour détecter la plateforme actuelle
 // function detectPlatform() {
@@ -310,8 +330,6 @@ if (platform) {
 //     observeDOM(platform);
 //   }
 // }
-
-
 
 // // Fonction pour détecter la plateforme actuelle
 // function detectPlatform() {

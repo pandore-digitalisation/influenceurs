@@ -1,6 +1,6 @@
 // Ajout d'un écouteur pour les messages venant du content script
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'fetchData') {
+  if (message.action === "fetchData") {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       let pageScriptFile;
 
@@ -13,6 +13,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         pageScriptFile = "scripts/content_x.js";
       } else if (message.platform === "LinkedIn") {
         pageScriptFile = "scripts/content_linkedin.js";
+      } else if (message.platform === "TikTok") {
+        pageScriptFile = "scripts/content_tiktok.js";
       }
 
       // Injecter le script correspondant
@@ -25,8 +27,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
           // Vérifier les erreurs potentielles
           if (chrome.runtime.lastError) {
             chrome.tabs.sendMessage(tabs[0].id, {
-              action: "scriptInjetedFailed"
-            })
+              action: "scriptInjetedFailed",
+            });
             console.error(chrome.runtime.lastError.message);
             sendResponse({ message: "Script injection failed" });
           } else {
@@ -36,7 +38,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
               platform: message.platform,
             });
             sendResponse({ message: "Script injected successfully" });
-            console.log("success")
+            console.log("success");
           }
         }
       );
@@ -44,7 +46,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true; // Indique que la réponse sera envoyée de manière asynchrone
   }
 });
-
 
 // // Ajout d'un écouteur pour les messages venant du content script
 // chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
