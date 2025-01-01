@@ -44,7 +44,7 @@ function injectButton(platform) {
     targetElement = getElementByXPath(linkedinXPatch);
   } else if (platform === "TikTok") {
     const tiktokXPatch =
-      "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/div";
+      "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]";
     targetElement = getElementByXPath(tiktokXPatch);
   }
 
@@ -75,8 +75,12 @@ function injectButton(platform) {
       : platform === "LinkedIn"
       ? "#0077B5"
       : platform === "TikTok"
-      ? "#1877F2"
+      ? "#FE2C55"
       : "#000";
+  button.style.width = 
+    platform === "TikTok"
+      ? "150px"
+      : ""
   button.style.color = "#fff";
   button.style.border = "none";
   button.style.borderRadius = "5px";
@@ -103,7 +107,7 @@ function injectButton(platform) {
         : platform === "LinkedIn"
         ? "#005f8e"
         : platform === "TikTok"
-        ? "#005f8e" // Couleur plus sombre pour LinkedIn
+        ? "#EA284E" // Couleur plus sombre pour LinkedIn
         : "#333"; // Couleur plus sombre par défaut
   });
 
@@ -118,7 +122,7 @@ function injectButton(platform) {
         : platform === "LinkedIn"
         ? "#0077B5"
         : platform === "TikTok"
-        ? "#005f8e"
+        ? "#FE2C55"
         : "#000";
   });
 
