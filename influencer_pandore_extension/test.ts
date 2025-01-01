@@ -21,4 +21,17 @@
 //       });
 //     });
 //   });
+
+ // function expandValue(value) {
+      //   if (value.endsWith('K')) {
+      //     // Supprime 'K' et multiplie par 1 000
+      //     return parseFloat(value.replace('K', '')) + " 000";
+      //   } else if (value.endsWith('M')) {
+      //     // Supprime 'M' et multiplie par 1 000 000
+      //     return parseFloat(value.replace('M', '')) + " 000 000";
+      //   }
+      //   // Retourne la valeur d'origine si aucun suffixe
+      //   return parseFloat(value);
+      // }
+
   
