@@ -44,7 +44,7 @@ function injectButton(platform) {
     targetElement = getElementByXPath(linkedinXPatch);
   } else if (platform === "TikTok") {
     const tiktokXPatch =
-      "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]";
+      "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h2";
     targetElement = getElementByXPath(tiktokXPatch);
   }
 
@@ -81,6 +81,7 @@ function injectButton(platform) {
     platform === "TikTok"
       ? "150px"
       : ""
+  button.style.display = "block"
   button.style.color = "#fff";
   button.style.border = "none";
   button.style.borderRadius = "5px";
