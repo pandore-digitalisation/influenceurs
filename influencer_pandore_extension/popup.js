@@ -317,7 +317,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 document.getElementById("loginBtn").addEventListener("click", () => {
   alert("ok");
 
-  const backendUrl = "https://influenceurs.onrender.com/auth/google";
+  const backendUrl = "http://localhost:3000/auth/google";
 
   chrome.tabs.create({url: backendUrl}, (tab) => {
     chrome.runtime.onMessage.addEventListener((message, sender, sendResponse) => {

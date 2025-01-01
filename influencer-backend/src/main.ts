@@ -13,7 +13,7 @@ async function bootstrap() {
       'chrome-extension://poojmfapemijoppakejdkcpjgefmldgb',
       'https://www.linkedin.com',
       'chrome-extension://mmbnkjbihbociakkafncmhkffhniaiff',
-      'https://www.x.com',
+      'https://x.com',
       'chrome-extension://pkahcggjmbhmpgmdhkemgfnblpjidgpa',
       'https://www.tiktok.com',
     ], // Liste des origines autorisées

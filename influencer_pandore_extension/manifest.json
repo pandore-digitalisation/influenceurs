@@ -10,8 +10,8 @@
       "https://facebook.com/*",
       "https://linkedin.com/*",
       "https://www.tiktok.com/*",
-      "http://127.0.0.1:5001/*",
-      "https://influenceurs.onrender.com/*"
+      "https://influenceurs.onrender.com/*",
+      "http://127.0.0.1:5001/*"
     ],
     "background": {
       "service_worker": "background.js"
