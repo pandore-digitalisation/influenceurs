@@ -61,3 +61,39 @@
 //     res.redirect(`http://localhost:3001/dashboard?token=${token}`);
 //   }
 // }
+
+
+// import React from 'react';
+
+// const LoginPage = () => {
+//   const handleGoogleLogin = () => {
+//     window.location.href = "http://localhost:3001/auth/google"; // Redirige vers le backend NestJS
+//   };
+
+//   return (
+//     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+//       <h1>Connexion</h1>
+//       <button onClick={handleGoogleLogin} style={{ padding: '10px 20px', fontSize: '16px' }}>
+//         Se connecter avec Google
+//       </button>
+//     </div>
+//   );
+// };
+
+// export default LoginPage;
+
+
+// @Get('google/callback')
+// @UseGuards(AuthGuard('google'))
+// async googleAuthCallback(@Req() req, @Res() res) {
+//   // Récupère les informations utilisateur
+//   const user = req.user;
+
+//   // Stocke les informations utilisateur en base de données
+//   const savedUser = await this.authService.saveUser(user);
+
+//   // Redirige vers le tableau de bord avec un token
+//   const dashboardUrl = `http://localhost:3000/dashboard?token=${savedUser.token}`;
+//   return res.redirect(dashboardUrl);
+// }
+

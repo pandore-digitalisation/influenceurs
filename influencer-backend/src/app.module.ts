@@ -10,9 +10,13 @@ import { XModule } from './x/x.module';
 import { AllModule } from './all/all.module';
 import { AuthModule } from './auth/auth.module';
 import { TiktokModule } from './tiktok/tiktok.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     MongooseModule.forRoot(
       'mongodb+srv://aces:EM953DmWGzFuPU0c@cluster0.v6z3v.mongodb.net/', // Cluster URL
     ),

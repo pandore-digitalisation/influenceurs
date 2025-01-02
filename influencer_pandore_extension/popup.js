@@ -102,13 +102,14 @@ function downloadCSV() {
   }
 }
 
-
 // Search functions
 document.addEventListener("DOMContentLoaded", async () => {
   const searchInput = document.getElementById("searchInput");
   const platformSelect = document.getElementById("platformSelect");
-  const dataContainer = document.getElementById("dataTable").querySelector("tbody");
-    
+  const dataContainer = document
+    .getElementById("dataTable")
+    .querySelector("tbody");
+
   const loader = document.getElementById("loader");
   const exportButton = document.getElementById("exportCsvBtn");
   const selectAllCheckbox = document.getElementById("selectAll");
@@ -311,26 +312,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // Login
+
 document.getElementById("loginBtn").addEventListener("click", () => {
-
-  const backendUrl = "http://localhost:3001/login";
-
-  chrome.tabs.create({ url: backendUrl }, (tab) => {
-    chrome.runtime.onMessage.addEventListener(
-      (message, sender, sendResponse) => {
-        if (message.type == "authSeucess") {
-          const token = message.token;
-          console.log("JWT reçu:", token);
-
-          chrome.storage.local.self({ jwt: token }, () => {
-            console.log("JWT: saved");
-            document.getElementById("authStatus").innerText =
-              "Loged successfully!";
-          });
-
-          sendResponse({ success: true });
-        }
-      }
-    );
-  });
+  chrome.tabs.create({ url: "http://localhost:3001/login" });
 });
