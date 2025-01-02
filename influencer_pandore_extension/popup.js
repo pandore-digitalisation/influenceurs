@@ -15,7 +15,7 @@ document.getElementById("scrapeBtn").addEventListener("click", () => {
       scriptFile = "scripts/content_facebook.js";
     } else if (url.hostname.includes("linkedin.com")) {
       scriptFile = "scripts/content_linkedin.js";
-    } else if(url.hostname.includes("tiktok.com")) {
+    } else if (url.hostname.includes("tiktok.com")) {
       scriptFile = "scripts/content_tiktok.js";
     } else {
       alert("This platform is not supported.");
@@ -42,7 +42,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }, 1000);
   } else {
     alert("Timeout reached, please reload the page and trying again");
-    window.location.href = window.location.href
+    window.location.href = window.location.href;
     // window.location.reload();
   }
 });
@@ -53,7 +53,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 //     console.log("failed")
 //   }
 // })
-
 
 // Bouton Télécharger CSV
 document.getElementById("downloadBtn").addEventListener("click", () => {
@@ -103,13 +102,13 @@ function downloadCSV() {
   }
 }
 
+
 // Search functions
 document.addEventListener("DOMContentLoaded", async () => {
   const searchInput = document.getElementById("searchInput");
   const platformSelect = document.getElementById("platformSelect");
-  const dataContainer = document
-    .getElementById("dataTable")
-    .querySelector("tbody");
+  const dataContainer = document.getElementById("dataTable").querySelector("tbody");
+    
   const loader = document.getElementById("loader");
   const exportButton = document.getElementById("exportCsvBtn");
   const selectAllCheckbox = document.getElementById("selectAll");
@@ -142,32 +141,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     dataToShow.forEach((item, index) => {
-      const followers = item.followers
-      const following = item.following
-      const connection = item.connection
-      const followersValue = followers.replace(/[^\dKM.,]/g, '');
-      const followingValue = following ? following.replace(/[^\dKM.,]/g, ''): '';
-      const connectionValue = connection ? connection.replace(/[^\dKM.,]/g, '') : '';
+      const followers = item.followers;
+      const following = item.following;
+      const connection = item.connection;
+      const followersValue = followers.replace(/[^\dKM.,]/g, "");
+      const followingValue = following
+        ? following.replace(/[^\dKM.,]/g, "")
+        : "";
+      const connectionValue = connection
+        ? connection.replace(/[^\dKM.,]/g, "")
+        : "";
 
       function expandValue(value) {
-        if (value.endsWith('K')) {
-          
-          return parseFloat(value.replace('K', '').replace(',', '')) * 1000;
-        } else if (value.endsWith('M')) {
-          
-          return parseFloat(value.replace('M', '').replace(',', '')) * 1000000;
+        if (value.endsWith("K")) {
+          return parseFloat(value.replace("K", "").replace(",", "")) * 1000;
+        } else if (value.endsWith("M")) {
+          return parseFloat(value.replace("M", "").replace(",", "")) * 1000000;
         }
-        
-        return parseFloat(value.replace(',', ''));
+
+        return parseFloat(value.replace(",", ""));
       }
-      
 
-      const expandFollowersValue = expandValue(followersValue)
-      const expandFollowingValue = expandValue(followingValue)
-      const expandConnectionValue = expandValue(connectionValue)
+      const expandFollowersValue = expandValue(followersValue);
+      const expandFollowingValue = expandValue(followingValue);
+      const expandConnectionValue = expandValue(connectionValue);
 
-
-      console.log("following", followingValue)
+      console.log("following", followingValue);
 
       const row = document.createElement("tr");
       row.innerHTML = `
@@ -178,9 +177,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <td>${expandFollowersValue || 0}</td>
         <td>${expandFollowingValue || expandConnectionValue || 0}</td>
         <td>${item.plateform}</td>
-         <td><a href="${
-           item.profileUrl
-         }" target="_blank" >
+         <td><a href="${item.profileUrl}" target="_blank" >
          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M9.99999 18.3333C14.6024 18.3333 18.3333 14.6024 18.3333 9.99999C18.3333 5.39762 14.6024 1.66666 9.99999 1.66666C5.39762 1.66666 1.66666 5.39762 1.66666 9.99999C1.66666 14.6024 5.39762 18.3333 9.99999 18.3333Z" stroke="url(#paint0_linear_105_453)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M6.66667 2.5H7.5C5.875 7.36667 5.875 12.6333 7.5 17.5H6.66667" stroke="url(#paint1_linear_105_453)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -284,6 +281,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.body.removeChild(link);
   }
 
+  // Charger les données initiales
+  data = await fetchData();
+  filteredData = data; // Par défaut, toutes les données
+  displayData(data);
+
+  // Ajouter des écouteurs pour les filtres
+  searchInput.addEventListener("input", updateFilters);
+  platformSelect.addEventListener("change", updateFilters);
+
   // Activer l'exportation des données
   exportButton.addEventListener("click", () => exportToCsv(data));
 
@@ -302,37 +308,29 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     displayData(filteredData);
   }
-
-  // Charger les données initiales
-  data = await fetchData();
-  filteredData = data; // Par défaut, toutes les données
-  displayData(data);
-
-  // Ajouter des écouteurs pour les filtres
-  searchInput.addEventListener("input", updateFilters);
-  platformSelect.addEventListener("change", updateFilters);
 });
 
 // Login
 document.getElementById("loginBtn").addEventListener("click", () => {
-  alert("ok");
 
   const backendUrl = "http://localhost:3000/auth/google";
 
-  chrome.tabs.create({url: backendUrl}, (tab) => {
-    chrome.runtime.onMessage.addEventListener((message, sender, sendResponse) => {
-      if(message.type == "authSeucess") {
-        const token = message.token;
-        console.log("JWT reçu:", token);
+  chrome.tabs.create({ url: backendUrl }, (tab) => {
+    chrome.runtime.onMessage.addEventListener(
+      (message, sender, sendResponse) => {
+        if (message.type == "authSeucess") {
+          const token = message.token;
+          console.log("JWT reçu:", token);
 
-        chrome.storage.local.self({jwt: token}, () => {
-          console.log("JWT: saved");
-          document.getElementById("authStatus").innerText = "Loged successfully!";
-        });
+          chrome.storage.local.self({ jwt: token }, () => {
+            console.log("JWT: saved");
+            document.getElementById("authStatus").innerText =
+              "Loged successfully!";
+          });
 
-        sendResponse( {success: true} );
+          sendResponse({ success: true });
+        }
       }
-    })
-  })
-
-})
+    );
+  });
+});

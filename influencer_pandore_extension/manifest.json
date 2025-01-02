@@ -3,7 +3,7 @@
     "name": "Pandore Influencer",
     "version": "1.0",
     "description": "Get X, Instagram, Facebook, Linkedin, Tiktok page data and export in csv format",
-    "permissions": ["activeTab", "scripting", "storage", "tabs"],
+    "permissions": ["activeTab", "scripting", "storage", "tabs", "identity"],
     "host_permissions": [
       "https://x.com/*",
       "https://instagram.com/*",

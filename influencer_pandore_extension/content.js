@@ -48,11 +48,11 @@ function injectButton(platform) {
     targetElement = getElementByXPath(tiktokXPatch);
   }
 
-  if (!targetElement) {
-    console.error(`Target element not found for ${platform}`);
-  } else {
-    console.log(`Target element found for ${platform}:`, targetElement);
-  }
+  // if (!targetElement) {
+  //   console.error(`Target element not found for ${platform}`);
+  // } else {
+  //   console.log(`Target element found for ${platform}:`, targetElement);
+  // }
 
   // const scrapeBtn = document.getElementById("getData");
   //   console.log("scrape btn: ", scrapeBtn);
@@ -129,8 +129,6 @@ function injectButton(platform) {
 
   // Ajouter le bouton au bon endroit
   targetElement.appendChild(button);
-
-  console.log("btn", button);
 
   // Ajouter une action au clic
   button.addEventListener("click", () => {
