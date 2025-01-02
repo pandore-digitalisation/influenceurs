@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function Login() {
-  const router = useRouter();
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:3000/auth/google";
   };
