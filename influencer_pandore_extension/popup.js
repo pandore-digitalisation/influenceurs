@@ -313,7 +313,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 // Login
 document.getElementById("loginBtn").addEventListener("click", () => {
 
-  const backendUrl = "http://localhost:3000/auth/google";
+  const backendUrl = "http://localhost:3001/login";
 
   chrome.tabs.create({ url: backendUrl }, (tab) => {
     chrome.runtime.onMessage.addEventListener(
