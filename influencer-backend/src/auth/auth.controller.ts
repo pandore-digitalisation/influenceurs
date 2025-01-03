@@ -2,6 +2,7 @@ import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -30,6 +31,8 @@ export class AuthController {
 
       console.log('token', token);
 
+      console.log('user', user);
+
       // Rediriger l'utilisateur vers le tableau de bord avec le token en paramètre
       res.redirect(`http://localhost:3001/dashboard?token=${token}`);
     } catch (error) {
@@ -39,28 +42,21 @@ export class AuthController {
       res.redirect('http://localhost:3001/error');
     }
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('user')
+  async getUser(@Req() req) {
+    // Le middleware JWT Auth Guard va extraire et valider le token, et le user sera disponible via req.user
+    const user = req.user;
+    return user; // Renvoie l'objet utilisateur
+  }
+  // // Endpoint pour récupérer les données utilisateur
+  // @Get('user')
+  // @UseGuards(AuthGuard('google'))
+  // async getProfile(@Req() req): Promise<any> {
+  //   const user = await this.authService.getUserById(req.user.sub);
+  //   console.log('user', user);
+
+  //   return user;
+  // }
 }
-
-// import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
-// import { AuthGuard } from '@nestjs/passport';
-// import { Response, Request } from 'express';
-// import { AuthService } from './auth.service';
-
-// @Controller('auth')
-// export class AuthController {
-//   constructor(private readonly authService: AuthService) {}
-
-//   @Get('google')
-//   @UseGuards(AuthGuard('google'))
-//   async googleAuth() {}
-
-//   @Get('google/callback')
-//   @UseGuards(AuthGuard('google'))
-//   async googleAuthCallback(@Req() req: Request, @Res() res: Response) {
-//     const user = req.user;
-//     const token = await this.authService.generateJwt(user);
-//     console.log('user : ', user);
-
-//     res.redirect(`http://localhost:3001/dashboard?token=${token}`);
-//   }
-// }

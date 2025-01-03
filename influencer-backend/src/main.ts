@@ -7,6 +7,7 @@ async function bootstrap() {
   // Activer CORS pour des origines spécifiques (exemple : Instagram et une extension Chrome)
   app.enableCors({
     origin: [
+      'http://localhost:3001',
       'https://www.instagram.com',
       'chrome-extension://kabjhgpchbndlaignhbiibcdfpcddpml',
       'https://www.facebook.com',
@@ -17,8 +18,9 @@ async function bootstrap() {
       'chrome-extension://pkahcggjmbhmpgmdhkemgfnblpjidgpa',
       'https://www.tiktok.com',
     ], // Liste des origines autorisées
-    methods: 'GET,POST, DELETE, PATCH', // Méthodes HTTP autorisées
-    allowedHeaders: 'Content-Type', // En-têtes autorisés
+    methods: ['GET,POST, DELETE, PATCH'], // Méthodes HTTP autorisées
+    allowedHeaders: ['Content-Type, Authorization'], // En-têtes autorisés
+    credentials: true,
   });
 
   const port = process.env.PORT ?? 3000;
