@@ -312,7 +312,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // Login
-
 document.getElementById("loginBtn").addEventListener("click", () => {
   chrome.tabs.create({ url: "http://localhost:3001/login" });
 });
+

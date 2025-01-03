@@ -45,4 +45,5 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     });
     return true; // Indique que la réponse sera envoyée de manière asynchrone
   }
+
 });

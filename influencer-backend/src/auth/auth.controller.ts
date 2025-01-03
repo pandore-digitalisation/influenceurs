@@ -1,4 +1,4 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
@@ -50,13 +50,15 @@ export class AuthController {
     const user = req.user;
     return user; // Renvoie l'objet utilisateur
   }
-  // // Endpoint pour récupérer les données utilisateur
-  // @Get('user')
-  // @UseGuards(AuthGuard('google'))
-  // async getProfile(@Req() req): Promise<any> {
-  //   const user = await this.authService.getUserById(req.user.sub);
-  //   console.log('user', user);
 
-  //   return user;
-  // }
+  @Post('logout')
+  @UseGuards(AuthGuard('jwt')) // Protégé par JWT
+  async logout(@Res() res: Response) {
+    await this.authService.logout();
+
+    // Effacer les cookies si utilisés
+    res.clearCookie('access_token');
+
+    return res.status(200).json({ message: 'Logout successful' });
+  }
 }

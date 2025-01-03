@@ -72,7 +72,6 @@ export class AuthService {
    * @returns Le token JWT
    */
   async generateJwt(user: User): Promise<string> {
-    // Création du payload pour le JWT
     const payload = {
       sub: user.id,
       email: user.email,
@@ -80,12 +79,14 @@ export class AuthService {
       picture: user.picture,
     };
 
-    // Génération du JWT avec le payload
     const token = this.jwtService.sign(payload);
     console.log(`JWT généré pour l'utilisateur ${user.email}: ${token}`);
 
-    // Retourner le token généré
     return token;
+  }
+
+  async logout(): Promise<{ message: string }> {
+    return { message: 'Logout successful' };
   }
 }
 
