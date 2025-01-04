@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const expandFollowingValue = expandValue(followingValue);
       const expandConnectionValue = expandValue(connectionValue);
 
-      console.log("following", followingValue);
+      // console.log("following", followingValue);
 
       const row = document.createElement("tr");
       row.innerHTML = `
@@ -316,3 +316,17 @@ document.getElementById("loginBtn").addEventListener("click", () => {
   chrome.tabs.create({ url: "http://localhost:3001/login" });
 });
 
+chrome.runtime.sendMessage({ action: 'sendDataToPopup' }, (response) => {
+  if (response) {
+    console.log('Données reçues dans le popup:', response);
+
+    // const container = document.getElementById('auth-container');
+    // container.innerHTML = `
+    //   <div>
+    //     <img src="${response.picture}" alt="${response.name}" class="profile-pic" />
+    //     <span>${response.name}</span>
+    //   </div>`;
+  } else {
+    console.log('Aucune donnée utilisateur disponible.');
+  }
+});

@@ -39,8 +39,7 @@ export default function Dashboard() {
           console.log("data", data);
 
           setUser(data);
-          
-
+          sendDataToExtension(data)
         } catch (error) {
           setError("Erreur lors de la récupération des données utilisateur.");
         } finally {
@@ -55,6 +54,14 @@ export default function Dashboard() {
     }
   }, [searchParams]);
 
+  const sendDataToExtension = (userData: any) => {
+
+
+    window.postMessage(
+      { action: "sendData", data: userData },
+      window.location.origin
+    );
+  };
 
   const handleLogout = async () => {
     try {
@@ -77,30 +84,28 @@ export default function Dashboard() {
         throw new Error("Erreur lors de la déconnexion.");
       }
 
-      // Supprimer le token du localStorage
       localStorage.removeItem("auth_token");
 
-      // Rediriger vers la page de connexion
-      router.push("/login");
+      sessionStorage.clear();
+
+      window.location.href = "/login"
+
     } catch (error) {
       console.error("Erreur pendant la déconnexion:", error);
     }
   };
 
-  // Si les données sont en cours de chargement
   if (loading) {
     return <div>Chargement...</div>;
   }
 
-  // Si une erreur est survenue
   if (error) {
     return <div>Erreur: {error}</div>;
   }
 
-  // Si l'utilisateur n'est pas authentifié, rediriger vers la page de connexion
   if (!user) {
-    router.push("/login"); // Redirection si l'utilisateur n'est pas authentifié
-    return null; // Retourner null pendant la redirection
+    router.push("/login");
+    return null;
   }
 
   return (
@@ -114,9 +119,9 @@ export default function Dashboard() {
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-              clip-rule="evenodd"
+              clipRule="evenodd"
             ></path>
           </svg>
         </div>
@@ -135,6 +140,7 @@ export default function Dashboard() {
         >
           Déconnexion
         </button>
+
       </div>
     </main>
   );

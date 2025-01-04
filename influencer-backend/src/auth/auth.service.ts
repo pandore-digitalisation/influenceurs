@@ -11,11 +11,6 @@ export class AuthService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
 
-  /**
-   * Valider et enregistrer l'utilisateur à partir du profil Google
-   * @param profile Profil Google reçu
-   * @returns Utilisateur validé ou nouvel utilisateur créé
-   */
   async validateUser(profile: any): Promise<User> {
     // Extraction des informations de l'utilisateur depuis le profil Google
     const email = profile.email || profile._json?.email;
@@ -66,11 +61,6 @@ export class AuthService {
     return user;
   }
 
-  /**
-   * Générer un JWT pour un utilisateur
-   * @param user Utilisateur pour lequel générer le JWT
-   * @returns Le token JWT
-   */
   async generateJwt(user: User): Promise<string> {
     const payload = {
       sub: user.id,

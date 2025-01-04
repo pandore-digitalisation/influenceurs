@@ -52,7 +52,8 @@
           "https://www.instagram.com/*",
           "https://www.linkedin.com/*",
           "https://x.com/*",
-          "https://www.tiktok.com/*"
+          "https://www.tiktok.com/*",
+          "http://localhost:3001/*"
 
         ],
         "js": ["content.js"]
@@ -67,7 +68,6 @@
         "https://www.linkedin.com/*",
         "https://x.com/*",
         "https://www.tiktok.com/*"
-
       ]
     }
   ],

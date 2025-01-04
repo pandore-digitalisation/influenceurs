@@ -43,7 +43,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
       );
     });
-    return true; // Indique que la réponse sera envoyée de manière asynchrone
+    return true;
+  }
+
+  let latestUserData
+
+  if (message.action === 'sendDataToPopup') {
+    latestUserData = message.data;
+    console.log('Message reçu dans background.js:', message);
+
+  }
+
+  if (message.action === 'getUserData') {
+    sendResponse(latestUserData);
+    console.log('Message saved dans background.js:', message);
+
   }
 
 });

@@ -77,11 +77,8 @@ function injectButton(platform) {
       : platform === "TikTok"
       ? "#FE2C55"
       : "#000";
-  button.style.width = 
-    platform === "TikTok"
-      ? "150px"
-      : ""
-  button.style.display = "block"
+  button.style.width = platform === "TikTok" ? "150px" : "";
+  button.style.display = "block";
   button.style.color = "#fff";
   button.style.border = "none";
   button.style.borderRadius = "5px";
@@ -182,4 +179,18 @@ if (platform) {
   }
 }
 
-console.log("platform", platform);
+window.addEventListener("message", function (event) {
+  if (event.origin !== window.location.origin) {
+    return;
+  }
+
+  if (event.data && event.data.action === "sendData") {
+    console.log("Données reçues dans l'extension:", event.data.data);
+
+    chrome.runtime.sendMessage({
+      action: "sendDataToPopup",
+      data: event.data.data,
+    });
+  }
+
+});
