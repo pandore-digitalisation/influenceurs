@@ -1,4 +1,5 @@
-// Ajout d'un écouteur pour les messages venant du content script
+let latestUserData;
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "fetchData") {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -46,18 +47,34 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
-  let latestUserData
+  if (message.action === "sendDataToPopup") {
+    latestUserData = message.data; // Stocker les données reçues
+    console.log("Données reçues dans background.js :", latestUserData);
+    sendResponse({ success: true });
+  }
+});
 
-  if (message.action === 'sendDataToPopup') {
-    latestUserData = message.data;
-    console.log('Message reçu dans background.js:', message);
+// Écouter l'ouverture du popup
+chrome.runtime.onConnect.addListener((port) => {
+  if (port.name === "popup") {
+    console.log("Connexion au popup établie");
 
+    // Envoyer les données stockées au popup
+    if (latestUserData) {
+      port.postMessage({ action: "updateUserData", data: latestUserData });
+    }
+
+    // Écouter les messages depuis le popup (si nécessaire)
+    port.onMessage.addListener((message) => {
+      console.log("Message reçu depuis le popup :", message);
+    });
   }
 
-  if (message.action === 'getUserData') {
-    sendResponse(latestUserData);
-    console.log('Message saved dans background.js:', message);
+  // let latestUserData;
 
-  }
-
+  // if (message.action === "sendDataToPopup") {
+  //   latestUserData = message.data;
+  //   console.log("Message reçu dans background.js:", message);
+  //   sendResponse(latestUserData)
+  // }
 });

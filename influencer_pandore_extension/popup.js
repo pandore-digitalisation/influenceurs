@@ -316,17 +316,38 @@ document.getElementById("loginBtn").addEventListener("click", () => {
   chrome.tabs.create({ url: "http://localhost:3001/login" });
 });
 
-chrome.runtime.sendMessage({ action: 'sendDataToPopup' }, (response) => {
-  if (response) {
-    console.log('Données reçues dans le popup:', response);
+document.addEventListener("DOMContentLoaded", () => {
+  const port = chrome.runtime.connect({ name: "popup" });
 
-    // const container = document.getElementById('auth-container');
-    // container.innerHTML = `
-    //   <div>
-    //     <img src="${response.picture}" alt="${response.name}" class="profile-pic" />
-    //     <span>${response.name}</span>
-    //   </div>`;
-  } else {
-    console.log('Aucune donnée utilisateur disponible.');
-  }
+  port.onMessage.addListener((message) => {
+    if (message.action === "updateUserData") {
+      console.log("Données reçues dans popup.js :", message.data);
+
+      // Afficher les données dans le popup
+      document.getElementById("user-info").textContent = JSON.stringify(
+        message.data,
+        null,
+        2
+      );
+    }
+  });
+
+  // Exemple d'envoi de message au background.js
+  port.postMessage({ action: "popupOpened" });
 });
+
+
+// chrome.runtime.sendMessage({ action: 'sendToPopup' }, (response) => {
+//   if (response) {
+//     console.log('Données reçues dans le popup:', response);
+
+//     // const container = document.getElementById('auth-container');
+//     // container.innerHTML = `
+//     //   <div>
+//     //     <img src="${response.picture}" alt="${response.name}" class="profile-pic" />
+//     //     <span>${response.name}</span>
+//     //   </div>`;
+//   } else {
+//     console.log('Aucune donnée utilisateur disponible.');
+//   }
+// });
