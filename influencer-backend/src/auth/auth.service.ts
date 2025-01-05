@@ -12,71 +12,90 @@ export class AuthService {
   ) {}
 
   async validateUser(profile: any): Promise<User> {
-    // Extraction des informations de l'utilisateur depuis le profil Google
-    const email = profile.email || profile._json?.email;
-    const picture = profile.photos?.[0]?.value || profile._json?.picture;
-    const googleId = profile.id;
-    const name =
-      profile.displayName ||
-      `${profile.name?.givenName || ''} ${profile.name?.familyName || ''}`.trim();
-    const firstName = profile.name?.givenName || '';
-    const lastName = profile.name?.familyName || '';
+    try {
+      const email = profile.email || profile._json?.email;
+      const googleId = profile.id;
+      const name =
+        profile.displayName ||
+        `${profile.name?.givenName || ''} ${profile.name?.familyName || ''}`.trim();
+      const picture = profile.photos?.[0]?.value;
 
-    // Vérification si l'email est présent dans le profil Google
-    if (!email) {
-      console.error('Aucune adresse email trouvée dans le profil Google.');
-      throw new UnauthorizedException('Aucune adresse email trouvée.');
-    }
+      if (!email) {
+        console.error('Aucune adresse email trouvée dans le profil Google.');
+        throw new UnauthorizedException('Aucune adresse email trouvée.');
+      }
 
-    // Log des informations récupérées
-    console.log(
-      `Données utilisateur extraites : ${email}, ${name}, ${firstName}, ${lastName}, ${picture}`,
-    );
-
-    // Recherche de l'utilisateur dans la base de données par email
-    let user = await this.userModel.findOne({ email });
-
-    if (!user) {
       console.log(
-        `Aucun utilisateur trouvé, création d'un nouvel utilisateur...`,
+        `Données utilisateur extraites : email=${email}, name=${name}, picture=${picture}`,
       );
 
-      // Création d'un nouvel utilisateur avec toutes les données disponibles
-      user = new this.userModel({
-        googleId,
-        name,
-        firstName,
-        lastName,
-        email,
-        picture,
-      });
+      let user = await this.userModel.findOne({ email });
 
-      // Sauvegarde du nouvel utilisateur dans la base de données
-      await user.save();
-    } else {
-      console.log(`Utilisateur existant trouvé : ${email}`);
+      if (!user) {
+        console.log(
+          'Aucun utilisateur trouvé, création d’un nouvel utilisateur...',
+        );
+        user = new this.userModel({
+          googleId,
+          name,
+          email,
+          picture,
+        });
+        await user.save();
+        console.log('Nouvel utilisateur créé avec succès.');
+      } else {
+        console.log(
+          'Utilisateur existant trouvé, vérification des mises à jour...',
+        );
+
+        // Met à jour uniquement si les données changent
+        const updates: Partial<User> = {};
+        if (user.name !== name && name) {
+          updates.name = name;
+        }
+        if (user.picture !== picture && picture) {
+          updates.picture = picture;
+        }
+
+        if (Object.keys(updates).length > 0) {
+          Object.assign(user, updates);
+          await user.save();
+          console.log('Utilisateur mis à jour avec succès.');
+        }
+      }
+
+      console.log('Utilisateur final prêt :', user);
+      return user;
+    } catch (error) {
+      console.error('Erreur lors de la validation de l’utilisateur :', error);
+      throw new UnauthorizedException(
+        'Erreur lors de la validation de l’utilisateur.',
+      );
     }
-
-    // Retourner l'utilisateur trouvé ou créé
-    return user;
   }
 
   async generateJwt(user: User): Promise<string> {
-    const payload = {
-      sub: user.id,
-      email: user.email,
-      username: user.name,
-      picture: user.picture,
-    };
+    try {
+      const payload = {
+        sub: user.id,
+        email: user.email,
+        username: user.name || 'Nom inconnu',
+        picture: user.picture || '',
+      };
 
-    const token = this.jwtService.sign(payload);
-    console.log(`JWT généré pour l'utilisateur ${user.email}: ${token}`);
-
-    return token;
+      const token = this.jwtService.sign(payload, {
+        secret: process.env.JWT_SECRET_KEY,
+      });
+      console.log(`JWT généré pour l’utilisateur ${user.email}: ${token}`);
+      return token;
+    } catch (error) {
+      console.error('Erreur lors de la génération du JWT :', error);
+      throw new UnauthorizedException('Erreur lors de la génération du token.');
+    }
   }
 
   async logout(): Promise<{ message: string }> {
-    return { message: 'Logout successful' };
+    return { message: 'Déconnexion réussie' };
   }
 }
 
@@ -93,56 +112,48 @@ export class AuthService {
 //     @InjectModel(User.name) private readonly userModel: Model<User>,
 //   ) {}
 
-//   /**
-//    * Valider et enregistrer l'utilisateur à partir du profil Google
-//    * @param profile Profil Google reçu
-//    * @returns Utilisateur validé ou nouvel utilisateur créé
-//    */
 //   async validateUser(profile: any): Promise<User> {
-//     // console.log('Profil Google brut reçu :', JSON.stringify(profile, null, 2));
-
-//     // Tenter d'extraire l'email de plusieurs sources possibles
-//     const email = profile.email || profile._json?.email || null;
-
-//     // console.log('Emails disponibles dans le profil :', email);
-//     // console.log('Email extrait du profil :', email);
-//     // console.log('name extrait du profil :', profile.name);
-
-//     if (!email) {
-//       console.error(
-//         'Erreur: Aucune adresse email trouvée dans le profil Google.',
-//       );
-//       throw new UnauthorizedException('Aucune adresse email trouvée.');
-//     }
-
-//     // Extraire les autres informations nécessaires
-//     const picture =
-//       profile.photos?.[0]?.value || profile._json?.picture || null;
+//     // Extraction des informations de l'utilisateur depuis le profil Google
+//     const email = profile.email || profile._json?.email;
+//     const picture = profile.photos?.[0]?.value;
 //     const googleId = profile.id;
 //     const name =
 //       profile.displayName ||
 //       `${profile.name?.givenName || ''} ${profile.name?.familyName || ''}`.trim();
 
-//     // Recherche de l'utilisateur par email
-//     console.log(`Recherche d'un utilisateur avec l'email : ${email}`);
+//     // Vérification si l'email est présent dans le profil Google
+//     if (!email) {
+//       console.error('Aucune adresse email trouvée dans le profil Google.');
+//       throw new UnauthorizedException('Aucune adresse email trouvée.');
+//     } else {
+//       console.log(
+//         `Données utilisateur extraites : ${email}, ${name}, ${picture}`,
+//       );
+//     }
+
+//     // Recherche de l'utilisateur dans la base de données par email
 //     let user = await this.userModel.findOne({ email });
 
 //     if (!user) {
 //       console.log(
-//         `Aucun utilisateur trouvé. Création d'un nouvel utilisateur : ${email}`,
+//         `Aucun utilisateur trouvé, création d'un nouvel utilisateur...`,
 //       );
-//       // Création d'un nouvel utilisateur
+
+//       // Création d'un nouvel utilisateur avec toutes les données disponibles
 //       user = new this.userModel({
 //         googleId,
 //         name,
 //         email,
 //         picture,
 //       });
+
+//       // Sauvegarde du nouvel utilisateur dans la base de données
 //       await user.save();
 //     } else {
 //       console.log(`Utilisateur existant trouvé : ${email}`);
 //     }
 
+//     // Retourner l'utilisateur trouvé ou créé
 //     return user;
 //   }
 
@@ -153,16 +164,14 @@ export class AuthService {
 //       username: user.name,
 //       picture: user.picture,
 //     };
+
 //     const token = this.jwtService.sign(payload);
 //     console.log(`JWT généré pour l'utilisateur ${user.email}: ${token}`);
+
 //     return token;
 //   }
 
-//   // async getUserById(userId: string): Promise<User | null> {
-//   //   const user = await this.userModel.findById(userId).exec();
-//   //   if (!user) {
-//   //     throw new UnauthorizedException('Utilisateur non trouvé.');
-//   //   }
-//   //   return user;
-//   // }
+//   async logout(): Promise<{ message: string }> {
+//     return { message: 'Logout successful' };
+//   }
 // }

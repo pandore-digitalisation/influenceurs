@@ -31,7 +31,7 @@ export class AuthController {
 
       console.log('token', token);
 
-      console.log('user', user);
+      console.log('user /console controller', user);
 
       // Rediriger l'utilisateur vers le tableau de bord avec le token en paramètre
       res.redirect(`http://localhost:3001/dashboard?token=${token}`);
@@ -45,10 +45,21 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('user')
-  async getUser(@Req() req) {
-    // Le middleware JWT Auth Guard va extraire et valider le token, et le user sera disponible via req.user
-    const user = req.user;
-    return user; // Renvoie l'objet utilisateur
+  async getUser(@Req() req: Request): Promise<any> {
+    try {
+      const user = req.user; // Utilisateur extrait par le JwtAuthGuard
+      console.log('jwt user', user);
+      return {
+        status: 'success',
+        data: user,
+      };
+    } catch (error) {
+      console.error("Erreur lors de la récupération de l'utilisateur :", error);
+      return {
+        status: 'error',
+        message: "Impossible de récupérer l'utilisateur.",
+      };
+    }
   }
 
   @Post('logout')

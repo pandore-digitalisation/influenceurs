@@ -52,29 +52,34 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log("Données reçues dans background.js :", latestUserData);
     sendResponse({ success: true });
   }
-});
 
-// Écouter l'ouverture du popup
-chrome.runtime.onConnect.addListener((port) => {
-  if (port.name === "popup") {
-    console.log("Connexion au popup établie");
+  // Écouter l'ouverture du popup
+  chrome.runtime.onConnect.addListener((port) => {
+    if (port.name === "popup") {
+      console.log("Connexion au popup établie");
 
-    // Envoyer les données stockées au popup
-    if (latestUserData) {
-      port.postMessage({ action: "updateUserData", data: latestUserData });
+      // Envoyer les données stockées au popup
+      if (latestUserData) {
+        port.postMessage({ action: "updateUserData", data: latestUserData });
+      }
+
+      // Écouter les messages depuis le popup (si nécessaire)
+      port.onMessage.addListener((message) => {
+        console.log("Message reçu depuis le popup :", message);
+      });
     }
+  });
 
-    // Écouter les messages depuis le popup (si nécessaire)
-    port.onMessage.addListener((message) => {
-      console.log("Message reçu depuis le popup :", message);
-    });
+  if (message.action === "getUserData") {
+    // Renvoyer les données utilisateur au popup
+    sendResponse({ userData: latestUserData });
   }
 
-  // let latestUserData;
+  if (message.action === "logoutUser") {
+    latestUserData = null; // Réinitialiser les données utilisateur
+    sendResponse({ success: true });
+  }
 
-  // if (message.action === "sendDataToPopup") {
-  //   latestUserData = message.data;
-  //   console.log("Message reçu dans background.js:", message);
-  //   sendResponse(latestUserData)
-  // }
+  // Important : Retourner `true` pour garder la promesse ouverte si nécessaire
+  return true;
 });

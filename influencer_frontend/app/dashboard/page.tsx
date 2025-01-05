@@ -25,7 +25,7 @@ export default function Dashboard() {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              "Authorization": `Bearer ${token}`,
             },
             credentials: "include",
           });
@@ -112,28 +112,16 @@ export default function Dashboard() {
     <main className="container mx-auto px-4 py-8">
       <div className="flex justify-end px-4 pt-4">
         <div className="relative w-8 h-8 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-          <svg
-            className="absolute w-10 h-10 text-gray-400 -left-1"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              fillRule="evenodd"
-              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-              clipRule="evenodd"
-            ></path>
-          </svg>
+          <img
+          src={user?.data.picture}
+          alt="Photo de profil"
+          className="rounded-full w-8 h-8"
+        />
         </div>
       </div>
-      <h1>Bienvenue sur votre Dashboard !</h1>
+      <h1>Bienvenue sur votre Dashboard {user?.data.name}!</h1>
       <div className="flex flex-col items-center">
-        {/* <img
-          src={user?.picture}
-          alt="Photo de profil"
-          className="rounded-full w-32 h-32"
-        /> */}
-        <div>Email : {user?.email}</div>
+        <div>Email : {user?.data.email}</div>
         <button
           onClick={handleLogout}
           className="bg-red-500 text-white px-4 py-2 rounded"

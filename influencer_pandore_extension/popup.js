@@ -317,37 +317,79 @@ document.getElementById("loginBtn").addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  const port = chrome.runtime.connect({ name: "popup" });
-
-  port.onMessage.addListener((message) => {
-    if (message.action === "updateUserData") {
-      console.log("Données reçues dans popup.js :", message.data);
-
-      // Afficher les données dans le popup
-      document.getElementById("user-info").textContent = JSON.stringify(
-        message.data,
-        null,
-        2
+  // Demander les données utilisateur à background.js
+  chrome.runtime.sendMessage({ action: "getUserData" }, (response) => {
+    if (chrome.runtime.lastError) {
+      console.error(
+        "Erreur lors de la récupération des données utilisateur:",
+        chrome.runtime.lastError.message
       );
+      return;
+    }
+
+    if (response && response.userData) {
+      afficherProfil(response.userData);
+    } else {
+      afficherBoutonLogin();
     }
   });
-
-  // Exemple d'envoi de message au background.js
-  port.postMessage({ action: "popupOpened" });
 });
 
+function afficherProfil(user) {
+  const container = document.getElementById("auth");
+  const createList = document.getElementById("createList");
+  console.log("btn", createList)
 
-// chrome.runtime.sendMessage({ action: 'sendToPopup' }, (response) => {
-//   if (response) {
-//     console.log('Données reçues dans le popup:', response);
+  createList.disabled = false;
+  container.innerHTML = `
+    <div">
+    ok
+    <a href="http://localhost:3001/dashboard">
+      <img
+          src=${user?.data.picture || 'p'}
+          alt="p"
+          style="background-color:#9CA3AF; width:30px; border-radius:50%; align-items:center;"
+        />
+    
+    </a>
+    </div>`;
+  // document.getElementById("logout-button").addEventListener("click", logout);
+  // <span>${user.email}</span>
+  // <span>${user.userId}</span>
+}
 
-//     // const container = document.getElementById('auth-container');
-//     // container.innerHTML = `
-//     //   <div>
-//     //     <img src="${response.picture}" alt="${response.name}" class="profile-pic" />
-//     //     <span>${response.name}</span>
-//     //   </div>`;
-//   } else {
-//     console.log('Aucune donnée utilisateur disponible.');
-//   }
+function afficherBoutonLogin() {
+  document.getElementById("loginBtn");
+  // container.innerHTML = `<button id="login-button">Se connecter</button>`;
+  // document.getElementById("login-button").addEventListener("click", () => {
+  //   const authUrl = "https://ton-backend/auth/google";
+  //   chrome.tabs.create({ url: authUrl });
+  // });
+}
+
+function logout() {
+  chrome.runtime.sendMessage({ action: "logoutUser" }, () => {
+    afficherBoutonLogin();
+  });
+}
+
+// // User data fetching
+// document.addEventListener("DOMContentLoaded", () => {
+//   const port = chrome.runtime.connect({ name: "popup" });
+
+//   port.onMessage.addListener((message) => {
+//     if (message.action === "updateUserData") {
+//       console.log("Données reçues dans popup.js :", message.data);
+
+//       // Afficher les données dans le popup
+//       document.getElementById("user-info").textContent = JSON.stringify(
+//         message.data,
+//         null,
+//         2
+//       );
+//     }
+//   });
+
+//   // Exemple d'envoi de message au background.js
+//   port.postMessage({ action: "popupOpened" });
 // });

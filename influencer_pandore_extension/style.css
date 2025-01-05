@@ -116,7 +116,7 @@ button {
   padding-left: 0px;
 }
 
-.auth {
+#auth {
   justify-content: flex-end;
   display: flex;
   margin-bottom: 10px;
