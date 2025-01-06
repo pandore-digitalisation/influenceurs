@@ -25,7 +25,7 @@ export default function Dashboard() {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             },
             credentials: "include",
           });
@@ -38,8 +38,12 @@ export default function Dashboard() {
 
           console.log("data", data);
 
+          // Sauvegarder les données utilisateur dans le localStorage pour les prochaines ouvertures du popup
+          // localStorage.setItem("user_data", JSON.stringify(data));
+          // console.log(localStorage);
+
           setUser(data);
-          sendDataToExtension(data)
+          sendDataToExtension(data);
         } catch (error) {
           setError("Erreur lors de la récupération des données utilisateur.");
         } finally {
@@ -48,21 +52,22 @@ export default function Dashboard() {
       };
 
       fetchUserData();
+
     } else {
       setError("Aucun token trouvé dans l'URL.");
       setLoading(false);
     }
   }, [searchParams]);
 
+  // // Send data to extension afeter user connected
   const sendDataToExtension = (userData: any) => {
-
-
     window.postMessage(
       { action: "sendData", data: userData },
       window.location.origin
     );
   };
 
+  // Logout
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem("auth_token");
@@ -88,12 +93,18 @@ export default function Dashboard() {
 
       sessionStorage.clear();
 
-      window.location.href = "/login"
+      window.postMessage(
+        { action: "logoutUser", response }, '*'
+      );
 
+      window.location.href = "/login";
     } catch (error) {
       console.error("Erreur pendant la déconnexion:", error);
     }
+
   };
+
+  
 
   if (loading) {
     return <div>Chargement...</div>;
@@ -113,10 +124,10 @@ export default function Dashboard() {
       <div className="flex justify-end px-4 pt-4">
         <div className="relative w-8 h-8 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
           <img
-          src={user?.data.picture}
-          alt="Photo de profil"
-          className="rounded-full w-8 h-8"
-        />
+            src={user?.data.picture}
+            alt="Photo de profil"
+            className="rounded-full w-8 h-8"
+          />
         </div>
       </div>
       <h1>Bienvenue sur votre Dashboard {user?.data.name}!</h1>
@@ -128,7 +139,6 @@ export default function Dashboard() {
         >
           Déconnexion
         </button>
-
       </div>
     </main>
   );

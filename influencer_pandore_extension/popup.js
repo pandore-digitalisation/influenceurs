@@ -316,49 +316,7 @@ document.getElementById("loginBtn").addEventListener("click", () => {
   chrome.tabs.create({ url: "http://localhost:3001/login" });
 });
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Demander les données utilisateur à background.js
-  chrome.runtime.sendMessage({ action: "getUserData" }, (response) => {
-    if (chrome.runtime.lastError) {
-      console.error(
-        "Erreur lors de la récupération des données utilisateur:",
-        chrome.runtime.lastError.message
-      );
-      return;
-    }
-
-    if (response && response.userData) {
-      afficherProfil(response.userData);
-    } else {
-      afficherBoutonLogin();
-    }
-  });
-});
-
-function afficherProfil(user) {
-  const container = document.getElementById("auth");
-  const createList = document.getElementById("createList");
-  console.log("btn", createList)
-
-  createList.disabled = false;
-  container.innerHTML = `
-    <div">
-    ok
-    <a href="http://localhost:3001/dashboard">
-      <img
-          src=${user?.data.picture || 'p'}
-          alt="p"
-          style="background-color:#9CA3AF; width:30px; border-radius:50%; align-items:center;"
-        />
-    
-    </a>
-    </div>`;
-  // document.getElementById("logout-button").addEventListener("click", logout);
-  // <span>${user.email}</span>
-  // <span>${user.userId}</span>
-}
-
-function afficherBoutonLogin() {
+function loginButton() {
   document.getElementById("loginBtn");
   // container.innerHTML = `<button id="login-button">Se connecter</button>`;
   // document.getElementById("login-button").addEventListener("click", () => {
@@ -369,27 +327,60 @@ function afficherBoutonLogin() {
 
 function logout() {
   chrome.runtime.sendMessage({ action: "logoutUser" }, () => {
-    afficherBoutonLogin();
+    loginButton();
   });
 }
 
-// // User data fetching
-// document.addEventListener("DOMContentLoaded", () => {
-//   const port = chrome.runtime.connect({ name: "popup" });
+// Get user connected data
+document.addEventListener("DOMContentLoaded", () => {
+  chrome.runtime.sendMessage({ action: "getUserData" }, (response) => {
+    if (chrome.runtime.lastError) {
+      console.error(
+        "Erreur lors de la récupération des données utilisateur:",
+        chrome.runtime.lastError.message
+      );
+      return;
+    }
 
-//   port.onMessage.addListener((message) => {
-//     if (message.action === "updateUserData") {
-//       console.log("Données reçues dans popup.js :", message.data);
+    if (response && response.userData) {
+      // Si des données utilisateur existent, mettez à jour l'interface
+      console.log(
+        "Données utilisateur récupérées dans popup.js:",
+        response.userData
+      );
+      profil(response.userData);
+    } else {
+      //Sinon, afficher le bouton de connexion et une alerte
+      console.log("Aucune donnée utilisateur trouvée.");
+      const authStaus = document.getElementById("authStatus");
+      authStaus.style.display = "block";
+      // Définir un délai de 30 secondes (30000 ms) pour le cacher
+      setTimeout(() => {
+        authStatus.style.display = "none";
+      }, 20000); // 30 secondes
+    }
+  });
 
-//       // Afficher les données dans le popup
-//       document.getElementById("user-info").textContent = JSON.stringify(
-//         message.data,
-//         null,
-//         2
-//       );
-//     }
-//   });
+  function profil(user) {
+    const container = document.getElementById("auth");
+    const createList = document.getElementById("createList");
+    console.log("btn", createList);
 
-//   // Exemple d'envoi de message au background.js
-//   port.postMessage({ action: "popupOpened" });
-// });
+    createList.disabled = false;
+    container.innerHTML = `
+    <div">
+      <span>${user?.data.userId}</span>
+    <a href="http://localhost:3001/dashboard">
+      <img
+          src=${user?.data.picture}
+          title='${user?.data.name}'
+          style="background-color:#9CA3AF; width:25px; border-radius:50%; align-items:center;"
+        />
+    
+    </a>
+    </div>`;
+    // document.getElementById("logout-button").addEventListener("click", logout);
+    // <span>${user.email}</span>
+    // <span>${user.userId}</span>
+  }
+});

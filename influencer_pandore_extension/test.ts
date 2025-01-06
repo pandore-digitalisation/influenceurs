@@ -1,17 +1,30 @@
-//   // Déconnexion de l'utilisateur
-//   @Post('logout')
-//   @UseGuards(AuthGuard('jwt')) // Protégé par JWT
-//   async logout(@Res() res: Response): Promise<any> {
-//     try {
-//       await this.authService.logout();
-
-//       // Effacer les cookies si utilisés
-//       res.clearCookie('access_token');
-
-//       return res.status(200).json({ message: 'Déconnexion réussie' });
-//     } catch (error) {
-//       console.error('Erreur lors de la déconnexion :', error);
-//       return res.status(500).json({ message: 'Erreur lors de la déconnexion.' });
-//     }
+// // Recevoir les données utilisateur à chaque ouverture du popup
+// document.addEventListener("DOMContentLoaded", () => {
+//     chrome.runtime.sendMessage({ action: "getUserData" }, (response) => {
+//       if (response && response.userData) {
+//         console.log("Données utilisateur récupérées :", response.userData);
+//         profil(response.userData);
+//         document.getElementById("loginBtn").style.display = "none"; // Masquer le bouton de login
+//       } else {
+//         console.log("Utilisateur non connecté.");
+//         loginButton();
+//       }
+//     });
+//   });
+  
+//   // Fonction de profil
+//   function profil(user) {
+//     const container = document.getElementById("auth");
+//     container.innerHTML = `
+//       <div">
+//         <a href="http://localhost:3001/dashboard">
+//           <img src="${user?.data.picture}" title="${user?.data.name}" style="background-color:#9CA3AF; width:25px; border-radius:50%;" />
+//         </a>
+//       </div>`;
 //   }
-// }
+  
+//   // Fonction pour afficher le bouton de connexion
+//   function loginButton() {
+//     document.getElementById("loginBtn").style.display = "block"; // Afficher le bouton de login
+//   }
+  

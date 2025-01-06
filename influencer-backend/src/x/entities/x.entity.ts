@@ -3,7 +3,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type DataDocument = HydratedDocument<X>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class X {
   @Prop({ required: false })
   profileUrl: string;

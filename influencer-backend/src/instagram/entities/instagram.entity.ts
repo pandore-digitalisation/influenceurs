@@ -3,7 +3,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type DataDocument = HydratedDocument<Instagram>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Instagram {
   @Prop({ required: false })
   profileUrl: string;

@@ -3,7 +3,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type DataDocument = HydratedDocument<Facebook>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Facebook {
   @Prop({ required: false })
   profileUrl: string;

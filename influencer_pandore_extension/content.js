@@ -179,6 +179,7 @@ if (platform) {
   }
 }
 
+// Send user connected data to background.js
 window.addEventListener("message", function (event) {
   if (event.origin !== window.location.origin) {
     return;
@@ -193,4 +194,16 @@ window.addEventListener("message", function (event) {
     });
   }
 
+  // Traitement du message reçu
+  const message = event.data;
+  if (message.action === "logoutUser") {
+    // Logique pour déconnecter l'utilisateur dans l'extension
+    console.log("Déconnexion de l'utilisateur dans l'extension");
+
+    // Exemple : effacer les données utilisateur dans l'extension
+    data = null; // Ou toute autre méthode pour gérer l'état de l'utilisateur
+
+    // Notifier l'extension ou mettre à jour l'UI si nécessaire
+    chrome.runtime.sendMessage({ action: "logoutUser" });
+  }
 });

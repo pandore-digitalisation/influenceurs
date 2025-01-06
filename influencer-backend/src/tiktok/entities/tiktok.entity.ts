@@ -3,7 +3,7 @@ import { HydratedDocument } from 'mongoose';
 
 export type DataDocument = HydratedDocument<Tiktok>;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Tiktok {
   @Prop({ required: false })
   profileUrl: string;
