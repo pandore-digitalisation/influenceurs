@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { List } from './entities/list.entity';
+import { CreateListDto } from './dto/create-list.dto';
 
 @Injectable()
 export class ListService {
@@ -21,8 +22,8 @@ export class ListService {
     return list;
   }
 
-  async create(data: { name: string }): Promise<List> {
-    const newList = new this.listModel(data);
+  async create(userId: string, createListDto: CreateListDto): Promise<List> {
+    const newList = new this.listModel(createListDto, userId);
     return newList.save();
   }
 

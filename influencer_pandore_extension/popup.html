@@ -12,7 +12,7 @@
 
 <body>
   <!-- <span class="version">v0.1.0</span> -->
-  
+
   <section>
     <div id="authStatus" style="display: none">Session expired. Please log in again.</div>
     <div id="auth">
@@ -42,6 +42,18 @@
     </div>
     <div class="progress" style="height: 5px; margin-top: 15px; margin-bottom: 15px;">
       <div class="progress-bar w-0" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+
+    <div id="createListForm" style="display: none;">
+      <form class="row g-3" id="listForm">
+        <div class="col-auto">
+          <label for="inputPassword2" class="visually-hidden">Password</label>
+          <input type="password" class="form-control" id="listName" placeholder="Name your list">
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn mb-3" id="createListSubmit">Save</button>
+        </div>
+      </form>
     </div>
 
     <div id="dataContainer">

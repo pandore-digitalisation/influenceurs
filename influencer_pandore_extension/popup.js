@@ -46,14 +46,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // window.location.reload();
   }
 });
-
-// Écouter les messages d'echec envoyés par le content.js
-// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//   if(message.failed) {
-//     console.log("failed")
-//   }
-// })
-
 // Bouton Télécharger CSV
 document.getElementById("downloadBtn").addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -333,6 +325,25 @@ function logout() {
 
 // Get user connected data
 document.addEventListener("DOMContentLoaded", () => {
+  // // Vérification pour éviter un rechargement infini
+  // const lastReloadTime = localStorage.getItem("lastReloadTime");
+  // const currentTime = Date.now();
+
+  // // Si le temps écoulé depuis le dernier rafraîchissement est supérieur à 10 secondes
+  // if (!lastReloadTime || currentTime - lastReloadTime > 10000) {
+  //   // Récupérer l'onglet actif
+  //   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  //     const currentTab = tabs[0];
+  //     if (currentTab.url.includes("dashboard")) {
+  //       // Recharger la page du dashboard
+  //       chrome.tabs.reload(currentTab.id, { bypassCache: true });
+
+  //       // Mettre à jour le temps de rechargement dans localStorage
+  //       localStorage.setItem("lastReloadTime", currentTime);
+  //     }
+  //   });
+  // }
+
   chrome.runtime.sendMessage({ action: "getUserData" }, (response) => {
     if (chrome.runtime.lastError) {
       console.error(
@@ -364,6 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function profil(user) {
     const container = document.getElementById("auth");
     const createList = document.getElementById("createList");
+    const listForm = document.getElementById("createListForm");
     console.log("btn", createList);
 
     createList.disabled = false;
@@ -379,8 +391,54 @@ document.addEventListener("DOMContentLoaded", () => {
     
     </a>
     </div>`;
-    // document.getElementById("logout-button").addEventListener("click", logout);
-    // <span>${user.email}</span>
-    // <span>${user.userId}</span>
+
+    createList.addEventListener("click", () => {
+      // createListForUser(user?.data.userId);
+      listForm.style.display = "flex";
+      createList.disabled = true;
+      // Gestion de la soumission du formulaire
+      listForm.addEventListener("submit", (event) => {
+        event.preventDefault(); // Empêche le rechargement de la page
+        const listName = document.getElementById("listName").value; // Récupère le nom de la liste
+        createListForUser(user?.data.userId, listName);
+      });
+    });
   }
+
+  // Create list
+  function createListForUser(userId) {
+    const listData = {
+      name: "Nouvelle liste", // Exemple, peut être personnalisé via un formulaire
+    };
+    // Envoi de la requête au backend
+    fetch("http://localhost:3000/lists", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        // Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+      body: JSON.stringify({ ...listData, userId }), // Ajout de l'ID utilisateur dans le corps
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Erreur lors de la création de la liste");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Liste créée avec succès :", data);
+        alert("Liste créée avec succès !");
+      })
+      .catch((error) => {
+        console.error("Erreur :", error);
+        alert("Une erreur est survenue lors de la création de la liste.");
+      });
+  }
+  // const createList = document.getElementById("createList");
+  // const listForm = document.getElementById("createListForm");
+
+  // createList.addEventListener("click", () => {
+  //   listForm.style.display = "flex";
+  //   createList.disabled = true;
+  // });
 });

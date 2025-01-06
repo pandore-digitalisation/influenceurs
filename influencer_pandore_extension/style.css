@@ -74,12 +74,12 @@ button {
   color: #ed7e11;
 }
 
-#createList {
+#createList, #createListSubmit {
   background-color: green;
   color: white;
 }
 
-#createList:hover {
+#createList:hover, #createListSubmit:hover {
   background-color: #006600;
 }
 
@@ -114,6 +114,12 @@ button {
 
 .buttons {
   padding-left: 0px;
+}
+#createListForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 #auth {

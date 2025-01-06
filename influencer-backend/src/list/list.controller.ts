@@ -6,9 +6,13 @@ import {
   Param,
   Put,
   Delete,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ListService } from './list.service';
 import { List } from './entities/list.entity';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CreateListDto } from './dto/create-list.dto';
 
 @Controller('lists')
 export class ListController {
@@ -27,9 +31,17 @@ export class ListController {
   }
 
   // Route pour créer une nouvelle liste
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() data: { name: string }): Promise<List> {
-    return this.listService.create(data);
+  async create(
+    @Req() req,
+    @Body() createListDto: CreateListDto,
+  ): Promise<List> {
+    const userId = req.user ? req.user.userId : '0';
+    if (!userId) {
+      throw new Error('User ID is missing');
+    }
+    return this.listService.create(userId, createListDto);
   }
 
   // Route pour mettre à jour une liste en ajoutant ou supprimant des profils
