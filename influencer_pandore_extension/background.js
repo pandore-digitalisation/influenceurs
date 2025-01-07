@@ -1,5 +1,6 @@
 let latestUserData = null;
 let logoutTimer = null;
+let token = null;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "fetchData") {
@@ -53,13 +54,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === "sendDataToPopup") {
     latestUserData = message.data;
-    console.log("Données utilisateur mises à jour :", latestUserData);
+    token = message.token
+    console.log("Données utilisateur mises à jour :", latestUserData, token);
     sendResponse({ success: true });
   }
 
   if (message.action === "getUserData") {
     console.log("Demande de données utilisateur reçue.");
-    sendResponse({ userData: latestUserData });
+    sendResponse({ userData: latestUserData, token: token });
   }
 
   if (message.action === "logoutUser") {

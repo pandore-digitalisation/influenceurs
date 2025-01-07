@@ -186,11 +186,12 @@ window.addEventListener("message", function (event) {
   }
 
   if (event.data && event.data.action === "sendData") {
-    console.log("Données reçues dans l'extension:", event.data.data);
+    console.log("Données reçues dans l'extension:", event.data.data, event.data.token);
 
     chrome.runtime.sendMessage({
       action: "sendDataToPopup",
       data: event.data.data,
+      token: event.data.token,
     });
   }
 

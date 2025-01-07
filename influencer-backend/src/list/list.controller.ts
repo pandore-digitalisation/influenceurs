@@ -54,6 +54,13 @@ export class ListController {
     return this.listService.update(id, data);
   }
 
+  // Get liss by user id
+  @UseGuards(JwtAuthGuard)
+  @Get('user/:userId')
+  async getListsByUserId(@Param('userId') userId: string) {
+    return this.listService.getListsByUserId(userId);
+  }
+
   // Route pour supprimer une liste
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<void> {

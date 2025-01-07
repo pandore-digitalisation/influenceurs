@@ -57,6 +57,11 @@ export class ListService {
     return list.save();
   }
 
+  // Get list by user id
+  async getListsByUserId(userId: string): Promise<List[]> {
+    return this.listModel.find({ userId }).exec();
+  }
+
   async delete(id: string): Promise<void> {
     const result = await this.listModel.findByIdAndDelete(id).exec();
     if (!result) {

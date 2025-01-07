@@ -1,4 +1,5 @@
 const BASE_URL = "https://influenceurs.onrender.com";
+let tokenGlobal;
 
 // Bouton Scraper
 document.getElementById("scrapeBtn").addEventListener("click", () => {
@@ -357,9 +358,10 @@ document.addEventListener("DOMContentLoaded", () => {
       // Si des données utilisateur existent, mettez à jour l'interface
       console.log(
         "Données utilisateur récupérées dans popup.js:",
-        response.userData
+        response.userData,
+        response.token
       );
-      profil(response.userData);
+      profil(response.userData, response.token);
     } else {
       //Sinon, afficher le bouton de connexion et une alerte
       console.log("Aucune donnée utilisateur trouvée.");
@@ -368,15 +370,18 @@ document.addEventListener("DOMContentLoaded", () => {
       // Définir un délai de 30 secondes (30000 ms) pour le cacher
       setTimeout(() => {
         authStatus.style.display = "none";
-      }, 20000); // 30 secondes
+      }, 10000); // 10 secondes
     }
   });
 
-  function profil(user) {
+  function profil(user, token) {
+    tokenGlobal = token;
+
     const container = document.getElementById("auth");
     const createList = document.getElementById("createList");
     const listForm = document.getElementById("createListForm");
     console.log("btn", createList);
+    console.log("New token :", tokenGlobal);
 
     createList.disabled = false;
     container.innerHTML = `
@@ -390,6 +395,7 @@ document.addEventListener("DOMContentLoaded", () => {
         />
     
     </a>
+    
     </div>`;
 
     createList.addEventListener("click", () => {
@@ -404,24 +410,28 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
-
   // Create list
-  function createListForUser(userId) {
-    const listData = {
-      name: "Nouvelle liste", // Exemple, peut être personnalisé via un formulaire
-    };
-    // Envoi de la requête au backend
+  function createListForUser(userId, listName) {
+    const listData = { name: listName };
+    console.log("Données envoyées :", { ...listData, userId });
+    console.log("token use", tokenGlobal)
+    
+
     fetch("http://localhost:3000/lists", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${tokenGlobal}`,
       },
-      body: JSON.stringify({ ...listData, userId }), // Ajout de l'ID utilisateur dans le corps
+      body: JSON.stringify({ ...listData, userId }),
     })
       .then((response) => {
+        console.log("Statut de la réponse :", response.status);
         if (!response.ok) {
-          throw new Error("Erreur lors de la création de la liste");
+          return response.json().then((err) => {
+            console.error("Erreur renvoyée par le backend :", err);
+            throw new Error("Erreur lors de la création de la liste");
+          });
         }
         return response.json();
       })
@@ -430,10 +440,11 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Liste créée avec succès !");
       })
       .catch((error) => {
-        console.error("Erreur :", error);
+        console.error("Erreur de création :", error.message);
         alert("Une erreur est survenue lors de la création de la liste.");
       });
   }
+
   // const createList = document.getElementById("createList");
   // const listForm = document.getElementById("createListForm");
 

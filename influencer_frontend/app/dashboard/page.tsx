@@ -16,6 +16,7 @@ export default function Dashboard() {
     const token = searchParams.get("token");
 
     if (token) {
+
       localStorage.setItem("auth_token", token);
 
       // Utiliser le token pour récupérer les données de l'utilisateur
@@ -43,7 +44,7 @@ export default function Dashboard() {
           // console.log(localStorage);
 
           setUser(data);
-          sendDataToExtension(data);
+          sendDataToExtension(data, token);
         } catch (error) {
           setError("Erreur lors de la récupération des données utilisateur.");
         } finally {
@@ -52,27 +53,26 @@ export default function Dashboard() {
       };
 
       fetchUserData();
-
     } else {
       setError("Aucun token trouvé dans l'URL.");
       setLoading(false);
     }
-  }, [searchParams]);
 
-  // // Send data to extension afeter user connected
-  const sendDataToExtension = (userData: any) => {
-    window.postMessage(
-      { action: "sendData", data: userData },
-      window.location.origin
-    );
-  };
+    // // Send data to extension afeter user connected
+    const sendDataToExtension = (userData: any, token: any) => {
+      window.postMessage(
+        { action: "sendData", data: userData, token:token },
+        window.location.origin
+      );
+    };
+  }, [searchParams]);
 
   // Logout
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem("auth_token");
       if (!token) {
-        router.push("/login");
+        window.location.href = "/login";
         return;
       }
 
@@ -93,18 +93,14 @@ export default function Dashboard() {
 
       sessionStorage.clear();
 
-      window.postMessage(
-        { action: "logoutUser", response }, '*'
-      );
+      // window.postMessage({ action: "logoutUser", response }, "*");
 
       window.location.href = "/login";
+
     } catch (error) {
       console.error("Erreur pendant la déconnexion:", error);
     }
-
   };
-
-  
 
   if (loading) {
     return <div>Chargement...</div>;
@@ -133,6 +129,8 @@ export default function Dashboard() {
       <h1>Bienvenue sur votre Dashboard {user?.data.name}!</h1>
       <div className="flex flex-col items-center">
         <div>Email : {user?.data.email}</div>
+        <div>userId : {user?.data.userId}</div>
+
         <button
           onClick={handleLogout}
           className="bg-red-500 text-white px-4 py-2 rounded"

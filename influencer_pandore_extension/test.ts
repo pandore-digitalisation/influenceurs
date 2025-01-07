@@ -1,5 +1,9 @@
-<div id="auth"></div>
-<form id="listForm">
-  <input type="text" id="listName" placeholder="Nom de la liste" required />
-  <button type="submit" id="createList" disabled>Créer une liste</button>
-</form>
+// async getListsByUserId(userId: string): Promise<List[]> {
+//     return this.listModel.find({ userId }).exec();
+//   }
+
+// @Get('user-lists')
+// async getUserLists(@Req() req: Request): Promise<List[]> {
+//   const userId = req.user.id; // Assurez-vous que le middleware de validation JWT attache l'utilisateur au `req`.
+//   return this.listService.getListsByUserId(userId);
+// }
