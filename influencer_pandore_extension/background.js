@@ -10,7 +10,11 @@ setInterval(() => {
     // Re-fetch les données utilisateur si nécessaire
     chrome.runtime.sendMessage({ action: "getUserData" }, (response) => {
       if (response && response.userData) {
-        console.log("Données utilisateur récupérées périodiquement :", response.userData, response.token);
+        console.log(
+          "Données utilisateur récupérées périodiquement :",
+          response.userData,
+          response.token
+        );
         latestUserData = response.userData;
         token = response.token;
       }
@@ -31,6 +35,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
   if (message.action === "getUserData") {
     console.log("Demande de données utilisateur reçue.");
+    // setTimeout(() => {
+    //   sendResponse({ userData: latestUserData, token: token });
+    // }, 2000);
+    // return true;
     sendResponse({ userData: latestUserData, token: token });
     return true;
   }

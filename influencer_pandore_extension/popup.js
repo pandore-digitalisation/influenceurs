@@ -337,6 +337,8 @@ document.addEventListener("DOMContentLoaded", () => {
       messageHandled = true;
       fallbackToLocalStorage();
       return;
+    } else {
+      console.log("Données utilisateur reçues:", response.userData);
     }
 
     if (response && response.userData) {
