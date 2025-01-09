@@ -321,28 +321,37 @@ document.addEventListener("DOMContentLoaded", () => {
       );
       messageHandled = true;
       fallbackToLocalStorage();
-      return;
-    }
-
-    if (response && response.userData) {
-      messageHandled = true;
+    } else if (response && response.userData) {
       console.log("Données utilisateur récupérées :", response.userData);
       localStorage.setItem("userData", JSON.stringify(response.userData));
       localStorage.setItem("token", response.token);
       profil(response.userData, response.token);
     } else {
-      console.warn("Aucune donnée utilisateur reçue, fallback activé.");
+      console.log("Pas de données utilisateur, fallback activé");
       fallbackToLocalStorage();
     }
+
+    // if (response && response.userData) {
+    //   messageHandled = true;
+    //   console.log("Données utilisateur récupérées :", response.userData);
+    //   localStorage.setItem("userData", JSON.stringify(response.userData));
+    //   localStorage.setItem("token", response.token);
+    //   profil(response.userData, response.token);
+    // } else {
+    //   console.warn("Aucune donnée utilisateur reçue, fallback activé.");
+    //   fallbackToLocalStorage();
+    // }
   });
 
-// Si aucune réponse n'est reçue dans un délai raisonnable, fallback
-  setTimeout(() => {
-    if (!messageHandled) {
-      console.warn("Aucune réponse reçue de `chrome.runtime.sendMessage`. Utilisation du fallback.");
-      fallbackToLocalStorage();
-    }
-  }, 2000);
+  // Si aucune réponse n'est reçue dans un délai raisonnable, fallback
+  // setTimeout(() => {
+  //   if (!messageHandled) {
+  //     console.warn(
+  //       "Aucune réponse reçue de `chrome.runtime.sendMessage`. Utilisation du fallback."
+  //     );
+  //     fallbackToLocalStorage();
+  //   }
+  // }, 2000);
 
   function fallbackToLocalStorage() {
     const storedUserData = localStorage.getItem("userData");
