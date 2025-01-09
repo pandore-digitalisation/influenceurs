@@ -5,6 +5,7 @@ let token = null;
 // Intervalle pour vérifier la validité de la session toutes les 30 secondes
 setInterval(() => {
   const storedToken = localStorage.getItem("auth_token");
+
   if (storedToken) {
     console.log("Vérification périodique : utilisateur toujours connecté.");
     // Re-fetch les données utilisateur si nécessaire
@@ -20,7 +21,7 @@ setInterval(() => {
       }
     });
   }
-}, 30000); // Toutes les 30 secondes
+}, 3600000); // Toutes les 30 secondes
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("Message reçu :", message);

@@ -309,21 +309,6 @@ document.getElementById("loginBtn").addEventListener("click", () => {
   chrome.tabs.create({ url: "http://localhost:3001/login" });
 });
 
-// function loginButton() {
-//   document.getElementById("loginBtn");
-//   container.innerHTML = `<button id="login-button">Se connecter</button>`;
-//   document.getElementById("login-button").addEventListener("click", () => {
-//     const authUrl = "https://ton-backend/auth/google";
-//     chrome.tabs.create({ url: authUrl });
-//   });
-// }
-
-function logout() {
-  chrome.runtime.sendMessage({ action: "logoutUser" }, () => {
-    loginButton();
-  });
-}
-
 // Get user connected data
 document.addEventListener("DOMContentLoaded", () => {
   let messageHandled = false;
@@ -353,27 +338,27 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Vérifiez après un délai si le message a été traité
-  setTimeout(() => {
-    if (!messageHandled) {
-      console.warn(
-        "Aucune réponse de `chrome.runtime.sendMessage`. Utilisation du fallback."
-      );
-      fallbackToLocalStorage();
-    }
-  }, 1000);
+  // setTimeout(() => {
+  //   if (!messageHandled) {
+  //     console.warn(
+  //       "Aucune réponse de `chrome.runtime.sendMessage`. Utilisation du fallback."
+  //     );
+  //     fallbackToLocalStorage();
+  //   }
+  // }, 1000);
 
-  function fallbackToLocalStorage() {
-    const storedUserData = localStorage.getItem("userData");
-    const storedToken = localStorage.getItem("token");
+  // function fallbackToLocalStorage() {
+  //   const storedUserData = localStorage.getItem("userData");
+  //   const storedToken = localStorage.getItem("token");
 
-    if (storedUserData && storedToken) {
-      const userData = JSON.parse(storedUserData);
-      console.log("Fallback - Données utilisateur :", userData);
-      profil(userData, storedToken);
-    } else {
-      console.log("Aucune donnée utilisateur trouvée en fallback.");
-    }
-  }
+  //   if (storedUserData && storedToken) {
+  //     const userData = JSON.parse(storedUserData);
+  //     console.log("Fallback - Données utilisateur :", userData);
+  //     profil(userData, storedToken);
+  //   } else {
+  //     console.log("Aucune donnée utilisateur trouvée en fallback.");
+  //   }
+  // }
 
   function profil(user, token) {
     tokenGlobal = token;
@@ -389,12 +374,13 @@ document.addEventListener("DOMContentLoaded", () => {
     container.innerHTML = `
   <span>${user?.data.userId}</span>
 
-  <div>
+  <div id="profileDropdown" style="position: relative; display: inline-block;">
     <img
+      id="profileImage"
       src="${user?.data.picture}"
       title="${user?.data.name}"
       style="background-color: #9CA3AF; width: 25px; border-radius: 50%; align-items: center; cursor: pointe;"
-    />    
+    />
   </div>
 `;
 
@@ -445,6 +431,15 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   }
 });
+
+// document.getElementById("logoutBtn").addEventListener("click", () => {
+//   // Fonction pour envoyer un message à la page web lors de la déconnexion dans l'extension
+//   function logoutFromExtension() {
+//     // Envoie le message à la page web pour déconnecter l'utilisateur
+//     window.postMessage({ action: "logout" }, window.location.origin);
+//   }
+//   logoutFromExtension()
+// });
 
 // document.addEventListener("DOMContentLoaded", async () => {
 //   console.log("Popup chargé !");
