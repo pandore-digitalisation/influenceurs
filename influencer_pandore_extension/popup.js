@@ -322,8 +322,6 @@ document.addEventListener("DOMContentLoaded", () => {
       messageHandled = true;
       fallbackToLocalStorage();
       return;
-    } else {
-      console.log("Données utilisateur reçues:", response.userData);
     }
 
     if (response && response.userData) {
@@ -333,9 +331,31 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("token", response.token);
       profil(response.userData, response.token);
     } else {
+      console.warn("Aucune donnée utilisateur reçue, fallback activé.");
       fallbackToLocalStorage();
     }
   });
+
+// Si aucune réponse n'est reçue dans un délai raisonnable, fallback
+  setTimeout(() => {
+    if (!messageHandled) {
+      console.warn("Aucune réponse reçue de `chrome.runtime.sendMessage`. Utilisation du fallback.");
+      fallbackToLocalStorage();
+    }
+  }, 2000);
+
+  function fallbackToLocalStorage() {
+    const storedUserData = localStorage.getItem("userData");
+    const storedToken = localStorage.getItem("token");
+
+    if (storedUserData && storedToken) {
+      const userData = JSON.parse(storedUserData);
+      console.log("Fallback - Données utilisateur récupérées :", userData);
+      profil(userData, storedToken);
+    } else {
+      console.log("Aucune donnée utilisateur trouvée en fallback.");
+    }
+  }
 
   // Vérifiez après un délai si le message a été traité
   // setTimeout(() => {
@@ -366,11 +386,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("auth");
     const createList = document.getElementById("createList");
     const listForm = document.getElementById("createListForm");
-    console.log("btn", createList);
-    console.log("New token :", tokenGlobal);
+
+    if (!container || !createList) {
+      console.error("Les éléments nécessaires n'ont pas été trouvés.");
+      return;
+    }
 
     createList.disabled = false;
-    // Injecter le HTML dynamique
     container.innerHTML = `
   <span>${user?.data.userId}</span>
 
@@ -383,7 +405,7 @@ document.addEventListener("DOMContentLoaded", () => {
     />
   </div>
 `;
-
+    console.log("Profil injecté avec succès :", user?.data);
     createList.addEventListener("click", () => {
       // createListForUser(user?.data.userId);
       listForm.style.display = "flex";

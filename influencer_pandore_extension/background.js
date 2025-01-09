@@ -2,27 +2,6 @@ let latestUserData = null;
 let logoutTimer = null;
 let token = null;
 
-// Intervalle pour vérifier la validité de la session toutes les 30 secondes
-setInterval(() => {
-  const storedToken = localStorage.getItem("auth_token");
-
-  if (storedToken) {
-    console.log("Vérification périodique : utilisateur toujours connecté.");
-    // Re-fetch les données utilisateur si nécessaire
-    chrome.runtime.sendMessage({ action: "getUserData" }, (response) => {
-      if (response && response.userData) {
-        console.log(
-          "Données utilisateur récupérées périodiquement :",
-          response.userData,
-          response.token
-        );
-        latestUserData = response.userData;
-        token = response.token;
-      }
-    });
-  }
-}, 3600000); // Toutes les 30 secondes
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("Message reçu :", message);
 
@@ -32,16 +11,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     token = message.token;
     console.log("Données utilisateur mises à jour :", latestUserData, token);
     sendResponse({ success: true });
+    return;  // Assurer qu'on ne fait pas d'autres réponses
   }
 
+  // Action pour récupérer les données utilisateur
   if (message.action === "getUserData") {
     console.log("Demande de données utilisateur reçue.");
-    // setTimeout(() => {
-    //   sendResponse({ userData: latestUserData, token: token });
-    // }, 2000);
-    // return true;
+    // Renvoie les données utilisateur
     sendResponse({ userData: latestUserData, token: token });
-    return true;
+    return true;  // Indiquer que la réponse est envoyée de manière asynchrone
   }
 
   // Action pour déconnecter l'utilisateur
@@ -50,6 +28,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     latestUserData = null;
     token = null;
     sendResponse({ success: true });
+    return;
   }
 
   // Traitement de l'injection des scripts en fonction de la plateforme
