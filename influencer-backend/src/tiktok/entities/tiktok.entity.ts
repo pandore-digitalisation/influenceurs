@@ -6,9 +6,6 @@ export type DataDocument = HydratedDocument<Tiktok>;
 @Schema({ timestamps: true })
 export class Tiktok {
   @Prop({ required: false })
-  userId: string;
-
-  @Prop({ required: false })
   profileUrl: string;
 
   @Prop({ required: false })

@@ -81,70 +81,53 @@
         profileImageElements[0].getAttribute("xlink:href")
       : "Not found";
 
-  // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
-  async function getUserData() {
-    return new Promise((resolve, reject) => {
-      chrome.storage.local.get("userData", (result) => {
-        if (chrome.runtime.lastError) {
-          reject(
-            new Error(
-              "Erreur lors de la récupération des données : " +
-                chrome.runtime.lastError
-            )
-          );
-        } else {
-          resolve(result.userData);
-        }
-      });
-    });
-  }
+  // const userData = chrome.storage.local.get(["userData"]);
+  // console.log("userData", userData);
+  // console.log("userId",)
 
-  try {
-    // Récupérer les données utilisateur
-    const userData = await getUserData();
-    const userId = userData?.data?.userId || null;
-
-    if (!userId) {
-      console.log("User is not logged in");
-    } else {
-      console.log("User ID:", userId);
-    }
-
-    // Créer les données extraites
-    const extractedData = {
-      userId,
-      name,
-      followers,
-      following,
-      plateform: "Facebook",
-      profileImage,
-      profileUrl: window.location.href,
-    };
-
-    console.log("Extracted Data:", extractedData);
-
-    // Fonction pour vérifier si les données sont valides
-    function areDataValid(data) {
-      return (
-        data.name !== "None" &&
-        data.followers !== "0" &&
-        data.profileImage !== " "
+  let userId;
+  chrome.storage.local.get("userData", (result) => {
+    if (chrome.runtime.lastError) {
+      console.error(
+        "Erreur lors de la récupération des données :",
+        chrome.runtime.lastError
       );
-    }
-
-    // Si les données sont valides, envoie les à l'API
-    if (areDataValid(extractedData)) {
-      const success = await sendToBackend(extractedData);
-      console.log("Success:", success);
-      chrome.runtime.sendMessage({ success });
     } else {
-      console.warn("Data is incomplete or invalid. Skipping POST request.");
+      // Accéder à userData ici
+      const userData = result.userData;
+      userId = userData.data.userId;
+      console.log("User ID:", userData.data.userId); // Affiche l'ID de l'utilisateur
     }
-  } catch (error) {
-    console.error("Error fetching user data:", error);
+  });
+
+  const extractedData = {
+    userId,
+    name,
+    followers,
+    following,
+    plateform: "Facebook",
+    profileImage,
+    profileUrl: window.location.href,
+  };
+
+  console.log("Extracted Data:", extractedData);
+
+  function areDataValid(data) {
+    return (
+      data.name !== "None" &&
+      data.followers !== "0" &&
+      data.profileImage !== " "
+    );
   }
 
-  // Fonction pour envoyer les données à l'API backend
+  if (areDataValid(extractedData)) {
+    const success = await sendToBackend(extractedData);
+    console.log("Success:", success);
+    chrome.runtime.sendMessage({ success });
+  } else {
+    console.warn("Data is incomplete or invalid. Skipping POST request.");
+  }
+
   async function sendToBackend(data) {
     try {
       const response = await fetch(`${BASE_URL}/facebook`, {
@@ -159,6 +142,8 @@
     }
   }
 })();
+
+
 
 // (async () => {
 //   console.log("Running script for Facebook...");
@@ -243,53 +228,70 @@
 //         profileImageElements[0].getAttribute("xlink:href")
 //       : "Not found";
 
-//   // const userData = chrome.storage.local.get(["userData"]);
-//   // console.log("userData", userData);
-//   // console.log("userId",)
+//   // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
+//   async function getUserData() {
+//     return new Promise((resolve, reject) => {
+//       chrome.storage.local.get("userData", (result) => {
+//         if (chrome.runtime.lastError) {
+//           reject(
+//             new Error(
+//               "Erreur lors de la récupération des données : " +
+//                 chrome.runtime.lastError
+//             )
+//           );
+//         } else {
+//           resolve(result.userData);
+//         }
+//       });
+//     });
+//   }
 
-//   let userId;
-//   chrome.storage.local.get("userData", (result) => {
-//     if (chrome.runtime.lastError) {
-//       console.error(
-//         "Erreur lors de la récupération des données :",
-//         chrome.runtime.lastError
-//       );
+//   try {
+//     // Récupérer les données utilisateur
+//     const userData = await getUserData();
+//     const userId = userData?.data?.userId || null;
+
+//     if (!userId) {
+//       console.log("User is not logged in");
 //     } else {
-//       // Accéder à userData ici
-//       const userData = result.userData;
-//       userId = userData.data.userId;
-//       console.log("User ID:", userData.data.userId); // Affiche l'ID de l'utilisateur
+//       console.log("User ID:", userId);
 //     }
-//   });
 
-//   const extractedData = {
-//     userId,
-//     name,
-//     followers,
-//     following,
-//     plateform: "Facebook",
-//     profileImage,
-//     profileUrl: window.location.href,
-//   };
+//     // Créer les données extraites
+//     const extractedData = {
+//       userId,
+//       name,
+//       followers,
+//       following,
+//       plateform: "Facebook",
+//       profileImage,
+//       profileUrl: window.location.href,
+//     };
 
-//   console.log("Extracted Data:", extractedData);
+//     console.log("Extracted Data:", extractedData);
 
-//   function areDataValid(data) {
-//     return (
-//       data.name !== "None" &&
-//       data.followers !== "0" &&
-//       data.profileImage !== " "
-//     );
+//     // Fonction pour vérifier si les données sont valides
+//     function areDataValid(data) {
+//       return (
+//         data.name !== "None" &&
+//         data.followers !== "0" &&
+//         data.profileImage !== " "
+//       );
+//     }
+
+//     // Si les données sont valides, envoie les à l'API
+//     if (areDataValid(extractedData)) {
+//       const success = await sendToBackend(extractedData);
+//       console.log("Success:", success);
+//       chrome.runtime.sendMessage({ success });
+//     } else {
+//       console.warn("Data is incomplete or invalid. Skipping POST request.");
+//     }
+//   } catch (error) {
+//     console.error("Error fetching user data:", error);
 //   }
 
-//   if (areDataValid(extractedData)) {
-//     const success = await sendToBackend(extractedData);
-//     console.log("Success:", success);
-//     chrome.runtime.sendMessage({ success });
-//   } else {
-//     console.warn("Data is incomplete or invalid. Skipping POST request.");
-//   }
-
+//   // Fonction pour envoyer les données à l'API backend
 //   async function sendToBackend(data) {
 //     try {
 //       const response = await fetch(`${BASE_URL}/facebook`, {
