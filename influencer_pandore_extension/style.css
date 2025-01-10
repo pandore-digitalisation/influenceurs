@@ -128,6 +128,11 @@ button {
   margin-bottom: 10px;
 }
 
+.formsBlock {
+  display: flex;
+  margin-bottom: 8px;
+}
+
 .version {
   justify-content: flex-end;
   display: flex;

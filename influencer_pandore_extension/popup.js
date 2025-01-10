@@ -1,4 +1,5 @@
-const BASE_URL = "https://influenceurs.onrender.com";
+// const BASE_URL = "https://influenceurs.onrender.com";
+const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 
 // Bouton Scraper
@@ -326,6 +327,18 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("userData", JSON.stringify(response.userData));
       localStorage.setItem("token", response.token);
       profil(response.userData, response.token);
+      
+      chrome.storage.local.set({ userData: response.userData }, () => {
+        if (chrome.runtime.lastError) {
+          console.error('Erreur lors de la sauvegarde des données :', chrome.runtime.lastError);
+        } else {
+          console.log('Données utilisateur sauvegardées avec succès.');
+        }
+      });
+      
+      // const chromedata = chrome.storage.local.set({ userData: response.userData });
+      // console.log("chrome", chromedata)
+      
     } else {
       console.log("Pas de données utilisateur, fallback activé");
       fallbackToLocalStorage();
@@ -422,15 +435,16 @@ document.addEventListener("DOMContentLoaded", () => {
       // Gestion de la soumission du formulaire
       listForm.addEventListener("submit", (event) => {
         event.preventDefault(); // Empêche le rechargement de la page
-        const listName = document.getElementById("listName").value; // Récupère le nom de la liste
-        createListForUser(user?.data.userId, listName);
+        const listName = document.getElementById("listName").value;
+        const listProfile = document.getElementById("listProfile").value; // Récupère le nom de la liste
+        createListForUser(user?.data.userId, listName, listProfile);
       });
     });
   }
 
   // Create list
-  function createListForUser(userId, listName) {
-    const listData = { name: listName };
+  function createListForUser(userId, listName, listProfile) {
+    const listData = { name: listName, profiles: listProfile };
     console.log("Données envoyées :", { ...listData, userId });
     console.log("token use", tokenGlobal);
 

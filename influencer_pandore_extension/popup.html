@@ -47,12 +47,22 @@
 
     <div id="createListForm" style="display: none;">
       <form class="row g-3" id="listForm">
-        <div class="col-auto">
-          <input type="text" class="form-control" id="listName" placeholder="Name your list">
-        </div>
-        <div class="col-auto">
-          <button type="submit" class="btn mb-3" id="createListSubmit">Save</button>
-        </div>
+        <span class="formsBlock gap-1">
+          <span class="gap-1 formsBlock">
+            <input type="text" class="form-control form-select-sm input" id="listName" placeholder="Name your list"
+              required>
+            <!-- <input type="text" class="form-control form-select-sm input" id="listProfile" placeholder="Select profile"> -->
+            <select class="form-select form-select-sm" aria-label="Default select example" id="listProfile">
+              <option selected>Open this select menu</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+          </span>
+          <span class="">
+            <button type="submit" class="btn btn-sm" id="createListSubmit">Save</button>
+          </span>
+        </span>
       </form>
     </div>
 
