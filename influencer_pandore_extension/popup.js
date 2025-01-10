@@ -327,8 +327,8 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("userData", JSON.stringify(response.userData));
       localStorage.setItem("token", response.token);
       profil(response.userData, response.token);
-      
-      chrome.storage.local.set({ userData: response.userData }, () => {
+
+      chrome.storage.local.set({ userData: response.userData, token: response.token }, () => {
         if (chrome.runtime.lastError) {
           console.error('Erreur lors de la sauvegarde des données :', chrome.runtime.lastError);
         } else {
@@ -336,8 +336,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
       
-      // const chromedata = chrome.storage.local.set({ userData: response.userData });
-      // console.log("chrome", chromedata)
+      profil(response.userData, response.token);
       
     } else {
       console.log("Pas de données utilisateur, fallback activé");

@@ -86,7 +86,12 @@
     return new Promise((resolve, reject) => {
       chrome.storage.local.get("userData", (result) => {
         if (chrome.runtime.lastError) {
-          reject(new Error("Erreur lors de la récupération des données : " + chrome.runtime.lastError));
+          reject(
+            new Error(
+              "Erreur lors de la récupération des données : " +
+                chrome.runtime.lastError
+            )
+          );
         } else {
           resolve(result.userData);
         }
@@ -97,9 +102,13 @@
   try {
     // Récupérer les données utilisateur
     const userData = await getUserData();
-    const userId = userData?.data?.userId; // Utiliser le userId si disponible
+    const userId = userData?.data?.userId || null;
 
-    console.log("User ID:", userId);
+    if (!userId) {
+      console.log("User is not logged in");
+    } else {
+      console.log("User ID:", userId);
+    }
 
     // Créer les données extraites
     const extractedData = {
@@ -237,7 +246,7 @@
 //   // const userData = chrome.storage.local.get(["userData"]);
 //   // console.log("userData", userData);
 //   // console.log("userId",)
-  
+
 //   let userId;
 //   chrome.storage.local.get("userData", (result) => {
 //     if (chrome.runtime.lastError) {
