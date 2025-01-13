@@ -6,6 +6,9 @@ export type DataDocument = HydratedDocument<Facebook>;
 @Schema({ timestamps: true })
 export class Facebook {
   @Prop({ required: false })
+  userId: string;
+
+  @Prop({ required: false })
   profileUrl: string;
 
   @Prop({ required: false })

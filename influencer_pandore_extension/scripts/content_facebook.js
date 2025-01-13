@@ -43,8 +43,8 @@
     });
   }
 
-  const BASE_URL = "https://influenceurs.onrender.com";
-  // const BASE_URL = "http://localhost:3000";
+  // const BASE_URL = "https://influenceurs.onrender.com";
+  const BASE_URL = "http://localhost:3000";
 
   const nameXPath =
     "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]";
@@ -121,7 +121,7 @@
   }
 
   const userId = userData.data.userId;
-  
+
   // let userId;
   // chrome.storage.local.get("userData", (result) => {
   //   if (chrome.runtime.lastError) {
@@ -156,15 +156,6 @@
       data.profileImage !== " "
     );
   }
-
-  if (areDataValid(extractedData)) {
-    const success = await sendToBackend(extractedData);
-    console.log("Success:", success);
-    chrome.runtime.sendMessage({ success });
-  } else {
-    console.warn("Data is incomplete or invalid. Skipping POST request.");
-  }
-
   async function sendToBackend(data) {
     try {
       const response = await fetch(`${BASE_URL}/facebook`, {
@@ -177,6 +168,14 @@
       console.error("Network error:", error);
       return false;
     }
+  }
+
+  if (areDataValid(extractedData)) {
+    const success = await sendToBackend(extractedData);
+    console.log("Success:", success);
+    chrome.runtime.sendMessage({ success });
+  } else {
+    console.warn("Data is incomplete or invalid. Skipping POST request.");
   }
 })();
 
