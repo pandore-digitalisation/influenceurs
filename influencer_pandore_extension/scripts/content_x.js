@@ -80,6 +80,8 @@
   const profileUrl = window.location.href;
   const base = "https://x.com";
 
+  const userId = userData.data.userId;
+
   // Prepare the extracted data and add userId
   const extractedData = {
     name,
@@ -89,7 +91,7 @@
     plateform: "X",
     profileImage: `${base}${profileImage}`,
     profileUrl,
-    userId: userData.data.userId // Add userId to the data
+    userId,
   };
 
   console.log("Extracted Data:", extractedData);
