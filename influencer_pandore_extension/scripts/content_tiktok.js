@@ -16,7 +16,9 @@
     return nodes;
   }
 
-  const BASE_URL = "https://influenceurs.onrender.com";
+  // const BASE_URL = "https://influenceurs.onrender.com";
+  const BASE_URL = "http://localhost:3000";
+
 
   // Define the XPaths
   const nameXPath =
@@ -61,10 +63,48 @@
   const profileImage =
     profileImageElements.length > 0 ? profileImageElements[0].src : " ";
 
+    // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
+    async function getUserData() {
+      return new Promise((resolve, reject) => {
+        chrome.storage.local.get("userData", (result) => {
+          if (chrome.runtime.lastError) {
+            reject(
+              new Error(
+                "Erreur lors de la récupération des données : " +
+                  chrome.runtime.lastError
+              )
+            );
+          } else {
+            resolve(result.userData);
+          }
+        });
+      });
+    }
+
+  // Get user data and add it to the extracted data
+  let userData = null;
+  try {
+    userData = await getUserData();
+    console.log("userData", userData);
+  } catch (error) {
+    console.error(error);
+  }
+
+  console.log("user data 2", userData);
+  // If user data is not found, handle accordingly (e.g., not sending userId)
+  if (!userData || !userData.data.userId) {
+    console.error(
+      "Utilisateur non connecté ou données utilisateur manquantes."
+    );
+  }
+
+  const userId = userData.data.userId;
+
   // Get the profile URL
   const profileUrl = window.location.href;
 
   const extractedData = {
+    userId,
     name,
     description,
     likes,
@@ -77,25 +117,25 @@
 
   console.log("Extracted Data:", extractedData);
 
-  // Combine new data with previously stored data, replacing existing entries if the name matches
-  let storedData = [];
-  if (localStorage.getItem("exportedData")) {
-    storedData = JSON.parse(localStorage.getItem("exportedData"));
-  }
+  // // Combine new data with previously stored data, replacing existing entries if the name matches
+  // let storedData = [];
+  // if (localStorage.getItem("exportedData")) {
+  //   storedData = JSON.parse(localStorage.getItem("exportedData"));
+  // }
 
-  const existingIndex = storedData.findIndex(
-    (entry) => entry.name === extractedData.name
-  );
+  // const existingIndex = storedData.findIndex(
+  //   (entry) => entry.name === extractedData.name
+  // );
 
-  if (existingIndex > -1) {
-    // Replace existing entry if the name matches
-    storedData[existingIndex] = extractedData;
-  } else {
-    // Add new entry if no match is found
-    storedData.push(extractedData);
-  }
+  // if (existingIndex > -1) {
+  //   // Replace existing entry if the name matches
+  //   storedData[existingIndex] = extractedData;
+  // } else {
+  //   // Add new entry if no match is found
+  //   storedData.push(extractedData);
+  // }
 
-  localStorage.setItem("exportedData", JSON.stringify(storedData));
+  // localStorage.setItem("exportedData", JSON.stringify(storedData));
 
   // Send data to the backend
   async function sendToBackend(data) {
