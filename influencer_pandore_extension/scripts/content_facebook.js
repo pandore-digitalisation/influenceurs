@@ -85,20 +85,57 @@
   // console.log("userData", userData);
   // console.log("userId",)
 
-  let userId;
-  chrome.storage.local.get("userData", (result) => {
-    if (chrome.runtime.lastError) {
-      console.error(
-        "Erreur lors de la récupération des données :",
-        chrome.runtime.lastError
-      );
-    } else {
-      // Accéder à userData ici
-      const userData = result.userData;
-      userId = userData.data.userId;
-      console.log("User ID:", userData.data.userId); // Affiche l'ID de l'utilisateur
-    }
-  });
+  // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
+  async function getUserData() {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get("userData", (result) => {
+        if (chrome.runtime.lastError) {
+          reject(
+            new Error(
+              "Erreur lors de la récupération des données : " +
+                chrome.runtime.lastError
+            )
+          );
+        } else {
+          resolve(result.userData);
+        }
+      });
+    });
+  }
+
+  // Get user data and add it to the extracted data
+  let userData = null;
+  try {
+    userData = await getUserData();
+    console.log("userData", userData);
+  } catch (error) {
+    console.error(error);
+  }
+
+  console.log("user data 2", userData);
+  // If user data is not found, handle accordingly (e.g., not sending userId)
+  if (!userData || !userData.data.userId) {
+    console.error(
+      "Utilisateur non connecté ou données utilisateur manquantes."
+    );
+  }
+
+  const userId = userData.data.userId;
+  
+  // let userId;
+  // chrome.storage.local.get("userData", (result) => {
+  //   if (chrome.runtime.lastError) {
+  //     console.error(
+  //       "Erreur lors de la récupération des données :",
+  //       chrome.runtime.lastError
+  //     );
+  //   } else {
+  //     // Accéder à userData ici
+  //     const userData = result.userData;
+  //     userId = userData.data.userId;
+  //     console.log("User ID:", userData.data.userId); // Affiche l'ID de l'utilisateur
+  //   }
+  // });
 
   const extractedData = {
     userId,
@@ -142,8 +179,6 @@
     }
   }
 })();
-
-
 
 // (async () => {
 //   console.log("Running script for Facebook...");
