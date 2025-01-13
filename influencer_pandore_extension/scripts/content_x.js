@@ -18,14 +18,51 @@
     return nodes;
   }
 
+  async function waitForElement(xpath, timeout = 10000) {
+    return new Promise((resolve, reject) => {
+      const interval = 100;
+      let elapsed = 0;
+
+      const check = () => {
+        const elements = evaluateXPath(xpath);
+        if (elements.length > 0) {
+          resolve(elements);
+        } else if (elapsed >= timeout) {
+          console.log(
+            "Timeout reached. Data not fully loaded. please reload the page and trying"
+          );
+          reject(new Error("Timeout waiting for element"));
+          const failed =
+            "Timeout reached. Data not fully loaded. please reload the page and trying again";
+          chrome.runtime.sendMessage({ failed });
+        } else {
+          elapsed += interval;
+          setTimeout(check, interval);
+        }
+      };
+
+      check();
+    });
+  }
+
   const BASE_URL = "http://localhost:3000";
 
   // Define the XPaths
-  const nameXPath = "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/span/span[1]";
-  const descriptionXPath = "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[3]";
-  const followersXPath = "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[5]/div[2]/a/span[1]/span";
-  const followingXpath = "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[5]/div[1]/a/span[1]/span";
-  const profileImageXPath = "/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div/div/div/div[1]/div[1]/div[2]/div/div[2]/div/a";
+  const nameXPath =
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/span/span[1]";
+  const descriptionXPath =
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[3]";
+  const followersXPath =
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[5]/div[2]/a/span[1]/span";
+  const followingXpath =
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[5]/div[1]/a/span[1]/span";
+  const profileImageXPath =
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div/div/div/div[1]/div[1]/div[2]/div/div[2]/div/a";
+
+  // Attendre que les éléments soient disponibles
+  await waitForElement(nameXPath);
+  await waitForElement(followersXPath);
+  await waitForElement(followingXpath);
 
   // Extract data
   const nameElements = evaluateXPath(nameXPath);
@@ -34,11 +71,25 @@
   const followingElements = evaluateXPath(followingXpath);
   const profileImageElements = evaluateXPath(profileImageXPath);
 
-  const name = nameElements.length > 0 ? nameElements[0].textContent.trim() : "None";
-  const description = descriptionElements.length > 0 ? descriptionElements[0].textContent.trim() : "Données incomplètes ou manquantes";
-  const followers = followersElements.length > 0 ? followersElements[0].textContent.trim() : "0";
-  const following = followingElements.length > 0 ? followingElements[0].textContent.trim() : "0";
-  const profileImage = profileImageElements.length > 0 ? profileImageElements[0].getAttribute("href") || profileImageElements[0].getAttribute("src") : " ";
+  const name =
+    nameElements.length > 0 ? nameElements[0].textContent.trim() : "None";
+  const description =
+    descriptionElements.length > 0
+      ? descriptionElements[0].textContent.trim()
+      : "Nnt found";
+  const followers =
+    followersElements.length > 0
+      ? followersElements[0].textContent.trim()
+      : "0";
+  const following =
+    followingElements.length > 0
+      ? followingElements[0].textContent.trim()
+      : "0";
+  const profileImage =
+    profileImageElements.length > 0
+      ? profileImageElements[0].getAttribute("href") ||
+        profileImageElements[0].getAttribute("src")
+      : " ";
 
   // Get data before sending to backend
   if (!name || !followers || !following) {
@@ -52,7 +103,10 @@
       chrome.storage.local.get("userData", (result) => {
         if (chrome.runtime.lastError) {
           reject(
-            new Error("Erreur lors de la récupération des données : " + chrome.runtime.lastError)
+            new Error(
+              "Erreur lors de la récupération des données : " +
+                chrome.runtime.lastError
+            )
           );
         } else {
           resolve(result.userData);
@@ -65,15 +119,17 @@
   let userData = null;
   try {
     userData = await getUserData();
-    console.log("userData", userData)
+    console.log("userData", userData);
   } catch (error) {
     console.error(error);
   }
 
-  console.log("user data 2", userData)
+  console.log("user data 2", userData);
   // If user data is not found, handle accordingly (e.g., not sending userId)
   if (!userData || !userData.data.userId) {
-    console.error("Utilisateur non connecté ou données utilisateur manquantes.");
+    console.error(
+      "Utilisateur non connecté ou données utilisateur manquantes."
+    );
   }
 
   // Get the profile URL
@@ -148,7 +204,6 @@
 //   }
 
 //   const BASE_URL = "https://influenceurs.onrender.com";
-
 
 //   // Define the XPaths
 //   const nameXPath =
