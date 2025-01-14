@@ -16,8 +16,8 @@
     return nodes;
   }
 
-  // const BASE_URL = "https://influenceurs.onrender.com";
   const BASE_URL = "https://influenceurs.onrender.com";
+  // const BASE_URL = "http://localhost:3000";
 
 
   // Define the XPaths

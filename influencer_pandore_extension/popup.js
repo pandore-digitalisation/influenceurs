@@ -1,6 +1,7 @@
 const BASE_URL = "https://influenceurs.onrender.com";
-// const BASE_URL = "https://influenceurs.onrender.com";
+// const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
+
 
 // Bouton Scraper
 document.getElementById("scrapeBtn").addEventListener("click", () => {
@@ -126,7 +127,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function displayData(dataToShow) {
-    dataContainer.innerHTML = ""; // Vider le tableau
+    dataContainer.innerHTML = " "; // Vider le tableau
     if (dataToShow.length === 0) {
       const noDataMessage = document.createElement("tr");
       noDataMessage.innerHTML =
@@ -212,6 +213,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     selectAllCheckbox.addEventListener("change", handleSelectAll);
+    
+    selectAllCheckbox.addEventListener("change", () => {
+      const isChecked = selectAllCheckbox.checked;
+      document.querySelectorAll(".dataCheckbox").forEach((checkbox) => {
+        checkbox.checked = isChecked;
+      });
+      handleSelectionChange(); // Mettez à jour la sélection globale
+    });
+    
   }
 
   function handleSelectAll() {
@@ -448,7 +458,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Données envoyées :", { ...listData, userId });
     console.log("token use", tokenGlobal);
 
-    fetch("https://influenceurs.onrender.com/lists", {
+    fetch("http://localhost:3000/lists", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

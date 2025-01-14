@@ -23,6 +23,23 @@ export class LinkedinController {
     return this.linkedinService.create(createLinkedinDto);
   }
 
+  @Post('create-profile')
+  async createProfile(
+    @Body()
+    {
+      createLinkedinDto: CreateLinkedinDto,
+      userId,
+    }: {
+      createLinkedinDto: CreateLinkedinDto;
+      userId: string | string[];
+    },
+  ): Promise<Linkedin> {
+    if (Array.isArray(userId)) {
+      throw new Error('Expected a single userId, but received an array');
+    }
+    return this.linkedinService.createProfile(CreateLinkedinDto, userId);
+  }
+
   @Get()
   findAll() {
     return this.linkedinService.findAll();

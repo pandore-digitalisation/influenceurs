@@ -5,8 +5,10 @@ import { Document } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Linkedin extends Document {
-  @Prop({ required: false })
-  userId: string;
+  @Prop({ type: [String], required: false })
+  userId: string[];
+  // @Prop({ required: false })
+  // userId: string;
 
   @Prop({ required: false })
   profileUrl: string;

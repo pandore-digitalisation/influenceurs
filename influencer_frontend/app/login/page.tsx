@@ -2,12 +2,12 @@
 "use client";
 
 import React from "react";
-import { useState, useEffect } from 'react';
+// import { useState, useEffect } from 'react';
 
 
 export default function Login() {
   const handleGoogleLogin = () => {
-    window.location.href = "https://influenceurs.onrender.com/auth/google";
+    window.location.href = "http://localhost:3000/auth/google";
   };
 
   return (

@@ -9,7 +9,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: 'https://influenceurs.onrender.com/auth/google/callback',
+      callbackURL: 'http://localhost:3000/auth/google/callback',
       scope: ['email', 'profile'],
     });
   }
@@ -18,3 +18,5 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     return this.authService.validateUser(profile);
   }
 }
+
+// callbackURL: 'https://influenceurs.onrender.com/auth/google/callback',

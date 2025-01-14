@@ -21,7 +21,7 @@ export default function Dashboard() {
       // Utiliser le token pour récupérer les données de l'utilisateur
       const fetchUserData = async () => {
         try {
-          const response = await fetch("https://influenceurs.onrender.com/auth/user", {
+          const response = await fetch("http://localhost:3000/auth/user", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -44,7 +44,7 @@ export default function Dashboard() {
           const fetchUserLists = async () => {
             try {
               const listsResponse = await fetch(
-                `https://influenceurs.onrender.com/lists/user/${data.data.userId}`,
+                `http://localhost:3000/lists/user/${data.data.userId}`,
                 {
                   method: "GET",
                   headers: {
@@ -104,7 +104,7 @@ export default function Dashboard() {
         return;
       }
 
-      const response = await fetch("https://influenceurs.onrender.com/auth/logout", {
+      const response = await fetch("http://localhost:3000/auth/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -24,6 +24,43 @@ export class LinkedinService {
     }
   }
 
+  async createProfile(
+    createLinkedinDto: CreateLinkedinDto,
+    userId: string | string[],
+  ): Promise<Linkedin> {
+    const { name } = createLinkedinDto;
+
+    // Vérifier si le profil existe déjà
+    const existingLinkedin = await this.linkedinModel.findOne({ name });
+
+    if (existingLinkedin) {
+      // Convertir userId en tableau s'il ne l'est pas
+      const userIdsToAdd = Array.isArray(userId) ? userId : [userId];
+
+      // Ajouter uniquement les userId qui ne sont pas déjà présents
+      userIdsToAdd.forEach((id) => {
+        if (!existingLinkedin.userId.includes(id)) {
+          existingLinkedin.userId.push(id);
+        }
+      });
+
+      // Mettre à jour les autres champs
+      Object.assign(existingLinkedin, createLinkedinDto);
+
+      // Enregistrer et retourner le profil mis à jour
+      return existingLinkedin.save();
+    } else {
+      // Créer un nouveau profil si inexistant
+      const newTiktok = new this.linkedinModel({
+        ...createLinkedinDto,
+        userId: Array.isArray(userId) ? userId : [userId],
+      });
+
+      // Enregistrer et retourner le nouveau profil
+      return newTiktok.save();
+    }
+  }
+
   findAll() {
     return this.linkedinModel.find().exec();
   }
