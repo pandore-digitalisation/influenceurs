@@ -44,7 +44,7 @@
   }
 
   // const BASE_URL = "https://influenceurs.onrender.com";
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = "https://influenceurs.onrender.com";
 
   const nameXPath =
     "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]";
@@ -225,7 +225,7 @@
 //   }
 
 //   // const BASE_URL = "https://influenceurs.onrender.com";
-//   const BASE_URL = "http://localhost:3000";
+//   const BASE_URL = "https://influenceurs.onrender.com";
 
 //   const nameXPath =
 //     "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]";

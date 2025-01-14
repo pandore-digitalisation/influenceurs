@@ -1,5 +1,5 @@
+const BASE_URL = "https://influenceurs.onrender.com";
 // const BASE_URL = "https://influenceurs.onrender.com";
-const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 
 // Bouton Scraper
@@ -448,7 +448,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Données envoyées :", { ...listData, userId });
     console.log("token use", tokenGlobal);
 
-    fetch("http://localhost:3000/lists", {
+    fetch("https://influenceurs.onrender.com/lists", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
