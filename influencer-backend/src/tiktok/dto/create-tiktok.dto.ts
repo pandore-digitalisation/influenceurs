@@ -1,4 +1,5 @@
 export class CreateTiktokDto {
+  userId: string;
   name: string;
   followers?: string;
   following?: string;

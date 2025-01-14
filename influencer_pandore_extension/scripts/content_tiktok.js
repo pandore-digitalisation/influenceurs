@@ -145,6 +145,7 @@
         headers: {
           "Content-Type": "application/json",
         },
+        userId: extractedData.userId,
         body: JSON.stringify(data),
       });
 
