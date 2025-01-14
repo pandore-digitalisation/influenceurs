@@ -8,24 +8,17 @@ import { Model } from 'mongoose';
 @Injectable()
 export class TiktokService {
   constructor(@InjectModel(Tiktok.name) private tiktokModel: Model<Tiktok>) {}
-  async create(
-    createTiktokDto: CreateTiktokDto,
-    userId: string,
-  ): Promise<Tiktok> {
+  async create(createTiktokDto: CreateTiktokDto): Promise<Tiktok> {
     const { name } = createTiktokDto;
 
     const existingTiktok = await this.tiktokModel.findOne({ name });
 
     if (existingTiktok) {
-      if (!existingTiktok.userId.includes(userId)) {
-        existingTiktok.userId.push(userId);
-      }
       Object.assign(existingTiktok, createTiktokDto);
       return existingTiktok.save();
     } else {
       const newTiktok = new this.tiktokModel({
-        ...createTiktokDto,
-        userId: [userId],
+        createTiktokDto,
       });
       return newTiktok.save();
     }

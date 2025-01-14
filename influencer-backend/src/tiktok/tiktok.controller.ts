@@ -18,17 +18,7 @@ export class TiktokController {
 
   @Post()
   async create(@Body() createTiktokDto: CreateTiktokDto): Promise<Tiktok> {
-    const { userId } = createTiktokDto;
-    console.log(userId);
-
-    if (!userId) {
-      throw new Error('Utilisatuer non authentifier');
-    }
-    const tiktokProfile = await this.tiktokService.create(
-      createTiktokDto,
-      userId,
-    );
-    return tiktokProfile;
+    return this.tiktokService.create(createTiktokDto);
   }
 
   @Post('create-profile')

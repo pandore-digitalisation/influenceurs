@@ -1,5 +1,5 @@
-const BASE_URL = "https://influenceurs.onrender.com";
-// const BASE_URL = "http://localhost:3000";
+// const BASE_URL = "https://influenceurs.onrender.com";
+const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 
 // Bouton Scraper
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const followers = item.followers;
       const following = item.following;
       const connection = item.connection;
-      const followersValue = followers.replace(/[^\dKM.,]/g, "");
+      const followersValue = followers ? followers.replace(/[^\dKM.,]/g, ""): "";
       const followingValue = following
         ? following.replace(/[^\dKM.,]/g, "")
         : "";
@@ -245,7 +245,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     checkboxes.forEach((checkbox) => {
       const rowIndex = checkbox.getAttribute("data-index");
-      selectedRows.push(data[rowIndex]);
+      selectedRows.push(filteredData[rowIndex]);
     });
 
     // Générer le CSV
@@ -278,15 +278,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Charger les données initiales
   data = await fetchData();
+  console.log(data)
   filteredData = data; // Par défaut, toutes les données
-  displayData(data);
+  displayData(filteredData);
 
   // Ajouter des écouteurs pour les filtres
   searchInput.addEventListener("input", updateFilters);
   platformSelect.addEventListener("change", updateFilters);
 
   // Activer l'exportation des données
-  exportButton.addEventListener("click", () => exportToCsv(data));
+  exportButton.addEventListener("click", exportToCsv);
 
   async function updateFilters() {
     const searchValue = searchInput.value.toLowerCase();
@@ -294,10 +295,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     filteredData = data.filter((item) => {
       const matchesSearch =
-        !searchValue || item.name.toLowerCase().includes(searchValue);
+        !searchValue || item.name?.toLowerCase().includes(searchValue);
       const matchesPlatform =
         !platformValue ||
-        item.plateform.toLowerCase() === platformValue.toLowerCase();
+        item.plateform?.toLowerCase() === platformValue.toLowerCase();
       return matchesSearch && matchesPlatform;
     });
 

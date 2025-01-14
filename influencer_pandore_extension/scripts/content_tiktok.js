@@ -105,14 +105,17 @@
 
   const extractedData = {
     userId,
-    name,
-    description,
-    likes,
-    followers,
-    following,
-    plateform: "TikTok",
-    profileImage,
-    profileUrl,
+    createTiktokDto: {
+      name,
+      description,
+      likes,
+      followers,
+      following,
+      plateform: "TikTok",
+      profileImage,
+      profileUrl,
+    }
+ 
   };
 
   console.log("Extracted Data:", extractedData);
@@ -140,17 +143,16 @@
   // Send data to the backend
   async function sendToBackend(data) {
     try {
-      const response = await fetch(`${BASE_URL}/tiktok`, {
+      const response = await fetch(`${BASE_URL}/tiktok/create-profile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        userId: extractedData.userId,
         body: JSON.stringify(data),
       });
 
       if (response.ok) {
-        console.log("Data successfully sent to the backend.");
+        console.log("Data successfully sent to the backend.", data);
         return true;
       } else {
         console.error("Error sending data to the backend.");
