@@ -2,7 +2,6 @@
 const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 
-
 // Bouton Scraper
 document.getElementById("scrapeBtn").addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -140,7 +139,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       const followers = item.followers;
       const following = item.following;
       const connection = item.connection;
-      const followersValue = followers ? followers.replace(/[^\dKM.,]/g, ""): "";
+      const followersValue = followers
+        ? followers.replace(/[^\dKM.,]/g, "")
+        : "";
       const followingValue = following
         ? following.replace(/[^\dKM.,]/g, "")
         : "";
@@ -213,7 +214,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     selectAllCheckbox.addEventListener("change", handleSelectAll);
-    
+
     selectAllCheckbox.addEventListener("change", () => {
       const isChecked = selectAllCheckbox.checked;
       document.querySelectorAll(".dataCheckbox").forEach((checkbox) => {
@@ -221,7 +222,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
       handleSelectionChange(); // Mettez à jour la sélection globale
     });
-    
   }
 
   function handleSelectAll() {
@@ -248,83 +248,117 @@ document.addEventListener("DOMContentLoaded", async () => {
     exportButton.disabled = !selected;
   }
 
+  // // Exporter les données sélectionnées en CSV
   // Exporter les données sélectionnées en CSV
   function exportToCsv() {
-    const selectedRows = filteredData.map((row) => {
-      // Exclure `userId` et autres champs non nécessaires
-      const { userId, ...rest } = row;
-      return rest;
-    });
-  
-    if (selectedRows.length === 0) {
-      alert("Aucune donnée à exporter.");
+    // Sélectionner uniquement les cases cochées
+    const checkboxes = document.querySelectorAll(".dataCheckbox:checked");
+
+    // Vérifier s'il y a des cases cochées
+    if (checkboxes.length === 0) {
+      alert("Aucune donnée sélectionnée pour l'exportation.");
       return;
     }
-  
+
+    // Récupérer les lignes sélectionnées à partir des cases cochées
+    const selectedRows = Array.from(checkboxes).map((checkbox) => {
+      const rowIndex = checkbox.getAttribute("data-index"); // Récupère l'index associé
+      return filteredData[rowIndex]; // Utilise cet index pour accéder à la donnée correspondante
+    });
+
+    // Exclure des champs spécifiques si nécessaire
+    const cleanedRows = selectedRows.map(({ userId, ...rest }) => rest);
+
     // Générer les en-têtes dynamiquement à partir du premier objet
-    const headers = Object.keys(selectedRows[0]);
+    const headers = Object.keys(cleanedRows[0]);
     const csvContent =
       headers.join(",") +
       "\n" +
-      selectedRows
+      cleanedRows
         .map((row) =>
           headers
-            .map((header) => `"${(row[header] || "").toString().replace(/"/g, '""')}"`)
+            .map(
+              (header) =>
+                `"${(row[header] || "").toString().replace(/"/g, '""')}"`
+            )
             .join(",")
         )
         .join("\n");
-  
+
     // Créer un blob pour téléchargement
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", "filtered_data.csv");
+    link.setAttribute("download", "selected_data.csv");
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }  
-  // function exportToCsv() {
-  //   const selectedRows = [];
-  //   const checkboxes = document.querySelectorAll(".dataCheckbox:checked");
+  }
 
-  //   checkboxes.forEach((checkbox) => {
-  //     const rowIndex = checkbox.getAttribute("data-index");
-  //     selectedRows.push(filteredData[rowIndex]);
-  //   });
+  // Export to EXCEL
+  function exportToExcel() {
+    console.log("Exporting data to Excel...");
 
-  //   // Générer le CSV
-  //   // const headers = Object.keys(selectedRows[0]);
-  //   const headers = Object.keys(selectedRows[0]).filter(
-  //     (key) => key !== "_id" && key !== "__v" && key !== "profileImage"
-  //   );
-  //   const csvContent =
-  //     headers.join(",") +
-  //     "\n" +
-  //     selectedRows
-  //       .map((row) =>
-  //         headers
-  //           .map((header) => `"${(row[header] || "").replace(/"/g, '""')}"`)
-  //           .join(",")
-  //       )
-  //       .join("\n");
+    // Filtrer les données pour exclure des champs comme userId
+    const selectedRows = filteredData.map((row) => {
+      const { userId, __v, _id, profileImage, ...rest } = row;
+      return rest;
+    });
 
-  //   // Créer un blob pour téléchargement
-  //   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  //   const url = URL.createObjectURL(blob);
-  //   const link = document.createElement("a");
-  //   link.setAttribute("href", url);
-  //   link.setAttribute("download", "selected_data.csv");
-  //   link.style.visibility = "hidden";
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // }
+    if (selectedRows.length === 0) {
+      alert("Aucune donnée à exporter.");
+      return;
+    }
+
+    console.log("Selected rows:", selectedRows);
+
+    // Générer les en-têtes du fichier Excel
+    const headers = Object.keys(selectedRows[0]);
+
+    // Construire le contenu HTML du fichier Excel
+    let excelContent = `
+      <table>
+        <thead>
+          <tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr>
+        </thead>
+        <tbody>
+          ${selectedRows
+            .map(
+              (row) =>
+                `<tr>${headers
+                  .map(
+                    (header) =>
+                      `<td>${row[header] !== undefined ? row[header] : ""}</td>`
+                  )
+                  .join("")}</tr>`
+            )
+            .join("")}
+        </tbody>
+      </table>
+    `;
+
+    // Créer un Blob contenant les données Excel
+    const blob = new Blob([excelContent], {
+      type: "application/vnd.ms-excel;charset=utf-8;",
+    });
+    const url = URL.createObjectURL(blob);
+
+    // Créer un lien pour télécharger le fichier
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "exported_data.xls"; // Nom du fichier exporté
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    console.log("Excel file created and download initiated.");
+  }
 
   // Charger les données initiales
   data = await fetchData();
-  console.log(data)
+  console.log(data);
   filteredData = data; // Par défaut, toutes les données
   displayData(filteredData);
 
@@ -375,16 +409,21 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("token", response.token);
       profil(response.userData, response.token);
 
-      chrome.storage.local.set({ userData: response.userData, token: response.token }, () => {
-        if (chrome.runtime.lastError) {
-          console.error('Erreur lors de la sauvegarde des données :', chrome.runtime.lastError);
-        } else {
-          console.log('Données utilisateur sauvegardées avec succès.');
+      chrome.storage.local.set(
+        { userData: response.userData, token: response.token },
+        () => {
+          if (chrome.runtime.lastError) {
+            console.error(
+              "Erreur lors de la sauvegarde des données :",
+              chrome.runtime.lastError
+            );
+          } else {
+            console.log("Données utilisateur sauvegardées avec succès.");
+          }
         }
-      });
-      
+      );
+
       profil(response.userData, response.token);
-      
     } else {
       console.log("Pas de données utilisateur, fallback activé");
       fallbackToLocalStorage();
