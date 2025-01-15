@@ -51,13 +51,13 @@ export class LinkedinService {
       return existingLinkedin.save();
     } else {
       // Créer un nouveau profil si inexistant
-      const newTiktok = new this.linkedinModel({
+      const newLinkedin = new this.linkedinModel({
         ...createLinkedinDto,
         userId: Array.isArray(userId) ? userId : [userId],
       });
 
       // Enregistrer et retourner le nouveau profil
-      return newTiktok.save();
+      return newLinkedin.save();
     }
   }
 

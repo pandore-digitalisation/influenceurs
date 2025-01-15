@@ -1,4 +1,5 @@
 export class CreateLinkedinDto {
+  userId: string;
   name: string;
   followers?: string;
   connection?: string;

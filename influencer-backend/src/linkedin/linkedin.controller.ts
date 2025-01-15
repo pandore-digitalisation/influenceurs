@@ -27,7 +27,7 @@ export class LinkedinController {
   async createProfile(
     @Body()
     {
-      createLinkedinDto: CreateLinkedinDto,
+      createLinkedinDto,
       userId,
     }: {
       createLinkedinDto: CreateLinkedinDto;
@@ -37,7 +37,7 @@ export class LinkedinController {
     if (Array.isArray(userId)) {
       throw new Error('Expected a single userId, but received an array');
     }
-    return this.linkedinService.createProfile(CreateLinkedinDto, userId);
+    return this.linkedinService.createProfile(createLinkedinDto, userId);
   }
 
   @Get()

@@ -1,10 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 
-// export type DataDocument = HydratedDocument<Linkedin>;
+export type DataDocument = HydratedDocument<Linkedin>;
 
 @Schema({ timestamps: true })
-export class Linkedin extends Document {
+export class Linkedin {
   @Prop({ type: [String], required: false })
   userId: string[];
   // @Prop({ required: false })
