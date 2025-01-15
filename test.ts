@@ -282,3 +282,105 @@
 //     link.click();
 //     document.body.removeChild(link);
 //   }
+
+
+
+// async function createListFromSelected() {
+//   // Récupérer les lignes sélectionnées
+//   const checkboxes = document.querySelectorAll(".dataCheckbox:checked");
+//   const selectedRows = [];
+
+//   checkboxes.forEach((checkbox) => {
+//     const rowIndex = checkbox.getAttribute("data-index");
+//     selectedRows.push(filteredData[rowIndex]);
+//   });
+
+//   // Vérifier si des données ont été sélectionnées
+//   if (selectedRows.length === 0) {
+//     alert("Veuillez sélectionner au moins une ligne pour créer une liste.");
+//     return;
+//   }
+
+//   // API endpoint pour la création de liste
+//   const apiEndpoint = "http://localhost:3000/lists";
+
+//   // Préparer les données pour l'API
+//   const payload = {
+//     name: "Nouvelle Liste", // Optionnel : Peut être ajouté via un formulaire
+//     items: selectedRows,
+//   };
+
+//   try {
+//     // Envoyer une requête POST à l'API
+//     const response = await fetch(apiEndpoint, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify(payload),
+//     });
+
+//     // Vérifier la réponse
+//     if (response.ok) {
+//       const data = await response.json();
+//       alert(`Liste créée avec succès ! ID de la liste : ${data.id}`);
+//     } else {
+//       const error = await response.json();
+//       alert(`Erreur lors de la création de la liste : ${error.message}`);
+//     }
+//   } catch (err) {
+//     console.error("Erreur lors de l'appel API :", err);
+//     alert("Une erreur est survenue. Veuillez réessayer.");
+//   }
+// }
+
+
+// let filteredData = []; // Initialisation globale
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   loadData(); // Charge les données filtrées
+
+//   function loadData() {
+//     fetch("http://localhost:3000/data")
+//       .then((response) => response.json())
+//       .then((data) => {
+//         filteredData = data.filter((item) => item.isActive); // Exemple de filtrage
+//         console.log("Données filtrées chargées :", filteredData);
+//       })
+//       .catch((error) => console.error("Erreur de récupération des données :", error));
+//   }
+
+//   function profil(user, token) {
+//     const createList = document.getElementById("createList");
+//     const listForm = document.getElementById("createListForm");
+
+//     createList.addEventListener("click", () => {
+//       listForm.style.display = "flex";
+
+//       listForm.addEventListener("submit", (event) => {
+//         event.preventDefault();
+
+//         if (!filteredData || !Array.isArray(filteredData) || filteredData.length === 0) {
+//           alert("Aucune donnée disponible pour créer une liste.");
+//           return;
+//         }
+
+//         const listName = document.getElementById("listName").value;
+//         const checkboxes = document.querySelectorAll(".dataCheckbox:checked");
+//         const selectedProfiles = [];
+
+//         checkboxes.forEach((checkbox) => {
+//           const rowIndex = checkbox.getAttribute("data-index");
+//           selectedProfiles.push(filteredData[rowIndex]);
+//         });
+
+//         if (selectedProfiles.length === 0) {
+//           alert("Veuillez sélectionner au moins une donnée pour créer une liste.");
+//           return;
+//         }
+
+//         createListForUser(user?.data.userId, listName, selectedProfiles);
+//       });
+//     });
+//   }
+// });

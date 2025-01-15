@@ -1,5 +1,5 @@
-const BASE_URL = "https://influenceurs.onrender.com";
-// const BASE_URL = "http://localhost:3000";
+// const BASE_URL = "https://influenceurs.onrender.com";
+const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 
 // Bouton Scraper
@@ -566,15 +566,16 @@ document.addEventListener("DOMContentLoaded", () => {
     tokenGlobal = token;
 
     const container = document.getElementById("auth");
-    const createList = document.getElementById("createList");
-    const listForm = document.getElementById("createListForm");
+    // const createList = document.getElementById("createList");
+    // const listForm = document.getElementById("createListForm");
 
-    if (!container || !createList) {
+    if (!container) {
       console.error("Les éléments nécessaires n'ont pas été trouvés.");
       return;
     }
 
-    createList.disabled = false;
+    // createList.disabled = false;
+
     container.innerHTML = `
   <span>${user?.data.userId}</span>
 
@@ -588,51 +589,55 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
 `;
     console.log("Profil injecté avec succès :", user?.data);
-    createList.addEventListener("click", () => {
-      // createListForUser(user?.data.userId);
-      listForm.style.display = "flex";
-      createList.disabled = true;
-      // Gestion de la soumission du formulaire
-      listForm.addEventListener("submit", (event) => {
-        event.preventDefault(); // Empêche le rechargement de la page
-        const listName = document.getElementById("listName").value;
-        const listProfile = document.getElementById("listProfile").value; // Récupère le nom de la liste
-        createListForUser(user?.data.userId, listName, listProfile);
-      });
-    });
+    // createList.addEventListener("click", () => {
+    //   // createListForUser(user?.data.userId);
+    //   listForm.style.display = "flex";
+    //   createList.disabled = true;
+    //   // Gestion de la soumission du formulaire
+    //   listForm.addEventListener("submit", (event) => {
+    //     event.preventDefault(); // Empêche le rechargement de la page
+    //     const listName = document.getElementById("listName").value;
+    //     const listProfile = document.getElementById("listProfile").value; // Récupère le nom de la liste
+    //     createListForUser(user?.data.userId, listName, listProfile);
+    //   });
+    // });
   }
 
+  // Create profile list
+  
   // Create list
-  function createListForUser(userId, listName, listProfile) {
-    const listData = { name: listName, profiles: listProfile };
-    console.log("Données envoyées :", { ...listData, userId });
-    console.log("token use", tokenGlobal);
+  // function createListForUser(userId, listName, listProfile) {
+  //   const listData = { name: listName, profiles: listProfile };
+  //   console.log("Données envoyées :", { ...listData, userId });
+  //   console.log("token use", tokenGlobal);
 
-    fetch("http://localhost:3000/lists", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${tokenGlobal}`,
-      },
-      body: JSON.stringify({ ...listData, userId }),
-    })
-      .then((response) => {
-        console.log("Statut de la réponse :", response.status);
-        if (!response.ok) {
-          return response.json().then((err) => {
-            console.error("Erreur renvoyée par le backend :", err);
-            throw new Error("Erreur lors de la création de la liste");
-          });
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Liste créée avec succès :", data);
-        alert("Liste créée avec succès !");
-      })
-      .catch((error) => {
-        console.error("Erreur de création :", error.message);
-        alert("Une erreur est survenue lors de la création de la liste.");
-      });
-  }
+  //   fetch("http://localhost:3000/lists", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       Authorization: `Bearer ${tokenGlobal}`,
+  //     },
+  //     body: JSON.stringify({ ...listData, userId }),
+  //   })
+  //     .then((response) => {
+  //       console.log("Statut de la réponse :", response.status);
+  //       if (!response.ok) {
+  //         return response.json().then((err) => {
+  //           console.error("Erreur renvoyée par le backend :", err);
+  //           throw new Error("Erreur lors de la création de la liste");
+  //         });
+  //       }
+  //       return response.json();
+  //     })
+  //     .then((data) => {
+  //       console.log("Liste créée avec succès :", data);
+  //       alert("Liste créée avec succès !");
+  //     })
+  //     .catch((error) => {
+  //       console.error("Erreur de création :", error.message);
+  //       alert("Une erreur est survenue lors de la création de la liste.");
+  //     });
+  // }
+
+  
 });
