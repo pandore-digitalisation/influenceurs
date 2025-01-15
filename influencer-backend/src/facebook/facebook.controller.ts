@@ -23,6 +23,23 @@ export class FacebookController {
     return this.facebookService.create(createFacebookDto);
   }
 
+  @Post('create-profile')
+  async createProfile(
+    @Body()
+    {
+      createFacebookDto,
+      userId,
+    }: {
+      createFacebookDto: CreateFacebookDto;
+      userId: string | string[];
+    },
+  ): Promise<Facebook> {
+    if (Array.isArray(userId)) {
+      throw new Error('Expected a single userId, but received an array');
+    }
+    return this.facebookService.createProfile(createFacebookDto, userId);
+  }
+
   @Get()
   findAll() {
     return this.facebookService.findAll();

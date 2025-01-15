@@ -23,6 +23,23 @@ export class InstagramController {
     return this.instagramService.create(createInstagramDto);
   }
 
+  @Post('create-profile')
+  async createProfile(
+    @Body()
+    {
+      createInstagramDto,
+      userId,
+    }: {
+      createInstagramDto: CreateInstagramDto;
+      userId: string | string[];
+    },
+  ): Promise<Instagram> {
+    if (Array.isArray(userId)) {
+      throw new Error('Expected a single userId, but received an array');
+    }
+    return this.instagramService.createProfile(createInstagramDto, userId);
+  }
+
   @Get()
   findAll() {
     return this.instagramService.findAll();

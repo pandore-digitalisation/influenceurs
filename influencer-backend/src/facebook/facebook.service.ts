@@ -24,6 +24,33 @@ export class FacebookService {
     }
   }
 
+  async createProfile(
+    createFacebookDto: CreateFacebookDto,
+    userId: string | string[],
+  ): Promise<Facebook> {
+    const { name } = createFacebookDto;
+
+    const existingFacebook = await this.facebookModel.findOne({ name });
+
+    if (existingFacebook) {
+      const userIdsToAdd = Array.isArray(userId) ? userId : [userId];
+
+      userIdsToAdd.forEach((id) => {
+        if (!existingFacebook.userId.includes(id)) {
+          existingFacebook.userId.push(id);
+        }
+      });
+      Object.assign(existingFacebook, createFacebookDto);
+      return existingFacebook.save();
+    } else {
+      const newFacebook = new this.facebookModel({
+        ...createFacebookDto,
+        userId: Array.isArray(userId) ? userId : [userId],
+      });
+      return newFacebook.save();
+    }
+  }
+
   findAll() {
     return this.facebookModel.find().exec();
   }

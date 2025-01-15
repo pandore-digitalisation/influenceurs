@@ -1,5 +1,5 @@
-// const BASE_URL = "https://influenceurs.onrender.com";
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://influenceurs.onrender.com";
+// const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 
 // Bouton Scraper
@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // Exclure des champs spécifiques si nécessaire
-    const cleanedRows = selectedRows.map(({ userId, ...rest }) => rest);
+    const cleanedRows = selectedRows.map(({ userId, __v, _id, profileImage, createdAt, updatedAt, ...rest }) => rest);
 
     // Générer les en-têtes dynamiquement à partir du premier objet
     const headers = Object.keys(cleanedRows[0]);
@@ -320,7 +320,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Exclure des champs spécifiques si nécessaire
     const cleanedRows = selectedRows.map(
-      ({ userId, __v, _id, profileImage, ...rest }) => rest
+      ({ userId, __v, _id, profileImage, createdAt, updatedAt, ...rest }) => rest
     );
 
     console.log("Selected rows:", cleanedRows);

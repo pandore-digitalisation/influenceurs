@@ -21,6 +21,44 @@ export class XService {
       return newX.save();
     }
   }
+
+  async createProfile(
+    createXDto: CreateXDto,
+    userId: string | string[],
+  ): Promise<X> {
+    const { name } = createXDto;
+
+    // Vérifier si le profil existe déjà
+    const existingX = await this.xModel.findOne({ name });
+
+    if (existingX) {
+      // Convertir userId en tableau s'il ne l'est pas
+      const userIdsToAdd = Array.isArray(userId) ? userId : [userId];
+
+      // Ajouter uniquement les userId qui ne sont pas déjà présents
+      userIdsToAdd.forEach((id) => {
+        if (!existingX.userId.includes(id)) {
+          existingX.userId.push(id);
+        }
+      });
+
+      // Mettre à jour les autres champs
+      Object.assign(existingX, createXDto);
+
+      // Enregistrer et retourner le profil mis à jour
+      return existingX.save();
+    } else {
+      // Créer un nouveau profil si inexistant
+      const newX = new this.xModel({
+        ...createXDto,
+        userId: Array.isArray(userId) ? userId : [userId],
+      });
+
+      // Enregistrer et retourner le nouveau profil
+      return newX.save();
+    }
+  }
+
   async findAll() {
     return this.xModel.find().exec();
   }

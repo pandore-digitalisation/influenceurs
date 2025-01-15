@@ -24,6 +24,43 @@ export class InstagramService {
     }
   }
 
+  async createProfile(
+    createInstagramDto: CreateInstagramDto,
+    userId: string | string[],
+  ): Promise<Instagram> {
+    const { name } = createInstagramDto;
+
+    // Vérifier si le profil existe déjà
+    const existingInstagram = await this.instagramModel.findOne({ name });
+
+    if (existingInstagram) {
+      // Convertir userId en tableau s'il ne l'est pas
+      const userIdsToAdd = Array.isArray(userId) ? userId : [userId];
+
+      // Ajouter uniquement les userId qui ne sont pas déjà présents
+      userIdsToAdd.forEach((id) => {
+        if (!existingInstagram.userId.includes(id)) {
+          existingInstagram.userId.push(id);
+        }
+      });
+
+      // Mettre à jour les autres champs
+      Object.assign(existingInstagram, CreateInstagramDto);
+
+      // Enregistrer et retourner le profil mis à jour
+      return existingInstagram.save();
+    } else {
+      // Créer un nouveau profil si inexistant
+      const newInstagram = new this.instagramModel({
+        ...createInstagramDto,
+        userId: Array.isArray(userId) ? userId : [userId],
+      });
+
+      // Enregistrer et retourner le nouveau profil
+      return newInstagram.save();
+    }
+  }
+
   findAll() {
     return this.instagramModel.find().exec();
   }

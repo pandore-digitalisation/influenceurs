@@ -5,8 +5,10 @@ export type DataDocument = HydratedDocument<X>;
 
 @Schema({ timestamps: true })
 export class X {
-  @Prop({ required: true })
-  userId: string;
+  @Prop({ type: [String], required: false })
+  userId: string[];
+  // @Prop({ required: true })
+  // userId: string;
 
   @Prop({ required: false })
   profileUrl: string;

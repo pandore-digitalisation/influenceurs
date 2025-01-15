@@ -21,6 +21,23 @@ export class XController {
     return this.xService.create(createXDto);
   }
 
+  @Post('create-profile')
+  async createProfile(
+    @Body()
+    {
+      createXDto,
+      userId,
+    }: {
+      createXDto: CreateXDto;
+      userId: string | string[];
+    },
+  ): Promise<X> {
+    if (Array.isArray(userId)) {
+      throw new Error('Expected a single userId, but received an array');
+    }
+    return this.xService.createProfile(createXDto, userId);
+  }
+
   @Get()
   findAll() {
     return this.xService.findAll();

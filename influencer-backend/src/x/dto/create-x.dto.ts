@@ -1,4 +1,5 @@
 export class CreateXDto {
+  userId: string;
   name: string;
   followers?: string;
   following?: string;

@@ -5,6 +5,9 @@ export type DataDocument = HydratedDocument<Instagram>;
 
 @Schema({ timestamps: true })
 export class Instagram {
+  @Prop({ type: [String], required: false })
+  userId: string[];
+
   @Prop({ required: false })
   profileUrl: string;
 
