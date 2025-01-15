@@ -105,7 +105,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     .querySelector("tbody");
 
   const loader = document.getElementById("loader");
-  const exportButton = document.getElementById("exportCsvBtn");
+  const exportToCsvButton = document.getElementById("exportCsvBtn");
+  const exportToXlsButton = document.getElementById("exportXlsBtn");
   const selectAllCheckbox = document.getElementById("selectAll");
 
   let data = [];
@@ -245,7 +246,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   function updateExportButtonState() {
     const selected =
       document.querySelectorAll(".dataCheckbox:checked").length > 0;
-    exportButton.disabled = !selected;
+    exportToCsvButton.disabled = !selected;
+    exportToXlsButton.disabled = !selected;
   }
 
   // // Exporter les données sélectionnées en CSV
@@ -299,45 +301,60 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   // Export to EXCEL
   function exportToExcel() {
-    console.log("Exporting data to Excel...");
+    console.log("Exporting selected data to Excel...");
 
-    // Filtrer les données pour exclure des champs comme userId
-    const selectedRows = filteredData.map((row) => {
-      const { userId, __v, _id, profileImage, ...rest } = row;
-      return rest;
-    });
+    // Sélectionner uniquement les cases cochées
+    const checkboxes = document.querySelectorAll(".dataCheckbox:checked");
 
-    if (selectedRows.length === 0) {
-      alert("Aucune donnée à exporter.");
+    // Vérifier s'il y a des cases cochées
+    if (checkboxes.length === 0) {
+      alert("Aucune donnée sélectionnée pour l'exportation.");
       return;
     }
 
-    console.log("Selected rows:", selectedRows);
+    // Récupérer les lignes sélectionnées à partir des cases cochées
+    const selectedRows = Array.from(checkboxes).map((checkbox) => {
+      const rowIndex = checkbox.getAttribute("data-index"); // Récupère l'index associé
+      return filteredData[rowIndex]; // Utilise cet index pour accéder à la donnée correspondante
+    });
+
+    // Exclure des champs spécifiques si nécessaire
+    const cleanedRows = selectedRows.map(
+      ({ userId, __v, _id, profileImage, ...rest }) => rest
+    );
+
+    console.log("Selected rows:", cleanedRows);
+
+    // Vérifier s'il y a des données à exporter
+    if (cleanedRows.length === 0) {
+      alert("Aucune donnée valide à exporter.");
+      return;
+    }
 
     // Générer les en-têtes du fichier Excel
-    const headers = Object.keys(selectedRows[0]);
+    const headers = Object.keys(cleanedRows[0]);
 
     // Construire le contenu HTML du fichier Excel
     let excelContent = `
-      <table>
-        <thead>
-          <tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr>
-        </thead>
-        <tbody>
-          ${selectedRows
-            .map(
-              (row) =>
-                `<tr>${headers
-                  .map(
-                    (header) =>
-                      `<td>${row[header] !== undefined ? row[header] : ""}</td>`
-                  )
-                  .join("")}</tr>`
-            )
-            .join("")}
-        </tbody>
-      </table>
-    `;
+    <table>
+      <thead>
+        <tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr>
+      </thead>
+      <tbody>
+        ${cleanedRows
+          .map(
+            (row) =>
+              `<tr>${headers
+                .map(
+                  (header) =>
+                    `<td>${row[header] !== undefined ? row[header] : ""}</td>`
+                )
+                .join("")}</tr>`
+          )
+          .join("")}
+      </tbody>
+    </table>
+  `;
 
     // Créer un Blob contenant les données Excel
     const blob = new Blob([excelContent], {
@@ -348,13 +365,70 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Créer un lien pour télécharger le fichier
     const link = document.createElement("a");
     link.href = url;
-    link.download = "exported_data.xls"; // Nom du fichier exporté
+    link.download = "selected_data.xls"; // Nom du fichier exporté
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
     console.log("Excel file created and download initiated.");
   }
+  // function exportToExcel() {
+  //   console.log("Exporting data to Excel...");
+
+  //   // Filtrer les données pour exclure des champs comme userId
+  //   const selectedRows = filteredData.map((row) => {
+  //     const { userId, __v, _id, profileImage, ...rest } = row;
+  //     return rest;
+  //   });
+
+  //   if (selectedRows.length === 0) {
+  //     alert("Aucune donnée à exporter.");
+  //     return;
+  //   }
+
+  //   console.log("Selected rows:", selectedRows);
+
+  //   // Générer les en-têtes du fichier Excel
+  //   const headers = Object.keys(selectedRows[0]);
+
+  //   // Construire le contenu HTML du fichier Excel
+  //   let excelContent = `
+  //     <table>
+  //       <thead>
+  //         <tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr>
+  //       </thead>
+  //       <tbody>
+  //         ${selectedRows
+  //           .map(
+  //             (row) =>
+  //               `<tr>${headers
+  //                 .map(
+  //                   (header) =>
+  //                     `<td>${row[header] !== undefined ? row[header] : ""}</td>`
+  //                 )
+  //                 .join("")}</tr>`
+  //           )
+  //           .join("")}
+  //       </tbody>
+  //     </table>
+  //   `;
+
+  //   // Créer un Blob contenant les données Excel
+  //   const blob = new Blob([excelContent], {
+  //     type: "application/vnd.ms-excel;charset=utf-8;",
+  //   });
+  //   const url = URL.createObjectURL(blob);
+
+  //   // Créer un lien pour télécharger le fichier
+  //   const link = document.createElement("a");
+  //   link.href = url;
+  //   link.download = "exported_data.xls"; // Nom du fichier exporté
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+
+  //   console.log("Excel file created and download initiated.");
+  // }
 
   // Charger les données initiales
   data = await fetchData();
@@ -367,7 +441,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   platformSelect.addEventListener("change", updateFilters);
 
   // Activer l'exportation des données
-  exportButton.addEventListener("click", exportToCsv);
+  exportToCsvButton.addEventListener("click", exportToCsv);
+  exportToXlsButton.addEventListener("click", exportToExcel);
 
   async function updateFilters() {
     const searchValue = searchInput.value.toLowerCase();
