@@ -635,13 +635,13 @@ document.addEventListener("DOMContentLoaded", () => {
     createListForm.style.display = createListForm.style.display === "none" ? "flex": "none"
   })
 
-  document
-    .getElementById("toggle-create-list")
-    .addEventListener("click", () => {
-      const section = document.getElementById("create-list-section");
-      section.style.display =
-        section.style.display === "none" ? "block" : "none";
-    });
+  // document
+  //   .getElementById("toggle-create-list")
+  //   .addEventListener("click", () => {
+  //     const section = document.getElementById("create-list-section");
+  //     section.style.display =
+  //       section.style.display === "none" ? "block" : "none";
+  //   });
 
 
   document.getElementById("createListSubmit")
@@ -665,7 +665,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        const response = await fetch("http://localhost:3000/lists", {
+        const response = await fetch(`${BASE_URL}/list`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
