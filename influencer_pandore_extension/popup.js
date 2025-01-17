@@ -1,7 +1,7 @@
 const BASE_URL = "https://influenceurs.onrender.com";
 // const BASE_URL = "http://localhost:3000";
-let globalUserId;
 let tokenGlobal;
+let globalUserId;
 
 // Bouton Scraper
 document.getElementById("scrapeBtn").addEventListener("click", () => {
@@ -49,57 +49,55 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // window.location.reload();
   }
 });
+// Bouton Télécharger CSV
+document.getElementById("downloadBtn").addEventListener("click", () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.scripting.executeScript({
+      target: { tabId: tabs[0].id },
+      function: downloadCSV,
+    });
+  });
+});
 
-// // Bouton Télécharger CSV
+function downloadCSV() {
+  const storedData = JSON.parse(localStorage.getItem("exportedData") || "[]");
 
-// document.getElementById("downloadBtn").addEventListener("click", () => {
-//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-//     chrome.scripting.executeScript({
-//       target: { tabId: tabs[0].id },
-//       function: downloadCSV,
-//     });
-//   });
-// });
+  if (!storedData.length || storedData.length === 0) {
+    alert("Aucune donnée disponible pour téléchargement.");
+    return;
+  }
 
-// function downloadCSV() {
-//   const storedData = JSON.parse(localStorage.getItem("exportedData") || "[]");
+  const headers = Object.keys(storedData[0]);
+  const csvContent =
+    headers.join(",") +
+    "\n" +
+    storedData
+      .map((row) =>
+        headers
+          .map((header) => `"${(row[header] || "").replace(/"/g, '""')}"`)
+          .join(",")
+      )
+      .join("\n");
 
-//   if (!storedData.length || storedData.length === 0) {
-//     alert("Aucune donnée disponible pour téléchargement.");
-//     return;
-//   }
+  try {
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
 
-//   const headers = Object.keys(storedData[0]);
-//   const csvContent =
-//     headers.join(",") +
-//     "\n" +
-//     storedData
-//       .map((row) =>
-//         headers
-//           .map((header) => `"${(row[header] || "").replace(/"/g, '""')}"`)
-//           .join(",")
-//       )
-//       .join("\n");
+    // Téléchargement du fichier
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `data_export_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
 
-//   try {
-//     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-//     const url = URL.createObjectURL(blob);
+    // Nettoyage de l'URL blob
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Erreur lors de l'exportation des données en CSV :", error);
+    alert("Une erreur s'est produite lors de l'exportation des données.");
+  }
+}
 
-//     // Téléchargement du fichier
-//     const link = document.createElement("a");
-//     link.href = url;
-//     link.download = `data_export_${new Date().toISOString().slice(0, 10)}.csv`;
-//     link.click();
-
-//     // Nettoyage de l'URL blob
-//     URL.revokeObjectURL(url);
-//   } catch (error) {
-//     console.error("Erreur lors de l'exportation des données en CSV :", error);
-//     alert("Une erreur s'est produite lors de l'exportation des données.");
-//   }
-// }
-
-// Popup loading search, export
+// Search functions
 document.addEventListener("DOMContentLoaded", async () => {
   const searchInput = document.getElementById("searchInput");
   const platformSelect = document.getElementById("platformSelect");
@@ -120,13 +118,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   function saveToLocalStorage() {
     const checkboxes = document.querySelectorAll(".dataCheckbox:checked");
 
-    // Get selected row
+    // Récupérer les lignes sélectionnées
     const selectedRows = Array.from(checkboxes).map((checkbox) => {
       const rowIndex = checkbox.getAttribute("data-index");
       return filteredData[rowIndex];
     });
 
-    // Saved in localstorage
+    // Sauvegarder dans le localStorage
     localStorage.setItem("selectedData", JSON.stringify(selectedRows));
   }
 
@@ -268,6 +266,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     exportToXlsButton.disabled = !selected;
   }
 
+  // // Exporter les données sélectionnées en CSV
   // Exporter les données sélectionnées en CSV
   function exportToCsv() {
     // Sélectionner uniquement les cases cochées
@@ -393,11 +392,68 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     console.log("Excel file created and download initiated.");
   }
+  // function exportToExcel() {
+  //   console.log("Exporting data to Excel...");
+
+  //   // Filtrer les données pour exclure des champs comme userId
+  //   const selectedRows = filteredData.map((row) => {
+  //     const { userId, __v, _id, profileImage, ...rest } = row;
+  //     return rest;
+  //   });
+
+  //   if (selectedRows.length === 0) {
+  //     alert("Aucune donnée à exporter.");
+  //     return;
+  //   }
+
+  //   console.log("Selected rows:", selectedRows);
+
+  //   // Générer les en-têtes du fichier Excel
+  //   const headers = Object.keys(selectedRows[0]);
+
+  //   // Construire le contenu HTML du fichier Excel
+  //   let excelContent = `
+  //     <table>
+  //       <thead>
+  //         <tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr>
+  //       </thead>
+  //       <tbody>
+  //         ${selectedRows
+  //           .map(
+  //             (row) =>
+  //               `<tr>${headers
+  //                 .map(
+  //                   (header) =>
+  //                     `<td>${row[header] !== undefined ? row[header] : ""}</td>`
+  //                 )
+  //                 .join("")}</tr>`
+  //           )
+  //           .join("")}
+  //       </tbody>
+  //     </table>
+  //   `;
+
+  //   // Créer un Blob contenant les données Excel
+  //   const blob = new Blob([excelContent], {
+  //     type: "application/vnd.ms-excel;charset=utf-8;",
+  //   });
+  //   const url = URL.createObjectURL(blob);
+
+  //   // Créer un lien pour télécharger le fichier
+  //   const link = document.createElement("a");
+  //   link.href = url;
+  //   link.download = "exported_data.xls"; // Nom du fichier exporté
+  //   document.body.appendChild(link);
+  //   link.click();
+  //   document.body.removeChild(link);
+
+  //   console.log("Excel file created and download initiated.");
+  // }
 
   // Charger les données initiales
   data = await fetchData();
   console.log(data);
-  filteredData = data;
+  filteredData = data; // Par défaut, toutes les données
   displayData(filteredData);
 
   // Ajouter des écouteurs pour les filtres
@@ -432,6 +488,8 @@ document.getElementById("loginBtn").addEventListener("click", () => {
 
 // Get user connected data
 document.addEventListener("DOMContentLoaded", () => {
+  let messageHandled = false;
+
   chrome.runtime.sendMessage({ action: "getUserData" }, (response) => {
     if (chrome.runtime.lastError) {
       console.error(
@@ -461,14 +519,32 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       profil(response.userData, response.token);
-
-      // tokenGlobal = response.token;
-      // console.log("token", tokenGlobal);
     } else {
       console.log("Pas de données utilisateur, fallback activé");
       fallbackToLocalStorage();
     }
+
+    // if (response && response.userData) {
+    //   messageHandled = true;
+    //   console.log("Données utilisateur récupérées :", response.userData);
+    //   localStorage.setItem("userData", JSON.stringify(response.userData));
+    //   localStorage.setItem("token", response.token);
+    //   profil(response.userData, response.token);
+    // } else {
+    //   console.warn("Aucune donnée utilisateur reçue, fallback activé.");
+    //   fallbackToLocalStorage();
+    // }
   });
+
+  // Si aucune réponse n'est reçue dans un délai raisonnable, fallback
+  // setTimeout(() => {
+  //   if (!messageHandled) {
+  //     console.warn(
+  //       "Aucune réponse reçue de `chrome.runtime.sendMessage`. Utilisation du fallback."
+  //     );
+  //     fallbackToLocalStorage();
+  //   }
+  // }, 2000);
 
   function fallbackToLocalStorage() {
     const storedUserData = localStorage.getItem("userData");
@@ -483,22 +559,46 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Vérifiez après un délai si le message a été traité
+  // setTimeout(() => {
+  //   if (!messageHandled) {
+  //     console.warn(
+  //       "Aucune réponse de `chrome.runtime.sendMessage`. Utilisation du fallback."
+  //     );
+  //     fallbackToLocalStorage();
+  //   }
+  // }, 1000);
+
+  // function fallbackToLocalStorage() {
+  //   const storedUserData = localStorage.getItem("userData");
+  //   const storedToken = localStorage.getItem("token");
+
+  //   if (storedUserData && storedToken) {
+  //     const userData = JSON.parse(storedUserData);
+  //     console.log("Fallback - Données utilisateur :", userData);
+  //     profil(userData, storedToken);
+  //   } else {
+  //     console.log("Aucune donnée utilisateur trouvée en fallback.");
+  //   }
+  // }
+
   function profil(user, token) {
     tokenGlobal = token;
-    globalUserId = user.data.userId;
+    globalUserId = user?.data.userId;
+    console.log("global userid", globalUserId);
 
     const container = document.getElementById("auth");
-    // const createList = document.getElementById("createList");
-    // const listForm = document.getElementById("createListForm");
+    const createList = document.getElementById("createList");
+    const listForm = document.getElementById("createListForm");
     const createProfileList = document.getElementById("createProfileList");
 
-    if (!container || !createProfileList) {
+    if (!container || !createList) {
       console.error("Les éléments nécessaires n'ont pas été trouvés.");
       return;
     }
 
-    // createList.disabled = false;
-    createProfileList.disabled = false;
+    createList.disabled = false;
+    // createProfileList.disabled = false;
 
     container.innerHTML = `
   <span>${user?.data.userId}</span>
@@ -513,19 +613,18 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
 `;
     console.log("Profil injecté avec succès :", user?.data);
-
-    // createList.addEventListener("click", () => {
-    //   // createListForUser(user?.data.userId);
-    //   listForm.style.display = "flex";
-    //   createList.disabled = true;
-    //   // Gestion de la soumission du formulaire
-    //   listForm.addEventListener("submit", (event) => {
-    //     event.preventDefault(); // Empêche le rechargement de la page
-    //     const listName = document.getElementById("listName").value;
-    //     const listProfile = document.getElementById("listProfile").value; // Récupère le nom de la liste
-    //     createListForUser(user?.data.userId, listName, listProfile);
-    //   });
-    // });
+    createList.addEventListener("click", () => {
+      // createListForUser(user?.data.userId);
+      listForm.style.display = "flex";
+      createList.disabled = true;
+      // Gestion de la soumission du formulaire
+      listForm.addEventListener("submit", (event) => {
+        event.preventDefault(); // Empêche le rechargement de la page
+        const listName = document.getElementById("listName").value;
+        const listProfile = document.getElementById("listProfile").value; // Récupère le nom de la liste
+        createListForUser(user?.data.userId, listName, listProfile);
+      });
+    });
   }
 
   // Create list
@@ -536,54 +635,91 @@ document.addEventListener("DOMContentLoaded", () => {
       section.style.display =
         section.style.display === "none" ? "block" : "none";
     });
+
+  console.log("global2 userid", globalUserId);
+
+  document
+    .getElementById("create-list-btn")
+    .addEventListener("click", async () => {
+      const listName = document.getElementById("list-name").value.trim();
+      if (!listName) {
+        alert("Veuillez entrer un nom pour la liste.");
+        return;
+      }
+
+      // Récupérer les données sélectionnées depuis localStorage
+      const selectedData = JSON.parse(localStorage.getItem("selectedData")) || [];
+      const userData = JSON.parse(localStorage.getItem("userData"));
+
+      console.log("user data", userData)
+      console.log("selected data", selectedData)
+
+      if (selectedData.length === 0) {
+        alert("Aucune donnée sélectionnée pour créer une liste.");
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3000/lists", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenGlobal}`,
+          },
+          body: JSON.stringify({ name: listName, profiles: [selectedData], userId: userData.data.userId }),
+        });
+
+        if (response.ok) {
+          alert("Liste créée avec succès.");
+          // Vider les données sélectionnées
+          localStorage.removeItem("selectedData");
+        } else {
+          const error = await response.json();
+          alert(`Erreur : ${error.message}`);
+        }
+      } catch (err) {
+        console.error("Erreur lors de la création de la liste :", err);
+        alert("Une erreur est survenue. Veuillez réessayer.");
+      }
+    });
+
+  function createListForUser(userId, listName, listProfile) {
+    const listData = { name: listName, profiles: listProfile };
+    console.log("Données envoyées :", { ...listData, userId });
+    console.log("token use", tokenGlobal);
+
+    fetch("http://localhost:3000/lists", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokenGlobal}`,
+      },
+      body: JSON.stringify({ ...listData, userId }),
+    })
+      .then((response) => {
+        console.log("Statut de la réponse :", response.status);
+        if (!response.ok) {
+          return response.json().then((err) => {
+            console.error("Erreur renvoyée par le backend :", err);
+            throw new Error("Erreur lors de la création de la liste");
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Liste créée avec succès :", data);
+        alert("Liste créée avec succès !");
+      })
+      .catch((error) => {
+        console.error("Erreur de création :", error.message);
+        alert("Une erreur est survenue lors de la création de la liste.");
+      });
+  }
 });
-
-// Test of create list //
-
-// // document.getElementById('toggle-create-list').addEventListener('click', () => {
-// //   const section = document.getElementById('create-list-section');
-// //   section.style.display = section.style.display === 'none' ? 'block' : 'none';
-// // });
-
-// document.getElementById('create-list-btn').addEventListener('click', async () => {
-//   const listName = document.getElementById('list-name').value.trim();
-//   if (!listName) {
-//     alert('Veuillez entrer un nom pour la liste.');
-//     return;
-//   }
-
-//   // Récupérer les données sélectionnées depuis localStorage
-//   const selectedData = JSON.parse(localStorage.getItem('selectedData')) || [];
-//   if (selectedData.length === 0) {
-//     alert('Aucune donnée sélectionnée pour créer une liste.');
-//     return;
-//   }
-
-//   try {
-//     const response = await fetch('http://localhost:3000/lists', {
-//       method: 'POST',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({ name: listName, data: selectedData }),
-//     });
-
-//     if (response.ok) {
-//       alert('Liste créée avec succès.');
-//       // Vider les données sélectionnées
-//       localStorage.removeItem('selectedData');
-//     } else {
-//       const error = await response.json();
-//       alert(`Erreur : ${error.message}`);
-//     }
-//   } catch (err) {
-//     console.error('Erreur lors de la création de la liste :', err);
-//     alert('Une erreur est survenue. Veuillez réessayer.');
-//   }
-// });
 
 // const BASE_URL = "https://influenceurs.onrender.com";
 // // const BASE_URL = "http://localhost:3000";
+// let globalUserId;
 // let tokenGlobal;
 
 // // Bouton Scraper
@@ -632,55 +768,57 @@ document.addEventListener("DOMContentLoaded", () => {
 //     // window.location.reload();
 //   }
 // });
-// // Bouton Télécharger CSV
-// document.getElementById("downloadBtn").addEventListener("click", () => {
-//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-//     chrome.scripting.executeScript({
-//       target: { tabId: tabs[0].id },
-//       function: downloadCSV,
-//     });
-//   });
-// });
 
-// function downloadCSV() {
-//   const storedData = JSON.parse(localStorage.getItem("exportedData") || "[]");
+// // // Bouton Télécharger CSV
 
-//   if (!storedData.length || storedData.length === 0) {
-//     alert("Aucune donnée disponible pour téléchargement.");
-//     return;
-//   }
+// // document.getElementById("downloadBtn").addEventListener("click", () => {
+// //   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+// //     chrome.scripting.executeScript({
+// //       target: { tabId: tabs[0].id },
+// //       function: downloadCSV,
+// //     });
+// //   });
+// // });
 
-//   const headers = Object.keys(storedData[0]);
-//   const csvContent =
-//     headers.join(",") +
-//     "\n" +
-//     storedData
-//       .map((row) =>
-//         headers
-//           .map((header) => `"${(row[header] || "").replace(/"/g, '""')}"`)
-//           .join(",")
-//       )
-//       .join("\n");
+// // function downloadCSV() {
+// //   const storedData = JSON.parse(localStorage.getItem("exportedData") || "[]");
 
-//   try {
-//     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-//     const url = URL.createObjectURL(blob);
+// //   if (!storedData.length || storedData.length === 0) {
+// //     alert("Aucune donnée disponible pour téléchargement.");
+// //     return;
+// //   }
 
-//     // Téléchargement du fichier
-//     const link = document.createElement("a");
-//     link.href = url;
-//     link.download = `data_export_${new Date().toISOString().slice(0, 10)}.csv`;
-//     link.click();
+// //   const headers = Object.keys(storedData[0]);
+// //   const csvContent =
+// //     headers.join(",") +
+// //     "\n" +
+// //     storedData
+// //       .map((row) =>
+// //         headers
+// //           .map((header) => `"${(row[header] || "").replace(/"/g, '""')}"`)
+// //           .join(",")
+// //       )
+// //       .join("\n");
 
-//     // Nettoyage de l'URL blob
-//     URL.revokeObjectURL(url);
-//   } catch (error) {
-//     console.error("Erreur lors de l'exportation des données en CSV :", error);
-//     alert("Une erreur s'est produite lors de l'exportation des données.");
-//   }
-// }
+// //   try {
+// //     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+// //     const url = URL.createObjectURL(blob);
 
-// // Search functions
+// //     // Téléchargement du fichier
+// //     const link = document.createElement("a");
+// //     link.href = url;
+// //     link.download = `data_export_${new Date().toISOString().slice(0, 10)}.csv`;
+// //     link.click();
+
+// //     // Nettoyage de l'URL blob
+// //     URL.revokeObjectURL(url);
+// //   } catch (error) {
+// //     console.error("Erreur lors de l'exportation des données en CSV :", error);
+// //     alert("Une erreur s'est produite lors de l'exportation des données.");
+// //   }
+// // }
+
+// // Popup loading search, export
 // document.addEventListener("DOMContentLoaded", async () => {
 //   const searchInput = document.getElementById("searchInput");
 //   const platformSelect = document.getElementById("platformSelect");
@@ -697,6 +835,19 @@ document.addEventListener("DOMContentLoaded", () => {
 //   let filteredData = [];
 
 //   loader.style.display = "block";
+
+//   function saveToLocalStorage() {
+//     const checkboxes = document.querySelectorAll(".dataCheckbox:checked");
+
+//     // Get selected row
+//     const selectedRows = Array.from(checkboxes).map((checkbox) => {
+//       const rowIndex = checkbox.getAttribute("data-index");
+//       return filteredData[rowIndex];
+//     });
+
+//     // Saved in localstorage
+//     localStorage.setItem("selectedData", JSON.stringify(selectedRows));
+//   }
 
 //   async function fetchData() {
 //     try {
@@ -816,6 +967,7 @@ document.addEventListener("DOMContentLoaded", () => {
 //       checkbox.checked = isChecked;
 //     });
 //     updateExportButtonState();
+//     saveToLocalStorage();
 //   }
 
 //   function handleSelectionChange() {
@@ -825,6 +977,7 @@ document.addEventListener("DOMContentLoaded", () => {
 //     );
 //     selectAllCheckbox.checked = allChecked;
 //     updateExportButtonState();
+//     saveToLocalStorage();
 //   }
 
 //   function updateExportButtonState() {
@@ -834,7 +987,6 @@ document.addEventListener("DOMContentLoaded", () => {
 //     exportToXlsButton.disabled = !selected;
 //   }
 
-//   // // Exporter les données sélectionnées en CSV
 //   // Exporter les données sélectionnées en CSV
 //   function exportToCsv() {
 //     // Sélectionner uniquement les cases cochées
@@ -853,7 +1005,10 @@ document.addEventListener("DOMContentLoaded", () => {
 //     });
 
 //     // Exclure des champs spécifiques si nécessaire
-//     const cleanedRows = selectedRows.map(({ userId, __v, _id, profileImage, createdAt, updatedAt, ...rest }) => rest);
+//     const cleanedRows = selectedRows.map(
+//       ({ userId, __v, _id, profileImage, createdAt, updatedAt, ...rest }) =>
+//         rest
+//     );
 
 //     // Générer les en-têtes dynamiquement à partir du premier objet
 //     const headers = Object.keys(cleanedRows[0]);
@@ -904,7 +1059,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //     // Exclure des champs spécifiques si nécessaire
 //     const cleanedRows = selectedRows.map(
-//       ({ userId, __v, _id, profileImage, createdAt, updatedAt, ...rest }) => rest
+//       ({ userId, __v, _id, profileImage, createdAt, updatedAt, ...rest }) =>
+//         rest
 //     );
 
 //     console.log("Selected rows:", cleanedRows);
@@ -956,68 +1112,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //     console.log("Excel file created and download initiated.");
 //   }
-//   // function exportToExcel() {
-//   //   console.log("Exporting data to Excel...");
-
-//   //   // Filtrer les données pour exclure des champs comme userId
-//   //   const selectedRows = filteredData.map((row) => {
-//   //     const { userId, __v, _id, profileImage, ...rest } = row;
-//   //     return rest;
-//   //   });
-
-//   //   if (selectedRows.length === 0) {
-//   //     alert("Aucune donnée à exporter.");
-//   //     return;
-//   //   }
-
-//   //   console.log("Selected rows:", selectedRows);
-
-//   //   // Générer les en-têtes du fichier Excel
-//   //   const headers = Object.keys(selectedRows[0]);
-
-//   //   // Construire le contenu HTML du fichier Excel
-//   //   let excelContent = `
-//   //     <table>
-//   //       <thead>
-//   //         <tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr>
-//   //       </thead>
-//   //       <tbody>
-//   //         ${selectedRows
-//   //           .map(
-//   //             (row) =>
-//   //               `<tr>${headers
-//   //                 .map(
-//   //                   (header) =>
-//   //                     `<td>${row[header] !== undefined ? row[header] : ""}</td>`
-//   //                 )
-//   //                 .join("")}</tr>`
-//   //           )
-//   //           .join("")}
-//   //       </tbody>
-//   //     </table>
-//   //   `;
-
-//   //   // Créer un Blob contenant les données Excel
-//   //   const blob = new Blob([excelContent], {
-//   //     type: "application/vnd.ms-excel;charset=utf-8;",
-//   //   });
-//   //   const url = URL.createObjectURL(blob);
-
-//   //   // Créer un lien pour télécharger le fichier
-//   //   const link = document.createElement("a");
-//   //   link.href = url;
-//   //   link.download = "exported_data.xls"; // Nom du fichier exporté
-//   //   document.body.appendChild(link);
-//   //   link.click();
-//   //   document.body.removeChild(link);
-
-//   //   console.log("Excel file created and download initiated.");
-//   // }
 
 //   // Charger les données initiales
 //   data = await fetchData();
 //   console.log(data);
-//   filteredData = data; // Par défaut, toutes les données
+//   filteredData = data;
 //   displayData(filteredData);
 
 //   // Ajouter des écouteurs pour les filtres
@@ -1052,8 +1151,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // // Get user connected data
 // document.addEventListener("DOMContentLoaded", () => {
-//   let messageHandled = false;
-
 //   chrome.runtime.sendMessage({ action: "getUserData" }, (response) => {
 //     if (chrome.runtime.lastError) {
 //       console.error(
@@ -1066,6 +1163,7 @@ document.addEventListener("DOMContentLoaded", () => {
 //       console.log("Données utilisateur récupérées :", response.userData);
 //       localStorage.setItem("userData", JSON.stringify(response.userData));
 //       localStorage.setItem("token", response.token);
+
 //       profil(response.userData, response.token);
 
 //       chrome.storage.local.set(
@@ -1083,32 +1181,14 @@ document.addEventListener("DOMContentLoaded", () => {
 //       );
 
 //       profil(response.userData, response.token);
+
+//       // tokenGlobal = response.token;
+//       // console.log("token", tokenGlobal);
 //     } else {
 //       console.log("Pas de données utilisateur, fallback activé");
 //       fallbackToLocalStorage();
 //     }
-
-//     // if (response && response.userData) {
-//     //   messageHandled = true;
-//     //   console.log("Données utilisateur récupérées :", response.userData);
-//     //   localStorage.setItem("userData", JSON.stringify(response.userData));
-//     //   localStorage.setItem("token", response.token);
-//     //   profil(response.userData, response.token);
-//     // } else {
-//     //   console.warn("Aucune donnée utilisateur reçue, fallback activé.");
-//     //   fallbackToLocalStorage();
-//     // }
 //   });
-
-//   // Si aucune réponse n'est reçue dans un délai raisonnable, fallback
-//   // setTimeout(() => {
-//   //   if (!messageHandled) {
-//   //     console.warn(
-//   //       "Aucune réponse reçue de `chrome.runtime.sendMessage`. Utilisation du fallback."
-//   //     );
-//   //     fallbackToLocalStorage();
-//   //   }
-//   // }, 2000);
 
 //   function fallbackToLocalStorage() {
 //     const storedUserData = localStorage.getItem("userData");
@@ -1117,49 +1197,30 @@ document.addEventListener("DOMContentLoaded", () => {
 //     if (storedUserData && storedToken) {
 //       const userData = JSON.parse(storedUserData);
 //       console.log("Fallback - Données utilisateur récupérées :", userData);
+
 //       profil(userData, storedToken);
+
 //     } else {
 //       console.log("Aucune donnée utilisateur trouvée en fallback.");
 //     }
 //   }
 
-//   // Vérifiez après un délai si le message a été traité
-//   // setTimeout(() => {
-//   //   if (!messageHandled) {
-//   //     console.warn(
-//   //       "Aucune réponse de `chrome.runtime.sendMessage`. Utilisation du fallback."
-//   //     );
-//   //     fallbackToLocalStorage();
-//   //   }
-//   // }, 1000);
-
-//   // function fallbackToLocalStorage() {
-//   //   const storedUserData = localStorage.getItem("userData");
-//   //   const storedToken = localStorage.getItem("token");
-
-//   //   if (storedUserData && storedToken) {
-//   //     const userData = JSON.parse(storedUserData);
-//   //     console.log("Fallback - Données utilisateur :", userData);
-//   //     profil(userData, storedToken);
-//   //   } else {
-//   //     console.log("Aucune donnée utilisateur trouvée en fallback.");
-//   //   }
-//   // }
-
 //   function profil(user, token) {
 //     tokenGlobal = token;
+//     globalUserId = user.data.userId;
+//     // console.log("user token", tokenGlobal)
 
 //     const container = document.getElementById("auth");
-//     // const createList = document.getElementById("createList");
-//     // const listForm = document.getElementById("createListForm");
-//     const createProfileList = document.getElementById("createProfileList")
+//     const createList = document.getElementById("createList");
+//     const listForm = document.getElementById("createListForm");
+//     const createProfileList = document.getElementById("createProfileList");
 
-//     if (!container || !createProfileList) {
+//     if (!container || !createList) {
 //       console.error("Les éléments nécessaires n'ont pas été trouvés.");
 //       return;
 //     }
 
-//     // createList.disabled = false;
+//     createList.disabled = false;
 //     createProfileList.disabled = false;
 
 //     container.innerHTML = `
@@ -1175,54 +1236,63 @@ document.addEventListener("DOMContentLoaded", () => {
 //   </div>
 // `;
 //     console.log("Profil injecté avec succès :", user?.data);
-//     // createList.addEventListener("click", () => {
-//     //   // createListForUser(user?.data.userId);
-//     //   listForm.style.display = "flex";
-//     //   createList.disabled = true;
-//     //   // Gestion de la soumission du formulaire
-//     //   listForm.addEventListener("submit", (event) => {
-//     //     event.preventDefault(); // Empêche le rechargement de la page
-//     //     const listName = document.getElementById("listName").value;
-//     //     const listProfile = document.getElementById("listProfile").value; // Récupère le nom de la liste
-//     //     createListForUser(user?.data.userId, listName, listProfile);
-//     //   });
-//     // });
+
+//     createList.addEventListener("click", () => {
+//       // createListForUser(user?.data.userId);
+//       listForm.style.display = "flex";
+//       createList.disabled = true;
+//       // Gestion de la soumission du formulaire
+//       listForm.addEventListener("submit", (event) => {
+//         event.preventDefault(); // Empêche le rechargement de la page
+//         const listName = document.getElementById("listName").value;
+//         const listProfile = document.getElementById("listProfile").value; // Récupère le nom de la liste
+//         createListForUser(user?.data.userId, listName, listProfile);
+//       });
+//     });
 //   }
 
-//   // Create profile list
+// });
 
-//   // Create list
-//   // function createListForUser(userId, listName, listProfile) {
-//   //   const listData = { name: listName, profiles: listProfile };
-//   //   console.log("Données envoyées :", { ...listData, userId });
-//   //   console.log("token use", tokenGlobal);
+// // Test of create list //
 
-//   //   fetch("http://localhost:3000/lists", {
-//   //     method: "POST",
-//   //     headers: {
-//   //       "Content-Type": "application/json",
-//   //       Authorization: `Bearer ${tokenGlobal}`,
-//   //     },
-//   //     body: JSON.stringify({ ...listData, userId }),
-//   //   })
-//   //     .then((response) => {
-//   //       console.log("Statut de la réponse :", response.status);
-//   //       if (!response.ok) {
-//   //         return response.json().then((err) => {
-//   //           console.error("Erreur renvoyée par le backend :", err);
-//   //           throw new Error("Erreur lors de la création de la liste");
-//   //         });
-//   //       }
-//   //       return response.json();
-//   //     })
-//   //     .then((data) => {
-//   //       console.log("Liste créée avec succès :", data);
-//   //       alert("Liste créée avec succès !");
-//   //     })
-//   //     .catch((error) => {
-//   //       console.error("Erreur de création :", error.message);
-//   //       alert("Une erreur est survenue lors de la création de la liste.");
-//   //     });
-//   // }
+// document.getElementById('toggle-create-list').addEventListener('click', () => {
+//   const section = document.getElementById('create-list-section');
+//   section.style.display = section.style.display === 'none' ? 'block' : 'none';
+// });
 
+// document.getElementById('create-list-btn').addEventListener('click', async () => {
+//   const listName = document.getElementById('list-name').value.trim();
+//   if (!listName) {
+//     alert('Veuillez entrer un nom pour la liste.');
+//     return;
+//   }
+
+//   // Récupérer les données sélectionnées depuis localStorage
+//   const selectedData = JSON.parse(localStorage.getItem('selectedData')) || [];
+//   if (selectedData.length === 0) {
+//     alert('Aucune donnée sélectionnée pour créer une liste.');
+//     return;
+//   }
+
+//   try {
+//     const response = await fetch('http://localhost:3000/lists', {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify({ name: listName, data: selectedData }),
+//     });
+
+//     if (response.ok) {
+//       alert('Liste créée avec succès.');
+//       // Vider les données sélectionnées
+//       localStorage.removeItem('selectedData');
+//     } else {
+//       const error = await response.json();
+//       alert(`Erreur : ${error.message}`);
+//     }
+//   } catch (err) {
+//     console.error('Erreur lors de la création de la liste :', err);
+//     alert('Une erreur est survenue. Veuillez réessayer.');
+//   }
 // });
