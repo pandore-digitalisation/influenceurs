@@ -589,8 +589,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const container = document.getElementById("auth");
     const createList = document.getElementById("createList");
-    const listForm = document.getElementById("createListForm");
-    const createProfileList = document.getElementById("createProfileList");
+    // const listForm = document.getElementById("createListForm");
 
     if (!container || !createList) {
       console.error("Les éléments nécessaires n'ont pas été trouvés.");
@@ -613,21 +612,28 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
 `;
     console.log("Profil injecté avec succès :", user?.data);
-    createList.addEventListener("click", () => {
-      // createListForUser(user?.data.userId);
-      listForm.style.display = "flex";
-      createList.disabled = true;
-      // Gestion de la soumission du formulaire
-      listForm.addEventListener("submit", (event) => {
-        event.preventDefault(); // Empêche le rechargement de la page
-        const listName = document.getElementById("listName").value;
-        const listProfile = document.getElementById("listProfile").value; // Récupère le nom de la liste
-        createListForUser(user?.data.userId, listName, listProfile);
-      });
-    });
+    // createList.addEventListener("click", () => {
+    //   // createListForUser(user?.data.userId);
+    //   listForm.style.display = "flex";
+    //   // createList.disabled = true;
+    //   // Gestion de la soumission du formulaire
+    //   listForm.addEventListener("submit", (event) => {
+    //     event.preventDefault(); // Empêche le rechargement de la page
+    //     const listName = document.getElementById("listName").value;
+    //     const listProfile = document.getElementById("listProfile").value; // Récupère le nom de la liste
+    //     createListForUser(user?.data.userId, listName, listProfile);
+    //   });
+    // });
   }
 
   // Create list
+  const createList = document.getElementById("createList");
+
+  createList.addEventListener("click", () => {
+    const createListForm = document.getElementById("createListForm");
+    createListForm.style.display = createListForm.style.display === "none" ? "flex": "none"
+  })
+
   document
     .getElementById("toggle-create-list")
     .addEventListener("click", () => {
@@ -636,7 +642,6 @@ document.addEventListener("DOMContentLoaded", () => {
         section.style.display === "none" ? "block" : "none";
     });
 
-  console.log("global2 userid", globalUserId);
 
   document
     .getElementById("create-list-btn")
@@ -646,6 +651,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Veuillez entrer un nom pour la liste.");
         return;
       }
+
 
       // Récupérer les données sélectionnées depuis localStorage
       const selectedData = JSON.parse(localStorage.getItem("selectedData")) || [];

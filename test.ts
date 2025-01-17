@@ -952,3 +952,11 @@ fetch("/api/lists", {
   .catch((error) => {
     console.error("Erreur lors de la création de la liste :", error);
   });
+
+
+
+  function clearSelectedDataFromLocalStorage() {
+    localStorage.removeItem("selectedData");
+    console.log("Données sauvegardées supprimées de localStorage.");
+  }
+  

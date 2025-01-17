@@ -179,7 +179,7 @@ export default function Dashboard() {
             <ul>
               {lists.map((list) => (
                 <li key={list.index}>
-                  {list._id} - {list.name} - {list.profiles}
+                  {list._id} - {list.name} - {list.profiles.description}
                 </li>
               ))}
             </ul>
