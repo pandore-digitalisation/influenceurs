@@ -925,3 +925,30 @@ document.getElementById('toggle-create-list').addEventListener('click', () => {
         alert("Une erreur est survenue lors de la création de la liste.");
       });
   }
+
+
+
+
+  const userId = profile?.user?.id; // Extraction du userId global depuis profile
+
+fetch("/api/lists", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${token}`,
+  },
+  body: JSON.stringify({
+    name: listName,
+    data: selectedData.map((item) => ({
+      ...item, // Inclut toutes les propriétés existantes
+      userId: userId, // Ajoute ou remplace la clé userId pour chaque item
+    })),
+  }),
+})
+  .then((response) => response.json())
+  .then((result) => {
+    console.log("Liste créée avec succès :", result);
+  })
+  .catch((error) => {
+    console.error("Erreur lors de la création de la liste :", error);
+  });

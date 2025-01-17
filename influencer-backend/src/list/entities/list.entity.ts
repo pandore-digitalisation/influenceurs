@@ -9,7 +9,7 @@ export class List extends Document {
   @Prop({ required: true })
   name: string;
 
-  @Prop({ type: [String], default: [] })
+  @Prop({ type: [Object], default: [] })
   profiles: string[];
 }
 

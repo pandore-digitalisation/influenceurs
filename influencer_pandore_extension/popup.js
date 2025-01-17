@@ -666,7 +666,11 @@ document.addEventListener("DOMContentLoaded", () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${tokenGlobal}`,
           },
-          body: JSON.stringify({ name: listName, profiles: [selectedData], userId: userData.data.userId }),
+          body: JSON.stringify({ 
+            name: listName,
+            profiles: selectedData,
+            userId: userData.data.userId
+          }),
         });
 
         if (response.ok) {
