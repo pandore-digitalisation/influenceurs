@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateInstagramDto } from './dto/create-instagram.dto';
 import { UpdateInstagramDto } from './dto/update-instagram.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -59,6 +59,16 @@ export class InstagramService {
       // Enregistrer et retourner le nouveau profil
       return newInstagram.save();
     }
+  }
+
+  async getProfileByUrl(profileUrl: string): Promise<Instagram> {
+    const profile = await this.instagramModel.findOne({ profileUrl }).exec();
+
+    if (!profile) {
+      throw new NotFoundException('Profile not found');
+    }
+
+    return profile;
   }
 
   findAll() {

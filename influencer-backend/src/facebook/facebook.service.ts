@@ -57,7 +57,6 @@ export class FacebookService {
     if (!profile) {
       throw new NotFoundException('Profile not found');
     }
-    console.log(profile);
 
     return profile;
   }

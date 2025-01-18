@@ -40,6 +40,11 @@ export class InstagramController {
     return this.instagramService.createProfile(createInstagramDto, userId);
   }
 
+  @Get(':profileUrl')
+  async getProfileByUrl(@Param('profileUrl') profileUrl: string) {
+    return this.instagramService.getProfileByUrl(profileUrl);
+  }
+
   @Get()
   findAll() {
     return this.instagramService.findAll();

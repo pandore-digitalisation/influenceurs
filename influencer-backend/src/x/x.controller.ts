@@ -38,14 +38,14 @@ export class XController {
     return this.xService.createProfile(createXDto, userId);
   }
 
-  @Get()
-  findAll() {
-    return this.xService.findAll();
-  }
-
   @Get(':profileUrl')
   async getProfileByUrl(@Param('profileUrl') profileUrl: string) {
     return this.xService.getProfileByUrl(profileUrl);
+  }
+
+  @Get()
+  findAll() {
+    return this.xService.findAll();
   }
 
   @Get(':id')
