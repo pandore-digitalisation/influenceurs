@@ -40,6 +40,11 @@ export class LinkedinController {
     return this.linkedinService.createProfile(createLinkedinDto, userId);
   }
 
+  @Get(':profileUrl')
+  async getProfileByUl(@Param('profileUrl') profileUrl: string) {
+    return this.linkedinService.getProfileByUrl(profileUrl);
+  }
+
   @Get()
   findAll() {
     return this.linkedinService.findAll();

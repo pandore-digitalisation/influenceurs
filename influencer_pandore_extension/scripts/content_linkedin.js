@@ -1,4 +1,7 @@
 (async () => {
+  const BASE_URL ="https://influenceurs.onrender.com"
+  // const BASE_URL = "http://localhost:3000";
+
   // Helper function to evaluate an XPath expression and return nodes
   function evaluateXPath(xpath, context = document) {
     const iterator = document.evaluate(
@@ -15,37 +18,6 @@
 
     return nodes;
   }
-
-  // async function waitForElement(xpath, timeout = 10000) {
-  //   return new Promise((resolve, reject) => {
-  //     const interval = 100;
-  //     let elapsed = 0;
-
-  //     const check = () => {
-  //       const elements = evaluateXPath(xpath);
-  //       if (elements.length > 0) {
-  //         resolve(elements);
-  //       } else if (elapsed >= timeout) {
-  //         console.log(
-  //           "Timeout reached. Data not fully loaded. please reload the page and trying"
-  //         );
-        
-  //         reject(new Error("Timeout waiting for element"));
-  //         const failed =
-  //           "Timeout reached. Data not fully loaded. please reload the page and trying again";
-  //         chrome.runtime.sendMessage({ failed });
-  //       } else {
-  //         elapsed += interval;
-  //         setTimeout(check, interval);
-  //       }
-  //     };
-
-  //     check();
-  //   });
-  // }
-
-  // const BASE_URL ="https://influenceurs.onrender.com"
-  const BASE_URL = "http://localhost:3000";
 
   // Define the XPaths
   const nameXPath =
@@ -111,6 +83,32 @@
     });
   }
 
+  // Fonction pour récupérer les données existantes du profil depuis le backend
+  async function getExistingProfile(profileUrl) {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/linkedin/${encodeURIComponent(profileUrl)}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        console.warn("Profil non trouvé, un nouveau sera créé.");
+        return null;
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération du profil :", error);
+      return null;
+    }
+  }
+
   // Get user data and add it to the extracted data
   let userData = null;
   try {
@@ -128,13 +126,28 @@
     );
   }
 
-  const userId = userData.data.userId;
-
-  // Get the profile URL
   const profileUrl = window.location.href;
+  console.log("url", profileUrl);
+  const encodeUrl = encodeURIComponent(profileUrl)
+  console.log("encode", encodeUrl)
+  
+  const existingProfile = await getExistingProfile(profileUrl);
+  console.log("existing", existingProfile);
+  
+
+  // Préparer le champ userId
+  const currentUserId = userData?.data?.userId || null;
+  const existingUserIds = existingProfile?.userId || [];
+
+  // Ajouter uniquement si l'userId actuel n'est pas déjà présent
+  const updatedUserIds = existingUserIds.includes(currentUserId)
+    ? existingUserIds
+    : [...existingUserIds, currentUserId];
+
+  // const userId = userData.data.userId;
 
   const extractedData = {
-    userId,
+    userId: updatedUserIds,
     name,
     description,
     location,
@@ -146,15 +159,6 @@
   };
 
   console.log("Extracted Data:", extractedData);
-
-  // function areDataValid(data) {
-  //   return (
-  //     (data.name !== "None" &&
-  //       data.followers !== "0" &&
-  //       data.profileImage !== " ") ||
-  //     data.profileImage == " "
-  //   );
-  // }
 
   // Send data to the backend
   async function sendToBackend(data) {
@@ -180,14 +184,6 @@
     }
   }
 
-  //Post the data to the backend
-  // if (areDataValid(extractedData)) {
-  //   const success = await sendToBackend(extractedData);
-  //   console.log("Success:", success);
-  //   chrome.runtime.sendMessage({ success });
-  // } else {
-  //   console.warn("Data is incomplete or invalid. Skipping POST request.");
-  // }
   const success = await sendToBackend(extractedData);
   console.log("success", success);
   // Communiquez l'état au popup.js

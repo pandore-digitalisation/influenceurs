@@ -7,8 +7,6 @@ import { Document } from 'mongoose';
 export class Linkedin extends Document {
   @Prop({ type: [String], required: false })
   userId: string[];
-  // @Prop({ required: false })
-  // userId: string;
 
   @Prop({ required: false })
   profileUrl: string;

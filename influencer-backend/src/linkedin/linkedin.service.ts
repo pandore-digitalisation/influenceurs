@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateLinkedinDto } from './dto/create-linkedin.dto';
 import { UpdateLinkedinDto } from './dto/update-linkedin.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -59,6 +59,17 @@ export class LinkedinService {
       // Enregistrer et retourner le nouveau profil
       return newLinkedin.save();
     }
+  }
+
+  async getProfileByUrl(profileUrl: string): Promise<Linkedin> {
+    const profile = await this.linkedinModel.findOne({ profileUrl }).exec();
+
+    if (!profile) {
+      throw new NotFoundException('Profile not found');
+    }
+    console.log(profile);
+
+    return profile;
   }
 
   findAll() {
