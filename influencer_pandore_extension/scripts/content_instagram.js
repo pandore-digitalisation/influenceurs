@@ -1,8 +1,8 @@
 (async () => {
   console.log("Running script for Instagram...");
 
-  // const BASE_URL = "https://influenceurs.onrender.com";
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = "https://influenceurs.onrender.com";
+  // const BASE_URL = "http://localhost:3000";
 
   // Helper function to evaluate an XPath expression and return nodes
   function evaluateXPath(xpath, context = document) {
@@ -158,8 +158,7 @@
     return (
       data.name !== "None" &&
       data.followers !== "0" &&
-      data.profileImage !== " " &&
-      data.posts !== "0"
+      data.posts !== " "
     );
   }
 
@@ -195,5 +194,6 @@
     chrome.runtime.sendMessage({ success });
   } else {
     console.warn("Data is incomplete or invalid. Skipping POST request.");
+    alert("Data is incomplete or invalid, please reload and try again!")
   }
 })();
