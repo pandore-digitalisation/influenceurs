@@ -1,5 +1,5 @@
 (async () => {
-  const BASE_URL ="https://influenceurs.onrender.com"
+  const BASE_URL = "https://influenceurs.onrender.com";
   // const BASE_URL = "http://localhost:3000";
 
   // Helper function to evaluate an XPath expression and return nodes
@@ -32,11 +32,6 @@
     "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/ul/li[2]/span/span";
   const profileImageXPath =
     "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/div/span/img";
-
-  // Attendre que les éléments soient disponibles
-  // await waitForElement(nameXPath);
-  // await waitForElement(followersXPath);
-  // await waitForElement(connectionXpath);
 
   // Extract data
   const nameElements = evaluateXPath(nameXPath);
@@ -128,12 +123,11 @@
 
   const profileUrl = window.location.href;
   console.log("url", profileUrl);
-  const encodeUrl = encodeURIComponent(profileUrl)
-  console.log("encode", encodeUrl)
-  
+  const encodeUrl = encodeURIComponent(profileUrl);
+  console.log("encode", encodeUrl);
+
   const existingProfile = await getExistingProfile(profileUrl);
   console.log("existing", existingProfile);
-  
 
   // Préparer le champ userId
   const currentUserId = userData?.data?.userId || null;
@@ -160,6 +154,14 @@
 
   console.log("Extracted Data:", extractedData);
 
+  function areDataValid(data) {
+    return (
+      data.name !== "None" &&
+      data.followers !== "0" &&
+      data.connection !== "0"
+    );
+  }
+
   // Send data to the backend
   async function sendToBackend(data) {
     try {
@@ -184,8 +186,13 @@
     }
   }
 
-  const success = await sendToBackend(extractedData);
-  console.log("success", success);
-  // Communiquez l'état au popup.js
-  chrome.runtime.sendMessage({ success });
+  if (areDataValid(extractedData)) {
+    const success = await sendToBackend(extractedData);
+    console.log("Success:", success);
+    chrome.runtime.sendMessage({ success });
+  } else {
+    console.warn("Data is incomplete or invalid. Skipping POST request.");
+    window.location.reload();
+    alert("Data is incomplete or invalid, please reload and try again!");
+  }
 })();

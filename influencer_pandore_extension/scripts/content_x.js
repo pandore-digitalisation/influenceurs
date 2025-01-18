@@ -1,7 +1,7 @@
 (async () => {
   console.log("Running script for X...");
-    const BASE_URL = "https://influenceurs.onrender.com";
-    // const BASE_URL = "http://localhost:3000";
+  const BASE_URL = "https://influenceurs.onrender.com";
+  // const BASE_URL = "http://localhost:3000";
 
   // Helper function to evaluate an XPath expression and return nodes
   function evaluateXPath(xpath, context = document) {
@@ -159,12 +159,11 @@
 
   const profileUrl = window.location.href;
   console.log("url", profileUrl);
-  const encodeUrl = encodeURIComponent(profileUrl)
-  console.log("encode", encodeUrl)
-  
+  const encodeUrl = encodeURIComponent(profileUrl);
+  console.log("encode", encodeUrl);
+
   const existingProfile = await getExistingProfile(profileUrl);
   console.log("existing", existingProfile);
-  
 
   // Préparer le champ userId
   const currentUserId = userData?.data?.userId || null;
@@ -188,6 +187,10 @@
   };
 
   console.log("Données extraites :", extractedData);
+
+  function areDataValid(data) {
+    return data.name !== "None" && data.followers !== "0";
+  }
 
   // Send data to the backend
   async function sendToBackend(data) {
@@ -214,9 +217,12 @@
   }
 
   // Post the data to the backend
-  const success = await sendToBackend(extractedData);
-  console.log("success", success);
-
-  // Communicate the status to popup.js
-  chrome.runtime.sendMessage({ success });
+  if (areDataValid(extractedData)) {
+    const success = await sendToBackend(extractedData);
+    console.log("Success:", success);
+    chrome.runtime.sendMessage({ success });
+  } else {
+    console.warn("Data is incomplete or invalid. Skipping POST request.");
+    alert("Data is incomplete or invalid, please reload and try again!");
+  }
 })();
