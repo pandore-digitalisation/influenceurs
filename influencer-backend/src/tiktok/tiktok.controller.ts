@@ -38,6 +38,11 @@ export class TiktokController {
     return this.tiktokService.createProfile(createTiktokDto, userId);
   }
 
+  @Get(':profileUrl')
+  async getProfileByUrl(@Param('profileUrl') profileUrl: string) {
+    return this.tiktokService.getProfileByUrl(profileUrl);
+  }
+
   @Get()
   findAll() {
     return this.tiktokService.findAll();

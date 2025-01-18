@@ -7,8 +7,6 @@ export type DataDocument = HydratedDocument<X>;
 export class X {
   @Prop({ type: [String], required: false })
   userId: string[];
-  // @Prop({ required: true })
-  // userId: string;
 
   @Prop({ required: false })
   profileUrl: string;

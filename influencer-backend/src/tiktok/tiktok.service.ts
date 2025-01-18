@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTiktokDto } from './dto/create-tiktok.dto';
 import { UpdateTiktokDto } from './dto/update-tiktok.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -60,23 +60,17 @@ export class TiktokService {
       return newTiktok.save();
     }
   }
-  // async createProfile(profileUrl: string, userIds: string[]): Promise<Tiktok> {
-  //   // Vérifier si le profil existe
-  //   const profile = await this.tiktokModel.findOne({ profileUrl });
 
-  //   if (!profile) {
-  //     throw new Error('Profil non trouvé.');
-  //   }
+  async getProfileByUrl(profileUrl: string): Promise<Tiktok> {
+    const profile = await this.tiktokModel.findOne({ profileUrl }).exec();
 
-  //   // Ajouter les nouveaux `userId` qui ne sont pas déjà dans le tableau
-  //   const uniqueUserIds = userIds.filter((id) => !profile.userId.includes(id));
-  //   if (uniqueUserIds.length > 0) {
-  //     profile.userId.push(...uniqueUserIds);
-  //     await profile.save();
-  //   }
+    if (!profile) {
+      throw new NotFoundException('Profile not found');
+    }
+    console.log(profile);
 
-  //   return profile;
-  // }
+    return profile;
+  }
 
   findAll() {
     return this.tiktokModel.find().exec();

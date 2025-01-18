@@ -1,4 +1,6 @@
 (async () => {
+  const BASE_URL = "https://influenceurs.onrender.com";
+  // const BASE_URL = "http://localhost:3000";
   // Helper function to evaluate an XPath expression and return nodes
   function evaluateXPath(xpath, context = document) {
     const iterator = document.evaluate(
@@ -15,9 +17,6 @@
 
     return nodes;
   }
-
-  const BASE_URL = "https://influenceurs.onrender.com";
-  // const BASE_URL = "http://localhost:3000";
 
 
   // Define the XPaths
@@ -57,29 +56,59 @@
       ? followingElements[0].textContent.trim()
       : "0";
   const likes =
-    likesElements.length > 0
-      ? likesElements[0].textContent.trim()
-      : "0";
+    likesElements.length > 0 ? likesElements[0].textContent.trim() : "0";
   const profileImage =
     profileImageElements.length > 0 ? profileImageElements[0].src : " ";
 
-    // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
-    async function getUserData() {
-      return new Promise((resolve, reject) => {
-        chrome.storage.local.get("userData", (result) => {
-          if (chrome.runtime.lastError) {
-            reject(
-              new Error(
-                "Erreur lors de la récupération des données : " +
-                  chrome.runtime.lastError
-              )
-            );
-          } else {
-            resolve(result.userData);
-          }
-        });
+  // Get data before sending to backend
+  if (!name || !followers || !following) {
+    console.error("Données incomplètes ou manquantes. Requête annulée.");
+    return;
+  }
+
+  // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
+  async function getUserData() {
+    return new Promise((resolve, reject) => {
+      chrome.storage.local.get("userData", (result) => {
+        if (chrome.runtime.lastError) {
+          reject(
+            new Error(
+              "Erreur lors de la récupération des données : " +
+                chrome.runtime.lastError
+            )
+          );
+        } else {
+          resolve(result.userData);
+        }
       });
+    });
+  }
+
+  // Fonction pour récupérer les données existantes du profil depuis le backend
+  async function getExistingProfile(profileUrl) {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/tiktok/${encodeURIComponent(profileUrl)}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        return data;
+      } else {
+        console.warn("Profil non trouvé, un nouveau sera créé.");
+        return null;
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération du profil :", error);
+      return null;
     }
+  }
 
   // Get user data and add it to the extracted data
   let userData = null;
@@ -98,52 +127,43 @@
     );
   }
 
-  const userId = userData.data.userId;
+  // const userId = userData.data.userId;
 
-  // Get the profile URL
   const profileUrl = window.location.href;
+  console.log("url", profileUrl);
+  const encodeUrl = encodeURIComponent(profileUrl);
+  console.log("encode", encodeUrl);
+
+  const existingProfile = await getExistingProfile(profileUrl);
+  console.log("existing", existingProfile);
+
+  // Préparer le champ userId
+  const currentUserId = userData?.data?.userId || null;
+  const existingUserIds = existingProfile?.userId || [];
+
+  // Ajouter uniquement si l'userId actuel n'est pas déjà présent
+  const updatedUserIds = existingUserIds.includes(currentUserId)
+    ? existingUserIds
+    : [...existingUserIds, currentUserId];
 
   const extractedData = {
-    userId,
-    createTiktokDto: {
-      name,
-      description,
-      likes,
-      followers,
-      following,
-      plateform: "TikTok",
-      profileImage,
-      profileUrl,
-    }
- 
+    userId: updatedUserIds,
+    name,
+    description,
+    likes,
+    followers,
+    following,
+    plateform: "TikTok",
+    profileImage,
+    profileUrl,
   };
 
   console.log("Extracted Data:", extractedData);
 
-  // // Combine new data with previously stored data, replacing existing entries if the name matches
-  // let storedData = [];
-  // if (localStorage.getItem("exportedData")) {
-  //   storedData = JSON.parse(localStorage.getItem("exportedData"));
-  // }
-
-  // const existingIndex = storedData.findIndex(
-  //   (entry) => entry.name === extractedData.name
-  // );
-
-  // if (existingIndex > -1) {
-  //   // Replace existing entry if the name matches
-  //   storedData[existingIndex] = extractedData;
-  // } else {
-  //   // Add new entry if no match is found
-  //   storedData.push(extractedData);
-  // }
-
-  // localStorage.setItem("exportedData", JSON.stringify(storedData));
-
   // Send data to the backend
   async function sendToBackend(data) {
     try {
-      const response = await fetch(`${BASE_URL}/tiktok/create-profile`, {
+      const response = await fetch(`${BASE_URL}/tiktok/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
