@@ -1782,3 +1782,244 @@ async function sendToBackend(data) {
 })();
 
 
+
+
+
+(async () => {
+  // Fonction pour récupérer les données utilisateur
+  async function getUserData() {
+    try {
+      const response = await fetch(`${BASE_URL}/user-data`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      return null;
+    }
+  }
+
+  // Récupérer les données utilisateur
+  let userData = null;
+  try {
+    userData = await getUserData();
+  } catch (error) {
+    console.error("Error retrieving user data:", error);
+  }
+
+  // Extraire l'ID utilisateur ou définir à `null` si non disponible
+  const userId = userData?.data?.userId || null;
+
+  if (!userId) {
+    console.warn("Utilisateur non connecté ou données utilisateur manquantes.");
+  }
+
+  // Récupérer l'ID du profil existant, si il y en a (par exemple, via une requête GET)
+  async function getProfileData(profileUrl) {
+    try {
+      const response = await fetch(`${BASE_URL}/x?profileUrl=${encodeURIComponent(profileUrl)}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        return await response.json(); // retourne les données du profil existant
+      }
+      return null;
+    } catch (error) {
+      console.error("Erreur lors de la récupération du profil :", error);
+      return null;
+    }
+  }
+
+  // URL du profil actuel
+  const profileUrl = window.location.href;
+
+  // Récupérer les données du profil existant depuis le backend
+  let existingProfile = await getProfileData(profileUrl);
+
+  // Si le profil existe, récupérer les userId existants
+  let existingUserIds = [];
+  if (existingProfile && existingProfile.userId) {
+    existingUserIds = existingProfile.userId;
+  }
+
+  // Si un userId est trouvé, on l'ajoute à la liste existante sans la remplacer
+  if (userId && !existingUserIds.includes(userId)) {
+    existingUserIds.push(userId);
+  }
+
+  // Préparer les données extraites pour l'envoi au backend
+  const extractedData = {
+    name,
+    description,
+    followers,
+    following,
+    plateform: "X",
+    profileImage: `${base}${profileImage}`,
+    profileUrl,
+    userId: existingUserIds, // Utilise la liste complète des userId
+  };
+
+  console.log("Données extraites :", extractedData);
+
+  // Fonction pour envoyer les données au backend
+  async function sendToBackend(data) {
+    try {
+      const response = await fetch(`${BASE_URL}/x`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        console.log("Données envoyées avec succès au backend.");
+        return true;
+      } else {
+        console.error("Erreur lors de l'envoi des données au backend.");
+        return false;
+      }
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+      return false;
+    }
+  }
+
+  // Envoyer les données au backend
+  const success = await sendToBackend(extractedData);
+  console.log("Envoi réussi :", success);
+
+  // Communiquer le statut à `popup.js`
+  chrome.runtime.sendMessage({ success });
+})();
+
+
+
+
+
+
+
+
+
+(async () => {
+  // Fonction pour récupérer les données utilisateur
+  async function getUserData() {
+    try {
+      const response = await fetch(`${BASE_URL}/user-data`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      return null;
+    }
+  }
+
+  // Fonction pour récupérer le profil existant depuis le backend
+  async function getExistingProfile(profileUrl) {
+    try {
+      const response = await fetch(`${BASE_URL}/x?profileUrl=${encodeURIComponent(profileUrl)}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        return await response.json(); // Retourne les données du profil existant
+      }
+      return null;
+    } catch (error) {
+      console.error("Erreur lors de la récupération du profil :", error);
+      return null;
+    }
+  }
+
+  // Récupérer les données utilisateur
+  let userData = null;
+  try {
+    userData = await getUserData();
+  } catch (error) {
+    console.error("Erreur lors de la récupération des données utilisateur :", error);
+  }
+
+  // Vérifier si les données utilisateur sont disponibles
+  const currentUserId = userData?.data?.userId || null;
+  if (!currentUserId) {
+    console.error("Utilisateur non connecté ou données utilisateur manquantes.");
+    return; // Ne continue pas si les données utilisateur ne sont pas valides
+  }
+
+  // Récupérer l'URL du profil actuel
+  const profileUrl = window.location.href;
+
+  // Récupérer le profil existant
+  const existingProfile = await getExistingProfile(profileUrl);
+
+  // Si un profil existe, récupérer les userId existants
+  const existingUserIds = existingProfile?.userId || [];
+
+  // Ajouter l'actuel userId au tableau si il n'est pas déjà présent
+  const updatedUserIds = existingUserIds.includes(currentUserId)
+    ? existingUserIds // Ne rien changer si l'userId existe déjà
+    : [...existingUserIds, currentUserId]; // Ajouter l'userId actuel s'il n'est pas présent
+
+  // Préparer les données à envoyer au backend
+  const extractedData = {
+    name, // Assurez-vous d'avoir ces données définies quelque part dans votre code
+    description,
+    followers,
+    following,
+    platform: "X", // "plateform" corrigé en "platform"
+    profileImage: `https://x.com${profileImage}`,
+    profileUrl,
+    userId: updatedUserIds, // Utiliser le tableau des userIds mis à jour
+  };
+
+  console.log("Données extraites :", extractedData);
+
+  // Fonction pour envoyer les données au backend
+  async function sendToBackend(data) {
+    try {
+      const response = await fetch(`${BASE_URL}/x`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        console.log("Données envoyées avec succès au backend.");
+        return true;
+      } else {
+        console.error("Erreur lors de l'envoi des données au backend.");
+        return false;
+      }
+    } catch (error) {
+      console.error("Erreur réseau :", error);
+      return false;
+    }
+  }
+
+  // Post the data to the backend
+  const success = await sendToBackend(extractedData);
+  console.log("Envoi réussi :", success);
+
+  // Communiquer le statut à popup.js (si nécessaire)
+  chrome.runtime.sendMessage({ success });
+})();

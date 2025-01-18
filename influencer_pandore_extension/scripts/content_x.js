@@ -1,5 +1,7 @@
 (async () => {
   console.log("Running script for X...");
+    const BASE_URL = "https://influenceurs.onrender.com";
+    // const BASE_URL = "http://localhost:3000";
 
   // Helper function to evaluate an XPath expression and return nodes
   function evaluateXPath(xpath, context = document) {
@@ -44,9 +46,6 @@
       check();
     });
   }
-
-  const BASE_URL = "https://influenceurs.onrender.com";
-  // const BASE_URL = "http://localhost:3000";
 
   // Define the XPaths
   const nameXPath =
@@ -120,7 +119,7 @@
   async function getExistingProfile(profileUrl) {
     try {
       const response = await fetch(
-        `${BASE_URL}/x?profileUrl=${encodeURIComponent(profileUrl)}`,
+        `${BASE_URL}/x/${encodeURIComponent(profileUrl)}`,
         {
           method: "GET",
           headers: {
@@ -141,6 +140,55 @@
       return null;
     }
   }
+
+  // Get user data and add it to the extracted data
+  let userData = null;
+  try {
+    userData = await getUserData();
+  } catch (error) {
+    console.error(error);
+  }
+
+  console.log("user data 2", userData);
+  //  If user data is not found, handle accordingly (e.g., not sending userId)
+  if (!userData || !userData.data.userId) {
+    console.error(
+      "Utilisateur non connecté ou données utilisateur manquantes."
+    );
+  }
+
+  // Récupérer les données utilisateur et le profil existant
+  const profileUrl = window.location.href;
+  console.log("url", profileUrl);
+  const encodeUrl = encodeURIComponent(profileUrl)
+  console.log("encode", encodeUrl)
+  
+  const existingProfile = await getExistingProfile(profileUrl);
+  console.log("existing", existingProfile);
+  
+
+  // Préparer le champ userId
+  const currentUserId = userData?.data?.userId || null;
+  const existingUserIds = existingProfile?.userId || [];
+
+  // Ajouter uniquement si l'userId actuel n'est pas déjà présent
+  const updatedUserIds = existingUserIds.includes(currentUserId)
+    ? existingUserIds
+    : [...existingUserIds, currentUserId];
+
+  // Préparer les données à envoyer
+  const extractedData = {
+    name,
+    description,
+    followers,
+    following,
+    plateform: "X",
+    profileImage: `https://x.com${profileImage}`,
+    profileUrl,
+    userId: updatedUserIds, // Mettre à jour le tableau userId
+  };
+
+  console.log("Données extraites :", extractedData);
 
   // Send data to the backend
   async function sendToBackend(data) {
@@ -166,55 +214,12 @@
     }
   }
 
-   // Get user data and add it to the extracted data
-   let userData = null;
-   try {
-     userData = await getUserData();
-   } catch (error) {
-     console.error(error);
-   }
- 
-   // console.log("user data 2", userData);
-   // If user data is not found, handle accordingly (e.g., not sending userId)
-   // if (!userData || !userData.data.userId) {
-   //   console.error(
-   //     "Utilisateur non connecté ou données utilisateur manquantes."
-   //   );
-   // }
-   
-   // Récupérer les données utilisateur et le profil existant
-  const profileUrl = window.location.href;
-  const existingProfile = await getExistingProfile(profileUrl);
-
-  // Préparer le champ userId
-  const currentUserId = userData?.data?.userId || null;
-  const existingUserIds = existingProfile?.userId || [];
-
-  // Ajouter uniquement si l'userId actuel n'est pas déjà présent
-  const updatedUserIds = existingUserIds.includes(currentUserId)
-    ? existingUserIds
-    : [...existingUserIds, currentUserId];
-
-  // Préparer les données à envoyer
-  const extractedData = {
-    name,
-    description,
-    followers,
-    following,
-    plateform: "X",
-    profileImage: `https://x.com${profileImage}`,
-    profileUrl,
-    userId: updatedUserIds, // Mettre à jour le tableau userId
-  };
-
-  console.log("Données extraites :", extractedData);
- 
   //  // Get the profile URL
   //  const profileUrl = window.location.href;
   //  const base = "https://x.com";
- 
+
   //  const userId = userData?.data?.userId || "002";
- 
+
   //  // Prepare the extracted data and add userId
   //  const extractedData = {
   //    name,
@@ -226,10 +231,8 @@
   //    profileUrl,
   //    userId,
   //  };
- 
-  //  console.log("Extracted Data:", extractedData);
 
-  
+  //  console.log("Extracted Data:", extractedData);
 
   // Post the data to the backend
   const success = await sendToBackend(extractedData);
