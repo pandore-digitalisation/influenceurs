@@ -40,6 +40,11 @@ export class FacebookController {
     return this.facebookService.createProfile(createFacebookDto, userId);
   }
 
+  @Get(':profileUrl')
+  async getProfileByUrl(@Param('profileUrl') profileUrl: string) {
+    return this.facebookService.getProfileByUrl(profileUrl);
+  }
+
   @Get()
   findAll() {
     return this.facebookService.findAll();

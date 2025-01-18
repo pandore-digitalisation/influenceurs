@@ -7,8 +7,6 @@ export type DataDocument = HydratedDocument<Facebook>;
 export class Facebook {
   @Prop({ type: [String], required: false })
   userId: string[];
-  // @Prop({ required: false })
-  // userId: string;
 
   @Prop({ required: false })
   profileUrl: string;

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFacebookDto } from './dto/create-facebook.dto';
 import { UpdateFacebookDto } from './dto/update-facebook.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -49,6 +49,17 @@ export class FacebookService {
       });
       return newFacebook.save();
     }
+  }
+
+  async getProfileByUrl(profileUrl: string): Promise<Facebook> {
+    const profile = await this.facebookModel.findOne({ profileUrl }).exec();
+
+    if (!profile) {
+      throw new NotFoundException('Profile not found');
+    }
+    console.log(profile);
+
+    return profile;
   }
 
   findAll() {
