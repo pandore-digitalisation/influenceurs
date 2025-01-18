@@ -85,14 +85,6 @@ function injectButton(platform) {
   button.style.cursor = "pointer";
   button.style.marginTop = "10px";
 
-  // if(platform === "Facebook") {
-  //   button.style.position = "fixed";
-  //   button.style.zIndex = "9999";
-  //   button.style.bottom = "65px";
-  //   button.style.right = "20px";
-
-  // }
-
   // Ajouter les styles hover
   button.addEventListener("mouseenter", () => {
     button.style.backgroundColor =
@@ -150,6 +142,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     window.location.reload();
   } else if (message.action === "scriptInjetedFailed") {
     alert("Data not ready to scrape, Please reload the page and trying again");
+    setTimeout(() => {
+      window.location.reload();
+    });
+  }else {
+    alert("Timeout reached, please reload the page and trying again");
     window.location.reload();
   }
 });
@@ -186,7 +183,11 @@ window.addEventListener("message", function (event) {
   }
 
   if (event.data && event.data.action === "sendData") {
-    console.log("Données reçues dans l'extension:", event.data.data, event.data.token);
+    console.log(
+      "Données reçues dans l'extension:",
+      event.data.data,
+      event.data.token
+    );
 
     chrome.runtime.sendMessage({
       action: "sendDataToPopup",
