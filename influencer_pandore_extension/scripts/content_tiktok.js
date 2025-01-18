@@ -18,7 +18,6 @@
     return nodes;
   }
 
-
   // Define the XPaths
   const nameXPath =
     "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[1]/div/div/h1";
@@ -160,6 +159,14 @@
 
   console.log("Extracted Data:", extractedData);
 
+  function areDataValid(data) {
+    return (
+      data.name !== "None" &&
+      data.followers !== "0" &&
+      data.profileImage !== " "
+    );
+  }
+
   // Send data to the backend
   async function sendToBackend(data) {
     try {
@@ -185,8 +192,12 @@
   }
 
   //Post the data to the backend
-  const success = await sendToBackend(extractedData);
-  console.log("success", success);
-  // Communiquez l'état au popup.js
-  chrome.runtime.sendMessage({ success });
+  if (areDataValid(extractedData)) {
+    const success = await sendToBackend(extractedData);
+    console.log("Success:", success);
+    chrome.runtime.sendMessage({ success });
+  } else {
+    console.warn("Data is incomplete or invalid. Skipping POST request.");
+    alert("Data is incomplete or invalid, please reload and try again!");
+  }
 })();

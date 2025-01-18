@@ -202,7 +202,7 @@
     chrome.runtime.sendMessage({ success });
   } else {
     console.warn("Data is incomplete or invalid. Skipping POST request.");
-    alert("Data is incomplete or invalid, please reload and try again!")
+    alert("Data is incomplete or invalid, please reload and try again!");
 
   }
 })();
