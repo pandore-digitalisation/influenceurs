@@ -1542,3 +1542,243 @@ fetch("/api/lists", {
 //     alert('Une erreur est survenue. Veuillez réessayer.');
 //   }
 // });
+
+
+
+
+
+(async () => {
+  console.log("Running script for X...");
+
+  function evaluateXPath(xpath, context = document) {
+    const iterator = document.evaluate(
+      xpath,
+      context,
+      null,
+      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+      null
+    );
+    const nodes = [];
+    for (let i = 0; i < iterator.snapshotLength; i++) {
+      nodes.push(iterator.snapshotItem(i));
+    }
+    return nodes;
+  }
+
+  async function waitForElement(xpath, timeout = 10000) {
+    return new Promise((resolve, reject) => {
+      const interval = 100;
+      let elapsed = 0;
+
+      const check = () => {
+        const elements = evaluateXPath(xpath);
+        if (elements.length > 0) {
+          resolve(elements);
+        } else if (elapsed >= timeout) {
+          console.log(
+            "Timeout reached. Data not fully loaded. Please reload the page and try again."
+          );
+          reject(new Error("Timeout waiting for element"));
+          const failed =
+            "Timeout reached. Data not fully loaded. Please reload the page and try again.";
+          chrome.runtime.sendMessage({ failed });
+        } else {
+          elapsed += interval;
+          setTimeout(check, interval);
+        }
+      };
+
+      check();
+    });
+  }
+
+  const BASE_URL = "https://influenceurs.onrender.com";
+
+  const nameXPath =
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/span/span[1]";
+  const descriptionXPath =
+    "/html/body/div[1]/div/div/div/div[1]/div/div[3]/div/div/div/div/div[3]";
+  const followersXPath =
+    "/html/body/div[1]/div/div/div/div[1]/div/div[3]/div/div/div/div/div[5]/div[2]/a/span[1]/span";
+  const followingXpath =
+    "/html/body/div[1]/div/div/div/div[1]/div/div[3]/div/div/div/div/div[5]/div[1]/a/span[1]/span";
+  const profileImageXPath =
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div/div/div/div[1]/div[1]/div[2]/div/div[2]/div/a";
+
+  await waitForElement(nameXPath);
+  await waitForElement(followersXPath);
+  await waitForElement(followingXpath);
+
+  const nameElements = evaluateXPath(nameXPath);
+  const descriptionElements = evaluateXPath(descriptionXPath);
+  const followersElements = evaluateXPath(followersXPath);
+  const followingElements = evaluateXPath(followingXpath);
+  const profileImageElements = evaluateXPath(profileImageXPath);
+
+  const name =
+    nameElements.length > 0 ? nameElements[0].textContent.trim() : "None";
+  const description =
+    descriptionElements.length > 0
+      ? descriptionElements[0].textContent.trim()
+      : "Not found";
+  const followers =
+    followersElements.length > 0
+      ? followersElements[0].textContent.trim()
+      : "0";
+  const following =
+    followingElements.length > 0
+      ? followingElements[0].textContent.trim()
+      : "0";
+  const profileImage =
+    profileImageElements.length > 0
+      ? profileImageElements[0].getAttribute("href") ||
+        profileImageElements[0].getAttribute("src")
+      : "";
+
+  const profileUrl = window.location.href;
+  const base = "https://x.com";
+
+  async function getUserData() {
+    return new Promise((resolve) => {
+      chrome.storage.local.get("userData", (result) => {
+        resolve(result.userData || null);
+      });
+    });
+  }
+
+  let userData = null;
+  try {
+    userData = await getUserData();
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+
+  const extractedData = {
+    name,
+    description,
+    followers,
+    following,
+    plateform: "X",
+    profileImage: `${base}${profileImage}`,
+    profileUrl,
+    userId: userData?.data?.userId || "", // User ID is empty if not connected
+  };
+
+  console.log("Extracted Data:", extractedData);
+
+  async function sendToBackend(data) {
+    try {
+      const response = await fetch(`${BASE_URL}/x`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        console.log("Data successfully sent to the backend.");
+        return true;
+      } else {
+        console.error("Error sending data to the backend.");
+        return false;
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+      return false;
+    }
+  }
+
+  const success = await sendToBackend(extractedData);
+  console.log("Success:", success);
+
+  chrome.runtime.sendMessage({ success });
+})();
+
+
+
+
+
+
+
+// Get the profile URL
+const profileUrl = window.location.href;
+const base = "https://x.com";
+
+const userId = userData?.data?.userId || null;
+
+// Function to fetch existing profile data
+async function getExistingProfile(profileUrl) {
+  try {
+    const response = await fetch(`${BASE_URL}/x?profileUrl=${encodeURIComponent(profileUrl)}`);
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+    } else {
+      console.error("Error fetching existing profile:", await response.text());
+      return null;
+    }
+  } catch (error) {
+    console.error("Network error fetching existing profile:", error);
+    return null;
+  }
+}
+
+// Function to send data to the backend
+async function sendToBackend(data) {
+  try {
+    const response = await fetch(`${BASE_URL}/x`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      console.log("Data successfully sent to the backend.");
+      return true;
+    } else {
+      console.error("Error sending data to the backend.");
+      return false;
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+    return false;
+  }
+}
+
+// Main process
+(async () => {
+  // Step 1: Fetch existing profile data
+  const existingProfile = await getExistingProfile(profileUrl);
+
+  // Step 2: Prepare the updated userId list
+  let userIdList = existingProfile?.userId || [];
+  if (userId && !userIdList.includes(userId)) {
+    userIdList.push(userId);
+  }
+
+  // Step 3: Prepare the data payload
+  const extractedData = {
+    name,
+    description,
+    followers,
+    following,
+    plateform: "X",
+    profileImage: `${base}${profileImage}`,
+    profileUrl,
+    userId: userIdList, // Updated userId list
+  };
+
+  console.log("Extracted Data:", extractedData);
+
+  // Step 4: Send the updated data to the backend
+  const success = await sendToBackend(extractedData);
+  console.log("success", success);
+
+  // Step 5: Communicate the status to popup.js
+  chrome.runtime.sendMessage({ success });
+})();
+
+

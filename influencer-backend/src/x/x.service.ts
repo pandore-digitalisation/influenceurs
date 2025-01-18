@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateXDto } from './dto/create-x.dto';
 import { UpdateXDto } from './dto/update-x.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -57,6 +57,17 @@ export class XService {
       // Enregistrer et retourner le nouveau profil
       return newX.save();
     }
+  }
+
+  async getProfileByUrl(profileUrl: string): Promise<X> {
+    const profile = await this.xModel.findOne({ profileUrl }).exec();
+
+    if (!profile) {
+      throw new NotFoundException('Profile not found');
+    }
+    console.log(profile);
+
+    return profile;
   }
 
   async findAll() {

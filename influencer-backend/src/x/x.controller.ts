@@ -43,6 +43,11 @@ export class XController {
     return this.xService.findAll();
   }
 
+  @Get(':profileUrl')
+  async getProfileByUrl(@Param('profileUrl') profileUrl: string) {
+    return this.xService.getProfileByUrl(profileUrl);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.xService.findOne(id);

@@ -1,5 +1,5 @@
-const BASE_URL = "https://influenceurs.onrender.com";
-// const BASE_URL = "http://localhost:3000";
+// const BASE_URL = "https://influenceurs.onrender.com";
+const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 let globalUserId;
 
@@ -665,7 +665,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        const response = await fetch(`${BASE_URL}/list`, {
+        const response = await fetch(`${BASE_URL}/lists`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
