@@ -3,8 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
-const BASE_URL = "https://influenceurs.onrender.com";
-
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [lists, setLists] = useState<any[]>([]); // Nouvel état pour les listes
@@ -23,7 +21,7 @@ export default function Dashboard() {
       // Utiliser le token pour récupérer les données de l'utilisateur
       const fetchUserData = async () => {
         try {
-          const response = await fetch(`${BASE_URL}/auth/user`, {
+          const response = await fetch("http://localhost:3000/auth/user", {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
@@ -46,7 +44,7 @@ export default function Dashboard() {
           const fetchUserLists = async () => {
             try {
               const listsResponse = await fetch(
-                `${BASE_URL}/lists/user/${data.data.userId}`,
+                `http://localhost:3000/lists/user/${data.data.userId}`,
                 {
                   method: "GET",
                   headers: {
@@ -106,7 +104,7 @@ export default function Dashboard() {
         return;
       }
 
-      const response = await fetch(`${BASE_URL}/auth/logout`, {
+      const response = await fetch("http://localhost:3000/auth/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

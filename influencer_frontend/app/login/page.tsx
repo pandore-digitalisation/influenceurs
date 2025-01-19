@@ -4,7 +4,6 @@
 import React from "react";
 // import { useState, useEffect } from 'react';
 
-// const BASE_URL = "https://influenceurs.onrender.com";
 
 export default function Login() {
   const handleGoogleLogin = () => {
