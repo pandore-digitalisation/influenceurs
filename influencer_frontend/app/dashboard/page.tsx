@@ -6,7 +6,6 @@ import { useSearchParams, useRouter } from "next/navigation";
 // const BASE_URL = "https://influenceurs.onrender.com";
 const BASE_URL = "http://localhost:3000";
 
-
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [lists, setLists] = useState<any[]>([]); // Nouvel état pour les listes
@@ -42,7 +41,7 @@ export default function Dashboard() {
 
           // Sauvegarder les données utilisateur dans le state
           setUser(data);
-         
+
           sendDataToExtension(data, token);
           // Une fois l'utilisateur récupéré, récupérer les listes associées à cet utilisateur
           const fetchUserLists = async () => {
@@ -182,8 +181,57 @@ export default function Dashboard() {
           {lists.length > 0 ? (
             <ul>
               {lists.map((list) => (
-                <li key={list.index}>
-                  {list._id} - {list.name} - {list.profiles.description}
+                <li key={list._id}>
+                  <p>
+                    <strong>Liste ID :</strong> {list._id}
+                  </p>
+                  <p>
+                    <strong>Nom de la liste :</strong> {list.name}
+                  </p>
+                  <ul>
+                    {list.profiles.map(
+                      (profile: {
+                        _id: string;
+                        name: string;
+                        plateform: string;
+                        followers: string;
+                        posts: string;
+                        profileUrl: string;
+                        profileImage: string;
+                        following: string;
+                      }) => (
+                        <li key={profile._id} style={{ marginBottom: "10px" }}>
+                          <p>
+                            <strong>Nom :</strong> {profile.name}
+                          </p>
+                          <p>
+                            <strong>Plateforme :</strong> {profile.plateform}
+                          </p>
+                          <p>
+                            <strong>Abonnés :</strong> {profile.followers}
+                          </p>
+                          <p>
+                            <strong>Following :</strong> {profile.following}
+                          </p>
+                          <p>
+                            <strong>Publications :</strong>{" "}
+                            {profile.posts || "N/A"}
+                          </p>
+                          <p>
+                            <strong>URL :</strong>{" "}
+                            <a
+                              href={profile.profileUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {profile.profileUrl}
+                            </a>
+                          </p>
+                          
+                        </li>
+                      )
+                    )}
+                  </ul>
                 </li>
               ))}
             </ul>

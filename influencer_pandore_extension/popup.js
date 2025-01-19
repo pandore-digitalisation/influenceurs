@@ -635,15 +635,6 @@ document.addEventListener("DOMContentLoaded", () => {
     createListForm.style.display = createListForm.style.display === "none" ? "flex": "none"
   })
 
-  // document
-  //   .getElementById("toggle-create-list")
-  //   .addEventListener("click", () => {
-  //     const section = document.getElementById("create-list-section");
-  //     section.style.display =
-  //       section.style.display === "none" ? "block" : "none";
-  //   });
-
-
   document.getElementById("createListSubmit")
     .addEventListener("click", async () => {
       const listName = document.getElementById("listName").value.trim();
