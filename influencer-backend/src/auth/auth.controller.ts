@@ -4,6 +4,8 @@ import { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 
+const BASE_URL = 'https://pandoreinfluencerfrontend.vercel.app';
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -34,12 +36,12 @@ export class AuthController {
       console.log('user /console controller', user);
 
       // Rediriger l'utilisateur vers le tableau de bord avec le token en paramètre
-      res.redirect(`http://localhost:3001/dashboard?token=${token}`);
+      res.redirect(`${BASE_URL}/dashboard?token=${token}`);
     } catch (error) {
       console.error("Erreur lors de l'authentification Google :", error);
 
       // Rediriger vers une page d'erreur ou une page de connexion
-      res.redirect('http://localhost:3001/error');
+      res.redirect(`${BASE_URL}/error`);
     }
   }
 
