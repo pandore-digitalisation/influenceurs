@@ -5,9 +5,11 @@ import React from "react";
 // import { useState, useEffect } from 'react';
 
 
+const BASE_URL = "http://localhost:3000";
+
 export default function Login() {
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/auth/google";
+    window.location.href = `${BASE_URL}/auth/google`;
   };
 
   return (
