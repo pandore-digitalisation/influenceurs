@@ -36,8 +36,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut } from "lucide-react";
 
 export default function Dashboard() {
-  // const BASE_URL = "https://influenceurs.onrender.com";
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = "https://influenceurs.onrender.com";
+  // const BASE_URL = "http://localhost:3000";
 
   const [user, setUser] = useState<any>(null);
   const [lists, setLists] = useState<any[]>([]);
