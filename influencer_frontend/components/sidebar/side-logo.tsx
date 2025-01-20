@@ -1,22 +1,20 @@
-"use client"
+"use client";
 
-import * as React from "react"
+import * as React from "react";
 
-import {
-  SidebarMenu
-} from "@/components/ui/sidebar"
+import { SidebarMenu, SidebarMenuButton } from "@/components/ui/sidebar";
 
-export function Logo({
-
-}) {
-
+export function Logo({}) {
   return (
-    <SidebarMenu>
-     <div className="">
-      P
-     </div>
+    <SidebarMenu className="">
+      <SidebarMenuButton
+        size="lg"
+        className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+      >
+        <div>P</div>
+      </SidebarMenuButton>
     </SidebarMenu>
-  )
+  );
 }
 
 // "use client"
