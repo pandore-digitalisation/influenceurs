@@ -2,6 +2,21 @@
 
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 
 // const BASE_URL = "https://influenceurs.onrender.com";
 const BASE_URL = "http://localhost:3000";
@@ -131,20 +146,9 @@ export default function Dashboard() {
     }
   };
 
-  // Dans la page web
-  // window.addEventListener("message", function (event) {
-  //   if (event.origin !== window.location.origin) return; // S'assurer que le message vient du bon domaine
-
-  //   const { action } = event.data;
-
-  //   if (action === "logout") {
-  //     // Code pour déconnecter l'utilisateur de la page web
-  //     // Par exemple, effacer les données du sessionStorage ou rediriger l'utilisateur
-  //     console.log("Déconnexion depuis l'extension.");
-  //     // Effectuer la déconnexion sur la page web
-  //     window.location.href = "/logout"; // ou effacer les cookies/sessionStorage
-  //   }
-  // });
+  const goToHome = () => {
+    router.push('/');
+  };
 
   if (loading) {
     return <div>Chargement...</div>;
@@ -162,18 +166,99 @@ export default function Dashboard() {
   return (
     <main className="container mx-auto px-4 py-8">
       <div className="flex justify-end px-4 pt-4">
-        <div className="relative w-8 h-8 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
-          <img
-            src={user?.data.picture}
-            alt="Photo de profil"
-            className="rounded-full w-8 h-8"
-          />
-        </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div
+              className="relative w-8 h-8 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600"
+              style={{ cursor: "pointer" }}
+            >
+              <img
+                src={user?.data.picture}
+                alt="Photo de profil"
+                className="rounded-full w-8 h-8"
+              />
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className="w-72 px-3 py-5 my-2"
+            style={{ marginLeft: "-260px" }}
+          >
+            <div className="pb-5">{user?.data.email}</div>
+            {/* <DropdownMenuItem
+              onClick={goToHome}
+              style={{ cursor: "pointer" }}
+            >
+              <span>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g clip-path="url(#clip0_1555_6867)">
+                    <path
+                      d="M16.1352 17.668C15.8688 17.4777 15.514 17.479 15.2301 17.6419C14.2785 18.1878 13.1757 18.5 12 18.5C8.41015 18.5 5.5 15.5899 5.5 12C5.5 8.41015 8.41015 5.5 12 5.5C13.0635 5.5 14.0673 5.75539 14.9534 6.20817C15.2732 6.37156 15.6674 6.33262 15.9213 6.0787C16.2585 5.74145 16.2092 5.17886 15.7894 4.95262C14.6615 4.34488 13.371 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C13.5103 20 14.9229 19.5815 16.1281 18.8541C16.5699 18.5874 16.5551 17.9679 16.1352 17.668Z"
+                      fill="#666E7A"
+                    ></path>
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M15.9697 7.96967C16.2626 7.67678 16.7374 7.67678 17.0303 7.96967L20.5303 11.4697C20.8232 11.7626 20.8232 12.2374 20.5303 12.5303L17.0303 16.0303C16.7374 16.3232 16.2626 16.3232 15.9697 16.0303C15.6768 15.7374 15.6768 15.2626 15.9697 14.9697L18.1893 12.75H11.5C11.0858 12.75 10.75 12.4142 10.75 12C10.75 11.5858 11.0858 11.25 11.5 11.25H18.1893L15.9697 9.03033C15.6768 8.73744 15.6768 8.26256 15.9697 7.96967Z"
+                      fill="#666E7A"
+                    ></path>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_1555_6867">
+                      <rect width="24" height="24" fill="white"></rect>
+                    </clipPath>
+                  </defs>
+                </svg>
+              </span>
+              Home
+            </DropdownMenuItem> */}
+
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={handleLogout}
+              style={{ cursor: "pointer" }}
+            >
+              <span>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g clip-path="url(#clip0_1555_6867)">
+                    <path
+                      d="M16.1352 17.668C15.8688 17.4777 15.514 17.479 15.2301 17.6419C14.2785 18.1878 13.1757 18.5 12 18.5C8.41015 18.5 5.5 15.5899 5.5 12C5.5 8.41015 8.41015 5.5 12 5.5C13.0635 5.5 14.0673 5.75539 14.9534 6.20817C15.2732 6.37156 15.6674 6.33262 15.9213 6.0787C16.2585 5.74145 16.2092 5.17886 15.7894 4.95262C14.6615 4.34488 13.371 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C13.5103 20 14.9229 19.5815 16.1281 18.8541C16.5699 18.5874 16.5551 17.9679 16.1352 17.668Z"
+                      fill="#666E7A"
+                    ></path>
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M15.9697 7.96967C16.2626 7.67678 16.7374 7.67678 17.0303 7.96967L20.5303 11.4697C20.8232 11.7626 20.8232 12.2374 20.5303 12.5303L17.0303 16.0303C16.7374 16.3232 16.2626 16.3232 15.9697 16.0303C15.6768 15.7374 15.6768 15.2626 15.9697 14.9697L18.1893 12.75H11.5C11.0858 12.75 10.75 12.4142 10.75 12C10.75 11.5858 11.0858 11.25 11.5 11.25H18.1893L15.9697 9.03033C15.6768 8.73744 15.6768 8.26256 15.9697 7.96967Z"
+                      fill="#666E7A"
+                    ></path>
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_1555_6867">
+                      <rect width="24" height="24" fill="white"></rect>
+                    </clipPath>
+                  </defs>
+                </svg>
+              </span>
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <h1>Bienvenue sur votre Dashboard {user?.data.name}!</h1>
       <div className="flex flex-col items-center">
-        <div>Email : {user?.data.email}</div>
-        <div>userId : {user?.data.userId}</div>
+        {/* <div>Email : {user?.data.email}</div>
+        <div>userId : {user?.data.userId}</div> */}
 
         {/* Affichage des listes */}
         <div>
@@ -227,7 +312,6 @@ export default function Dashboard() {
                               {profile.profileUrl}
                             </a>
                           </p>
-                          
                         </li>
                       )
                     )}
@@ -239,13 +323,6 @@ export default function Dashboard() {
             <p>Aucune liste trouvée.</p>
           )}
         </div>
-
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white px-4 py-2 rounded"
-        >
-          Déconnexion
-        </button>
       </div>
     </main>
   );

@@ -628,7 +628,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Create list
   const createList = document.getElementById("createList");
-  const createListSubmit = document.getElementById("createListSubmit")
 
   createList.addEventListener("click", () => {
     const createListForm = document.getElementById("createListForm");
