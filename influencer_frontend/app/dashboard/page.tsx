@@ -122,7 +122,7 @@ export default function Dashboard() {
         window.location.origin
       );
     };
-  }, [searchParams]);
+  }, []);
 
   // Logout
   const handleLogout = async () => {
@@ -177,7 +177,7 @@ export default function Dashboard() {
 
   return (
     <SidebarProvider>
-      <AppSidebar/>
+      <AppSidebar />
       <SidebarInset>
         <header className="mr-4 flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-4">
@@ -198,7 +198,10 @@ export default function Dashboard() {
           <div className="ml-auto">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Avatar className="h-8 w-8 rounded-full" style={{ cursor: "pointer" }}>
+                <Avatar
+                  className="h-8 w-8 rounded-full"
+                  style={{ cursor: "pointer" }}
+                >
                   <AvatarImage src={user?.data.picture} alt={"PI"} />
                   <AvatarFallback className="rounded-lg">PI</AvatarFallback>
                 </Avatar>
@@ -223,12 +226,13 @@ export default function Dashboard() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+          {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3">
             <div className="aspect-video rounded-xl bg-muted/50" />
             <div className="aspect-video rounded-xl bg-muted/50" />
             <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
+          </div> */}
           <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+          <div>ok</div>
         </div>
       </SidebarInset>
     </SidebarProvider>

@@ -516,5 +516,4 @@ export default ListDisplay;
         <Button variant="outline">Open</Button>
       </DropdownMenuTrigger>
 
-
       
