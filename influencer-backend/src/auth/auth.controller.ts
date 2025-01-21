@@ -8,6 +8,9 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  // BASE_URL = "http://localhost:3000";
+  BASE_URL = 'https://influenceurs.onrender.com';
+
   // Démarre le processus d'authentification avec Google
   @Get('google')
   @UseGuards(AuthGuard('google'))
@@ -34,12 +37,12 @@ export class AuthController {
       console.log('user /console controller', user);
 
       // Rediriger l'utilisateur vers le tableau de bord avec le token en paramètre
-      res.redirect(`http://localhost:3001/dashboard?token=${token}`);
+      res.redirect(`${this.BASE_URL}/dashboard?token=${token}`);
     } catch (error) {
       console.error("Erreur lors de l'authentification Google :", error);
 
       // Rediriger vers une page d'erreur ou une page de connexion
-      res.redirect('http://localhost:3001/error');
+      res.redirect(`${this.BASE_URL}/error`);
     }
   }
 
