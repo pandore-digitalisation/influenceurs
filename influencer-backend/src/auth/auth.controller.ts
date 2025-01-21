@@ -8,6 +8,9 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  // BASE_URL = "http://localhost:3000";
+  BASE_URL = 'https://pandoreinfluencerfrontend.vercel.app';
+
   // Démarre le processus d'authentification avec Google
   @Get('google')
   @UseGuards(AuthGuard('google'))
@@ -22,8 +25,6 @@ export class AuthController {
   ): Promise<void> {
     try {
       const profile = req.user;
-      // const BASE_URL = "http://localhost:3000";
-      const BASE_URL = 'https://influenceurs.onrender.com';
 
       // Valider et enregistrer l'utilisateur dans la base de données
       const user = await this.authService.validateUser(profile);
@@ -36,14 +37,12 @@ export class AuthController {
       console.log('user /console controller', user);
 
       // Rediriger l'utilisateur vers le tableau de bord avec le token en paramètre
-      res.redirect(`${BASE_URL}/dashboard?token=${token}`);
+      res.redirect(`${this.BASE_URL}/dashboard?token=${token}`);
     } catch (error) {
       console.error("Erreur lors de l'authentification Google :", error);
-      // const BASE_URL = "http://localhost:3000";
-      const BASE_URL = 'https://influenceurs.onrender.com';
 
       // Rediriger vers une page d'erreur ou une page de connexion
-      res.redirect(`${BASE_URL}/error`);
+      res.redirect(`${this.BASE_URL}/error`);
     }
   }
 
