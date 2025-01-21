@@ -1,5 +1,5 @@
-// const BASE_URL = "https://influenceurs.onrender.com";
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://influenceurs.onrender.com";
+// const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 let globalUserId;
 
@@ -483,7 +483,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Login
 document.getElementById("loginBtn").addEventListener("click", () => {
-  chrome.tabs.create({ url: "http://localhost:3001/login" });
+  chrome.tabs.create({ url: `${BASE_URL}/login` });
 });
 
 // Get user connected data

@@ -5,6 +5,7 @@
     "description": "Get X, Instagram, Facebook, Linkedin, Tiktok page data and export in csv format",
     "permissions": ["activeTab", "scripting", "storage", "tabs", "identity"],
     "host_permissions": [
+      "https://pandoreinfluencerfrontend.vercel.app/",
       "https://x.com/*",
       "https://instagram.com/*",
       "https://facebook.com/*",
@@ -13,9 +14,8 @@
       "https://influenceurs.onrender.com/*",
       "http://127.0.0.1:5001/*",
       "http://localhost:3001/",
-      "https://influenceurs.onrender.com/",
-      "http://localhost:3000/",
-      "https://pandoreinfluencerfrontend.vercel.app/"
+      "http://localhost:3000/"
+
     ],
     "background": {
       "service_worker": "background.js"
