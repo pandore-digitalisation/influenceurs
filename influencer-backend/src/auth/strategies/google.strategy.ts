@@ -3,8 +3,8 @@ import { Strategy } from 'passport-google-oauth20';
 import { Injectable } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 
-// const BASE_URL = 'http://localhost:3000';
-const BASE_URL = 'https://influenceurs.onrender.com';
+const BASE_URL = 'http://localhost:3000';
+// const BASE_URL = 'https://influenceurs.onrender.com';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {

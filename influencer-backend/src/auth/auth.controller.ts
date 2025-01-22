@@ -8,8 +8,8 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  // BASE_URL = "http://localhost:3000";
-  BASE_URL = 'https://pandoreinfluencerfrontend.vercel.app';
+  BASE_URL = 'http://localhost:3001';
+  // BASE_URL = 'https://pandoreinfluencerfrontend.vercel.app';
 
   // Démarre le processus d'authentification avec Google
   @Get('google')

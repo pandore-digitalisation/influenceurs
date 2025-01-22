@@ -1,618 +1,215 @@
-const BASE_URL = "https://influenceurs.onrender.com";
-const BASE_URL = "http://localhost:3000";
-
-export default function Dashboard() {
-  const [user, setUser] = useState<any>(null);
-  const [lists, setLists] = useState<any[]>([]); // Nouvel état pour les listes
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const searchParams = useSearchParams();
-  const router = useRouter();
-
-  useEffect(() => {
-    // Récupérer le token depuis l'URL via searchParams
-    const token = searchParams.get("token");
-
-    if (token) {
-      localStorage.setItem("auth_token", token);
-      // Utiliser le token pour récupérer les données de l'utilisateur
-      const fetchUserData = async () => {
-        try {
-          const response = await fetch(`${BASE_URL}/auth/user`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            credentials: "include",
-          });
-
-          if (!response.ok) {
-            throw new Error("Erreur lors de la récupération des données.");
-          }
-
-          const data = await response.json();
-
-          // Sauvegarder les données utilisateur dans le state
-          setUser(data);
-
-          sendDataToExtension(data, token);
-          // Une fois l'utilisateur récupéré, récupérer les listes associées à cet utilisateur
-          const fetchUserLists = async () => {
-            try {
-              const listsResponse = await fetch(
-                `${BASE_URL}/lists/user/${data.data.userId}`,
-                {
-                  method: "GET",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
-
-              if (!listsResponse.ok) {
-                window.location.href = "/login";
-                throw new Error(
-                  "Votre session est expirées, veillez vous reconnecter."
-                );
-              }
-
-              const listsData = await listsResponse.json();
-              console.log("listData", listsData);
-              setLists(listsData); // Mettre à jour l'état des listes
-            } catch (error) {
-              console.error("Erreur de récupération des listes:", error);
-              setError("Erreur lors de la récupération des listes.");
-            }
-          };
-
-          fetchUserLists();
-        } catch (error) {
-          window.location.href = "/login";
-          setError("Votre session est expirées, veillez vous reconnecter.");
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchUserData();
-    } else {
-      setError("Aucun token trouvé dans l'URL.");
-      setLoading(false);
-    }
-
-    // Send data to extension after user connected
-    const sendDataToExtension = (userData: any, token: any) => {
-      window.postMessage(
-        { action: "sendData", data: userData, token: token },
-        window.location.origin
-      );
-    };
-  }, [searchParams]);
-
-  // Logout
-  const handleLogout = async () => {
-    try {
-      const token = localStorage.getItem("auth_token");
-      if (!token) {
-        window.location.href = "/login";
-        window.postMessage({ action: "logoutUser" }, window.location.origin);
-        return;
-      }
-
-      const response = await fetch(`${BASE_URL}/auth/logout`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error("Erreur lors de la déconnexion.");
-      }
-
-      localStorage.removeItem("auth_token");
-
-      sessionStorage.clear();
-
-      window.location.href = "/login";
-      window.postMessage({ action: "logoutUser" }, window.location.origin);
-    } catch (error) {
-      console.error("Erreur pendant la déconnexion:", error);
-    }
-  };
-
-  const goToHome = () => {
-    router.push('/');
-  };
-
-  if (loading) {
-    return <div>Chargement...</div>;
-  }
-
-  if (error) {
-    return <div>Erreur: {error}</div>;
-  }
-
-  if (!user) {
-    router.push("/login");
-    return null;
-  }
-
-  return (
-    <main className="container mx-auto px-4 py-8">
-      <div className="flex justify-end px-4 pt-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <div
-              className="relative w-8 h-8 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600"
-              style={{ cursor: "pointer" }}
-            >
-              <img
-                src={user?.data.picture}
-                alt="Photo de profil"
-                className="rounded-full w-8 h-8"
-              />
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-72 px-3 py-5 my-2"
-            style={{ marginLeft: "-260px" }}
+<div className="flex bg-[#000000] h-screen">
+  <aside
+    className={`text-[#000000] bg-[#F4F4F5] transition-all duration-300 ${
+      sidebarExpanded ? "w-64" : "w-16"
+    }`}
+  >
+    <div className="p-4 flex items-center justify-between">
+      <span
+        className={`${
+          !sidebarExpanded ? "hidden" : "block"
+        } text-lg font-semibold`}
+      >
+        Mes Listes
+      </span>
+      <button
+        onClick={toggleSidebar}
+        className="text-[#D9E4FF] focus:outline-none hover:bg-gray-700 p-2 rounded"
+      >
+        {sidebarExpanded ? "←" : "→"}
+      </button>
+    </div>
+    <ul className="space-y-2 p-4">
+      {lists.length > 0 ? (
+        lists.map((list) => (
+          <li
+            key={list._id}
+            className={`p-2 cursor-pointer hover:bg-[#F4F4F5] rounded ${
+              selectedListId === list._id ? "bg-[#E5E5E5]" : ""
+            }`}
+            onClick={() => handleSelectList(list)}
           >
-            <div className="pb-5">{user?.data.email}</div>
-            {/* <DropdownMenuItem
-              onClick={goToHome}
-              style={{ cursor: "pointer" }}
-            >
-              <span>
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g clip-path="url(#clip0_1555_6867)">
-                    <path
-                      d="M16.1352 17.668C15.8688 17.4777 15.514 17.479 15.2301 17.6419C14.2785 18.1878 13.1757 18.5 12 18.5C8.41015 18.5 5.5 15.5899 5.5 12C5.5 8.41015 8.41015 5.5 12 5.5C13.0635 5.5 14.0673 5.75539 14.9534 6.20817C15.2732 6.37156 15.6674 6.33262 15.9213 6.0787C16.2585 5.74145 16.2092 5.17886 15.7894 4.95262C14.6615 4.34488 13.371 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C13.5103 20 14.9229 19.5815 16.1281 18.8541C16.5699 18.5874 16.5551 17.9679 16.1352 17.668Z"
-                      fill="#666E7A"
-                    ></path>
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M15.9697 7.96967C16.2626 7.67678 16.7374 7.67678 17.0303 7.96967L20.5303 11.4697C20.8232 11.7626 20.8232 12.2374 20.5303 12.5303L17.0303 16.0303C16.7374 16.3232 16.2626 16.3232 15.9697 16.0303C15.6768 15.7374 15.6768 15.2626 15.9697 14.9697L18.1893 12.75H11.5C11.0858 12.75 10.75 12.4142 10.75 12C10.75 11.5858 11.0858 11.25 11.5 11.25H18.1893L15.9697 9.03033C15.6768 8.73744 15.6768 8.26256 15.9697 7.96967Z"
-                      fill="#666E7A"
-                    ></path>
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_1555_6867">
-                      <rect width="24" height="24" fill="white"></rect>
-                    </clipPath>
-                  </defs>
-                </svg>
-              </span>
-              Home
-            </DropdownMenuItem> */}
-
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={handleLogout}
-              style={{ cursor: "pointer" }}
-            >
-              <span>
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g clip-path="url(#clip0_1555_6867)">
-                    <path
-                      d="M16.1352 17.668C15.8688 17.4777 15.514 17.479 15.2301 17.6419C14.2785 18.1878 13.1757 18.5 12 18.5C8.41015 18.5 5.5 15.5899 5.5 12C5.5 8.41015 8.41015 5.5 12 5.5C13.0635 5.5 14.0673 5.75539 14.9534 6.20817C15.2732 6.37156 15.6674 6.33262 15.9213 6.0787C16.2585 5.74145 16.2092 5.17886 15.7894 4.95262C14.6615 4.34488 13.371 4 12 4C7.58172 4 4 7.58172 4 12C4 16.4183 7.58172 20 12 20C13.5103 20 14.9229 19.5815 16.1281 18.8541C16.5699 18.5874 16.5551 17.9679 16.1352 17.668Z"
-                      fill="#666E7A"
-                    ></path>
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M15.9697 7.96967C16.2626 7.67678 16.7374 7.67678 17.0303 7.96967L20.5303 11.4697C20.8232 11.7626 20.8232 12.2374 20.5303 12.5303L17.0303 16.0303C16.7374 16.3232 16.2626 16.3232 15.9697 16.0303C15.6768 15.7374 15.6768 15.2626 15.9697 14.9697L18.1893 12.75H11.5C11.0858 12.75 10.75 12.4142 10.75 12C10.75 11.5858 11.0858 11.25 11.5 11.25H18.1893L15.9697 9.03033C15.6768 8.73744 15.6768 8.26256 15.9697 7.96967Z"
-                      fill="#666E7A"
-                    ></path>
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_1555_6867">
-                      <rect width="24" height="24" fill="white"></rect>
-                    </clipPath>
-                  </defs>
-                </svg>
-              </span>
-              Logout
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            {sidebarExpanded ? list.name : list.name[0]}
+          </li>
+        ))
+      ) : (
+        <li>Aucune liste disponible.</li>
+      )}
+    </ul>
+  </aside>
+  {/* Main Content */}
+  <main className="flex-1 overflow-y-auto p-4 pt-0">
+    <h2 className="text-2xl font-bold mb-4">Profils sélectionnés</h2>
+    {selectedProfiles.length > 0 ? (
+      <div className="relative overflow-x-auto border sm:rounded-lg">
+        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" className="p-4">
+                <div className="flex items-center">
+                  <input
+                    id="checkbox-all-search"
+                    type="checkbox"
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label
+                    htmlFor="checkbox-all-search"
+                    className="sr-only"
+                  >
+                    checkbox
+                  </label>
+                </div>
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Name
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Followers
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Following
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Plateform
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Url
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {selectedProfiles.map(
+              (profile) => (
+                <tr className="bg-white border-b hover:bg-gray-50">
+                  <td className="w-4 p-4">
+                    <div className="flex items-center">
+                      <input
+                        id="checkbox-table-search-1"
+                        type="checkbox"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      />
+                      <label
+                        htmlFor="checkbox-table-search-1"
+                        className="sr-only"
+                      >
+                        checkbox
+                      </label>
+                    </div>
+                  </td>
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    {profile.name}
+                  </th>
+                  <td className="px-6 py-4">{profile.followers}</td>
+                  <td className="px-6 py-4">{profile.following}</td>
+                  <td className="px-6 py-4">{profile.plateform}</td>
+                  <td className="px-6 py-4">
+                    <a
+                      href={profile.profileUrl}
+                      target="_blank"
+                      className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                    >
+                      v
+                    </a>
+                  </td>
+                </tr>
+              )
+            )}
+          </tbody>
+        </table>
       </div>
-      <h1>Bienvenue sur votre Dashboard {user?.data.name}!</h1>
-      <div className="flex flex-col items-center">
-        {/* <div>Email : {user?.data.email}</div>
-        <div>userId : {user?.data.userId}</div> */}
+    ) : (
+      <p>Sélectionnez une liste pour afficher les profils associés.</p>
+    )}
+  </main>
+</div>
 
-        {/* Affichage des listes */}
-        <div>
-          <h2>Mes Listes</h2>
-          {lists.length > 0 ? (
-            <ul>
-              {lists.map((list) => (
-                <li key={list._id}>
-                  <p>
-                    <strong>Liste ID :</strong> {list._id}
-                  </p>
-                  <p>
-                    <strong>Nom de la liste :</strong> {list.name}
-                  </p>
-                  <ul>
-                    {list.profiles.map(
-                      (profile: {
-                        _id: string;
-                        name: string;
-                        plateform: string;
-                        followers: string;
-                        posts: string;
-                        profileUrl: string;
-                        profileImage: string;
-                        following: string;
-                      }) => (
-                        <li key={profile._id} style={{ marginBottom: "10px" }}>
-                          <p>
-                            <strong>Nom :</strong> {profile.name}
-                          </p>
-                          <p>
-                            <strong>Plateforme :</strong> {profile.plateform}
-                          </p>
-                          <p>
-                            <strong>Abonnés :</strong> {profile.followers}
-                          </p>
-                          <p>
-                            <strong>Following :</strong> {profile.following}
-                          </p>
-                          <p>
-                            <strong>Publications :</strong>{" "}
-                            {profile.posts || "N/A"}
-                          </p>
-                          <p>
-                            <strong>URL :</strong>{" "}
-                            <a
-                              href={profile.profileUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              {profile.profileUrl}
-                            </a>
-                          </p>
-                        </li>
-                      )
-                    )}
-                  </ul>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>Aucune liste trouvée.</p>
-          )}
-        </div>
-      </div>
-    </main>
-  );
+const BASE_URL = "https://example.com/api"; // Remplacez par votre URL
+const connectedUserId = 123; // ID de l'utilisateur connecté
+const token = "your-auth-token"; // Remplacez par votre jeton d'authentification
+
+const listFilter = document.getElementById("listFilter");
+const profilesTableBody = document.querySelector("#profilesTable tbody");
+let lists = []; // Contiendra les données des listes récupérées depuis l'API
+
+// Fonction pour récupérer les listes depuis l'API
+function fetchProfiles() {
+  fetch(`${BASE_URL}/lists/user/${connectedUserId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`, // Authentification si nécessaire
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Listes récupérées :", data);
+      lists = data; // Stocker les données récupérées
+      populateListFilter(); // Remplir le menu déroulant
+      displayProfiles(lists.flatMap((list) => list.profiles)); // Afficher tous les profils par défaut
+    })
+    .catch((error) => {
+      console.error("Erreur lors de la récupération des listes :", error);
+      const profilesList = document.getElementById("api-profiles-list");
+      profilesList.innerHTML = `<p style="color: red;">Erreur lors du chargement des listes.</p>`;
+    });
 }
 
+// Fonction pour remplir le menu déroulant
+function populateListFilter() {
+  listFilter.innerHTML = '<option value="">-- Toutes les listes --</option>'; // Option par défaut
+  console.log("Listes pour le filtre :", lists); // Vérification des données
+  lists.forEach((list) => {
+    const option = document.createElement("option");
+    option.value = list.id; // Assurez-vous que `list.id` est correct
+    option.textContent = list.name; // Assurez-vous que `list.name` est correct
+    listFilter.appendChild(option);
+  });
+}
 
+// Fonction pour afficher les profils associés
+function displayProfiles(profiles) {
+  profilesTableBody.innerHTML = ""; // Réinitialise les lignes du tableau
+  if (profiles.length === 0) {
+    profilesTableBody.innerHTML = '<tr><td colspan="2">Aucun profil trouvé.</td></tr>';
+    return;
+  }
+  console.log("Profils à afficher :", profiles); // Vérification des profils affichés
+  profiles.forEach((profile) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${profile.id}</td>
+      <td>${profile.name}</td>
+    `;
+    profilesTableBody.appendChild(row);
+  });
+}
 
+// Gestion du changement de filtre
+listFilter.addEventListener("change", () => {
+  const selectedListId = listFilter.value; // Récupère l'ID sélectionné (string ou number)
+  console.log("ID de la liste sélectionnée :", selectedListId); // Vérification de l'ID sélectionné
 
-// "use client";
+  if (selectedListId) {
+    // Trouver la liste sélectionnée et afficher ses profils
+    const selectedList = lists.find((list) => list.id === selectedListId); // Comparez correctement les types
+    if (selectedList) {
+      console.log("Liste sélectionnée :", selectedList); // Vérification de la liste
+      displayProfiles(selectedList.profiles || []);
+    }
+  } else {
+    // Afficher tous les profils si aucune liste n'est sélectionnée
+    const allProfiles = lists.flatMap((list) => list.profiles || []);
+    displayProfiles(allProfiles);
+  }
+});
 
-// import React, { useState, useEffect } from "react";
-// import { useSearchParams, useRouter } from "next/navigation";
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuGroup,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuPortal,
-//   DropdownMenuSeparator,
-//   DropdownMenuShortcut,
-//   DropdownMenuSub,
-//   DropdownMenuSubContent,
-//   DropdownMenuSubTrigger,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu";
-
-// import { AppSidebar } from "@/components/sidebar/app-sidebar";
-// import {
-//   Breadcrumb,
-//   BreadcrumbItem,
-//   BreadcrumbLink,
-//   BreadcrumbList,
-//   BreadcrumbPage,
-//   BreadcrumbSeparator,
-// } from "@/components/ui/breadcrumb";
-// import { Separator } from "@/components/ui/separator";
-// import {
-//   SidebarInset,
-//   SidebarProvider,
-//   SidebarTrigger,
-// } from "@/components/ui/sidebar";
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// import { LogOut } from "lucide-react";
-
-// export default function Dashboard() {
-//   // const BASE_URL = "https://influenceurs.onrender.com";
-//   const BASE_URL = "http://localhost:3000";
-
-//   const [user, setUser] = useState<any>(null);
-//   const [lists, setLists] = useState<any[]>([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
-
-//   const searchParams = useSearchParams();
-//   const router = useRouter();
-
-//   useEffect(() => {
-//     const token = searchParams.get("token");
-
-//     if (token) {
-//       localStorage.setItem("auth_token", token);
-//       const fetchUserData = async () => {
-//         try {
-//           const response = await fetch(`${BASE_URL}/auth/user`, {
-//             method: "GET",
-//             headers: {
-//               "Content-Type": "application/json",
-//               Authorization: `Bearer ${token}`,
-//             },
-//             credentials: "include",
-//           });
-
-//           if (!response.ok) {
-//             throw new Error("Erreur lors de la récupération des données.");
-//           }
-//           const data = await response.json();
-//           // Sauvegarder les données utilisateur dans le state
-//           setUser(data);
-
-//           sendDataToExtension(data, token);
-//           const fetchUserLists = async () => {
-//             try {
-//               const listsResponse = await fetch(
-//                 `${BASE_URL}/lists/user/${data.data.userId}`,
-//                 {
-//                   method: "GET",
-//                   headers: {
-//                     "Content-Type": "application/json",
-//                     Authorization: `Bearer ${token}`,
-//                   },
-//                 }
-//               );
-
-//               if (!listsResponse.ok) {
-//                 window.location.href = "/login";
-//                 throw new Error(
-//                   "Votre session est expirées, veillez vous reconnecter."
-//                 );
-//               }
-
-//               const listsData = await listsResponse.json();
-//               console.log("listData", listsData);
-//               setLists(listsData); // Mettre à jour l'état des listes
-//             } catch (error) {
-//               console.error("Erreur de récupération des listes:", error);
-//               setError("Erreur lors de la récupération des listes.");
-//             }
-//           };
-
-//           fetchUserLists();
-//         } catch (error) {
-//           window.location.href = "/login";
-//           setError("Votre session est expirées, veillez vous reconnecter.");
-//         } finally {
-//           setLoading(false);
-//         }
-//       };
-
-//       fetchUserData();
-//     } else {
-//       setError("Aucun token trouvé dans l'URL.");
-//       setLoading(false);
-//     }
-
-//     // Send data to extension after user connected
-//     const sendDataToExtension = (userData: any, token: any) => {
-//       window.postMessage(
-//         { action: "sendData", data: userData, token: token },
-//         window.location.origin
-//       );
-//     };
-//   }, []);
-
-//   // Logout
-//   const handleLogout = async () => {
-//     try {
-//       const token = localStorage.getItem("auth_token");
-//       if (!token) {
-//         window.location.href = "/login";
-//         window.postMessage({ action: "logoutUser" }, window.location.origin);
-//         return;
-//       }
-
-//       const response = await fetch(`${BASE_URL}/auth/logout`, {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Authorization: `Bearer ${token}`,
-//         },
-//         credentials: "include",
-//       });
-
-//       if (!response.ok) {
-//         throw new Error("Erreur lors de la déconnexion.");
-//       }
-
-//       localStorage.removeItem("auth_token");
-
-//       sessionStorage.clear();
-
-//       window.location.href = "/login";
-//       window.postMessage({ action: "logoutUser" }, window.location.origin);
-//     } catch (error) {
-//       console.error("Erreur pendant la déconnexion:", error);
-//     }
-//   };
-
-//   const goToHome = () => {
-//     router.push("/");
-//   };
-
-//   if (loading) {
-//     return <div>Chargement...</div>;
-//   }
-
-//   if (error) {
-//     return <div>Erreur: {error}</div>;
-//   }
-
-//   if (!user) {
-//     router.push("/login");
-//     return null;
-//   }
-
-//   return (
-//     <SidebarProvider>
-//       <AppSidebar />
-//       <SidebarInset>
-//         <header className="mr-4 flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-//           <div className="flex items-center gap-2 px-4">
-//             <SidebarTrigger className="-ml-1" />
-//             <Separator orientation="vertical" className="mr-2 h-4" />
-//             <Breadcrumb>
-//               <BreadcrumbList>
-//                 <BreadcrumbItem className="hidden md:block">
-//                   <BreadcrumbLink href="/">Pandore Influencer</BreadcrumbLink>
-//                 </BreadcrumbItem>
-//                 {/* <BreadcrumbSeparator className="hidden md:block" />
-//                 <BreadcrumbItem>
-//                   <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-//                 </BreadcrumbItem> */}
-//               </BreadcrumbList>
-//             </Breadcrumb>
-//           </div>
-//           <div className="ml-auto">
-//             <DropdownMenu>
-//               <DropdownMenuTrigger asChild>
-//                 <Avatar
-//                   className="h-8 w-8 rounded-full"
-//                   style={{ cursor: "pointer" }}
-//                 >
-//                   <AvatarImage src={user?.data.picture} alt={"PI"} />
-//                   <AvatarFallback className="rounded-lg">PI</AvatarFallback>
-//                 </Avatar>
-//               </DropdownMenuTrigger>
-//               <DropdownMenuContent
-//                 className="w-60 px-3 py-5 my-2"
-//                 style={{ marginLeft: "-210px" }}
-//               >
-//                 <div className="pb-5">{user?.data.email}</div>
-
-//                 <DropdownMenuSeparator />
-//                 <DropdownMenuItem
-//                   onClick={handleLogout}
-//                   style={{ cursor: "pointer" }}
-//                   className="gap-2"
-//                 >
-//                   <LogOut size={18} />
-//                   Logout
-//                 </DropdownMenuItem>
-//               </DropdownMenuContent>
-//             </DropdownMenu>
-//           </div>
-//         </header>
-//         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-//           <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-//             <div className="aspect-video rounded-xl bg-muted/50" />
-//             <div className="aspect-video rounded-xl bg-muted/50" />
-//             <div className="aspect-video rounded-xl bg-muted/50" />
-//           </div>
-//           <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-//           <div>ok</div>
-//           <div>
-//             <h2>Mes Listes</h2>
-//             {lists.length > 0 ? (
-//               <ul>
-//                 {lists.map((list) => (
-//                   <li key={list._id}>
-//                     <p>
-//                       <strong>Liste ID :</strong> {list._id}
-//                     </p>
-//                     <p>
-//                       <strong>Nom de la liste :</strong> {list.name}
-//                     </p>
-//                     <ul>
-//                       {list.profiles.map(
-//                         (profile: {
-//                           _id: string;
-//                           name: string;
-//                           plateform: string;
-//                           followers: string;
-//                           posts: string;
-//                           profileUrl: string;
-//                           profileImage: string;
-//                           following: string;
-//                         }) => (
-//                           <li
-//                             key={profile._id}
-//                             style={{ marginBottom: "10px" }}
-//                           >
-//                             <p>
-//                               <strong>Nom :</strong> {profile.name}
-//                             </p>
-//                             <p>
-//                               <strong>Plateforme :</strong> {profile.plateform}
-//                             </p>
-//                             <p>
-//                               <strong>Abonnés :</strong> {profile.followers}
-//                             </p>
-//                             <p>
-//                               <strong>Following :</strong> {profile.following}
-//                             </p>
-//                             <p>
-//                               <strong>Publications :</strong>{" "}
-//                               {profile.posts || "N/A"}
-//                             </p>
-//                             <p>
-//                               <strong>URL :</strong>{" "}
-//                               <a
-//                                 href={profile.profileUrl}
-//                                 target="_blank"
-//                                 rel="noopener noreferrer"
-//                               >
-//                                 {profile.profileUrl}
-//                               </a>
-//                             </p>
-//                           </li>
-//                         )
-//                       )}
-//                     </ul>
-//                   </li>
-//                 ))}
-//               </ul>
-//             ) : (
-//               <p>Aucune liste trouvée.</p>
-//             )}
-//           </div>
-//         </div>
-//       </SidebarInset>
-//     </SidebarProvider>
-//   );
-// }
+// Appel initial pour récupérer les données et initialiser le filtre
+fetchProfiles();

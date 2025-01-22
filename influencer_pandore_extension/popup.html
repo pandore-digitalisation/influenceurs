@@ -22,7 +22,7 @@
     <div class="head">
       <span class="left">Pandore Influencer</span>
       <span class="center gap-1"><input type="text" class="form-control form-select-sm input" list="datalistOptions"
-          id="searchInput" placeholder="Search profile..." style="width: 200px;">
+          id="searchInput" placeholder="Search profile..." style="width: 100px;">
         <span>
           <select id="platformSelect" class="form-select form-select-sm input" aria-label="All platforms"
             style="width: 110px;">
@@ -33,6 +33,17 @@
             <option value="tiktok">TikTok</option>
             <option value="x">X</option>
           </select>
+        </span>
+        <span>
+          <select id="listFilter" class="form-select form-select-sm input" style="width: 110px;">
+            <option value="">Lists</option>
+          </select>
+          <!-- <div>
+            <label for="listFilter">Choisir une liste :</label>
+            <select id="listFilter">
+              <option value="">-- Toutes les listes --</option>
+            </select>
+          </div> -->
         </span>
       </span>
       <span class="right">
@@ -72,6 +83,21 @@
       <div id="status" style="display: none">
         Your Data Saved Successfully
       </div>
+      <div>
+        ok
+      </div>
+
+      <table id="profilesTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="api-profiles-list">ok</div>
+
       <table class="table table-striped table-bordered" id="dataTable">
         <thead>
           <tr>

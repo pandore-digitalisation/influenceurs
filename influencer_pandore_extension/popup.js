@@ -1,5 +1,5 @@
-const BASE_URL = "https://influenceurs.onrender.com";
-// const BASE_URL = "http://localhost:3000";
+// const BASE_URL = "https://influenceurs.onrender.com";
+const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 let globalUserId;
 
@@ -392,63 +392,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     console.log("Excel file created and download initiated.");
   }
-  // function exportToExcel() {
-  //   console.log("Exporting data to Excel...");
-
-  //   // Filtrer les données pour exclure des champs comme userId
-  //   const selectedRows = filteredData.map((row) => {
-  //     const { userId, __v, _id, profileImage, ...rest } = row;
-  //     return rest;
-  //   });
-
-  //   if (selectedRows.length === 0) {
-  //     alert("Aucune donnée à exporter.");
-  //     return;
-  //   }
-
-  //   console.log("Selected rows:", selectedRows);
-
-  //   // Générer les en-têtes du fichier Excel
-  //   const headers = Object.keys(selectedRows[0]);
-
-  //   // Construire le contenu HTML du fichier Excel
-  //   let excelContent = `
-  //     <table>
-  //       <thead>
-  //         <tr>${headers.map((header) => `<th>${header}</th>`).join("")}</tr>
-  //       </thead>
-  //       <tbody>
-  //         ${selectedRows
-  //           .map(
-  //             (row) =>
-  //               `<tr>${headers
-  //                 .map(
-  //                   (header) =>
-  //                     `<td>${row[header] !== undefined ? row[header] : ""}</td>`
-  //                 )
-  //                 .join("")}</tr>`
-  //           )
-  //           .join("")}
-  //       </tbody>
-  //     </table>
-  //   `;
-
-  //   // Créer un Blob contenant les données Excel
-  //   const blob = new Blob([excelContent], {
-  //     type: "application/vnd.ms-excel;charset=utf-8;",
-  //   });
-  //   const url = URL.createObjectURL(blob);
-
-  //   // Créer un lien pour télécharger le fichier
-  //   const link = document.createElement("a");
-  //   link.href = url;
-  //   link.download = "exported_data.xls"; // Nom du fichier exporté
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-
-  //   console.log("Excel file created and download initiated.");
-  // }
 
   // Charger les données initiales
   data = await fetchData();
@@ -599,31 +542,19 @@ document.addEventListener("DOMContentLoaded", () => {
     createList.disabled = false;
     // createProfileList.disabled = false;
 
-    container.innerHTML = `
-  <span>${user?.data.userId}</span>
+    console.log("token", token);
 
-  <div id="profileDropdown" style="position: relative; display: inline-block;">
-    <img
-      id="profileImage"
-      src="${user?.data.picture}"
-      title="${user?.data.name}"
-      style="background-color: #9CA3AF; width: 25px; border-radius: 50%; align-items: center; cursor: pointe;"
-    />
-  </div>
-`;
+    container.innerHTML = `<span>${user?.data.userId}</span>
+
+      <div id="profileDropdown" style="position: relative; display: inline-block;">
+        <img
+          id="profileImage"
+          src="${user?.data.picture}"
+          title="${user?.data.name}"
+          style="background-color: #9CA3AF; width: 25px; border-radius: 50%; align-items: center; cursor: pointe;"
+        />
+      </div>`;
     console.log("Profil injecté avec succès :", user?.data);
-    // createList.addEventListener("click", () => {
-    //   // createListForUser(user?.data.userId);
-    //   listForm.style.display = "flex";
-    //   // createList.disabled = true;
-    //   // Gestion de la soumission du formulaire
-    //   listForm.addEventListener("submit", (event) => {
-    //     event.preventDefault(); // Empêche le rechargement de la page
-    //     const listName = document.getElementById("listName").value;
-    //     const listProfile = document.getElementById("listProfile").value; // Récupère le nom de la liste
-    //     createListForUser(user?.data.userId, listName, listProfile);
-    //   });
-    // });
   }
 
   // Create list
@@ -631,10 +562,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   createList.addEventListener("click", () => {
     const createListForm = document.getElementById("createListForm");
-    createListForm.style.display = createListForm.style.display === "none" ? "flex": "none"
-  })
+    createListForm.style.display =
+      createListForm.style.display === "none" ? "flex" : "none";
+  });
 
-  document.getElementById("createListSubmit")
+  document
+    .getElementById("createListSubmit")
     .addEventListener("click", async () => {
       const listName = document.getElementById("listName").value.trim();
       if (!listName) {
@@ -643,11 +576,12 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Récupérer les données sélectionnées depuis localStorage
-      const selectedData = JSON.parse(localStorage.getItem("selectedData")) || [];
+      const selectedData =
+        JSON.parse(localStorage.getItem("selectedData")) || [];
       const userData = JSON.parse(localStorage.getItem("userData"));
 
-      console.log("user data", userData)
-      console.log("selected data", selectedData)
+      console.log("user data", userData);
+      console.log("selected data", selectedData);
 
       if (selectedData.length === 0) {
         alert("Aucune donnée sélectionnée pour créer une liste.");
@@ -661,10 +595,10 @@ document.addEventListener("DOMContentLoaded", () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${tokenGlobal}`,
           },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             name: listName,
             profiles: selectedData,
-            userId: userData.data.userId
+            userId: userData.data.userId,
           }),
         });
 
@@ -682,36 +616,187 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-  // function createListForUser(userId, listName, listProfile) {
-  //   const listData = { name: listName, profiles: listProfile };
-  //   console.log("Données envoyées :", { ...listData, userId });
-  //   console.log("token use", tokenGlobal);
+  // GEt token from localstorage
+  const token = localStorage.getItem("token");
+  console.log("tokeeeee", token);
+  const connectedUserData = localStorage.getItem("userData");
+  const data = JSON.parse(connectedUserData);
 
-  //   fetch("http://localhost:3000/lists", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //       Authorization: `Bearer ${tokenGlobal}`,
-  //     },
-  //     body: JSON.stringify({ ...listData, userId }),
-  //   })
-  //     .then((response) => {
-  //       console.log("Statut de la réponse :", response.status);
-  //       if (!response.ok) {
-  //         return response.json().then((err) => {
-  //           console.error("Erreur renvoyée par le backend :", err);
-  //           throw new Error("Erreur lors de la création de la liste");
-  //         });
-  //       }
-  //       return response.json();
+  const connectedUserId = data.data.userId;
+  console.log("ii", data.data.userId);
+
+  const listFilter = document.getElementById("listFilter");
+  const profilesTableBody = document.querySelector("#profilesTable tbody");
+  let lists = []; // Contiendra les données des listes récupérées depuis l'API
+
+  // Fonction pour récupérer les listes depuis l'API
+  function fetchProfiles() {
+    fetch(`${BASE_URL}/lists/user/${connectedUserId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`, // Authentification si nécessaire
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Listes récupérées :", data);
+        lists = data; // Stocker les données récupérées
+        populateListFilter(); // Remplir le menu déroulant
+        displayProfiles(lists.flatMap((list) => list.profiles)); // Afficher tous les profils par défaut
+      })
+      .catch((error) => {
+        console.error("Erreur lors de la récupération des listes :", error);
+        const profilesList = document.getElementById("api-profiles-list");
+        profilesList.innerHTML = `<p style="color: red;">Erreur lors du chargement des listes.</p>`;
+      });
+  }
+
+  // Fonction pour remplir le menu déroulant
+  function populateListFilter() {
+    console.log("Listes pour le filtre :", lists); // Vérification des données
+    lists.forEach((list) => {
+      const option = document.createElement("option");
+      option.value = list._id; // Assurez-vous que `list.id` est correct
+      option.textContent = list.name; // Assurez-vous que `list.name` est correct
+      listFilter.appendChild(option);
+    });
+  }
+
+  // Fonction pour afficher les profils associés
+  function displayProfiles(profiles) {
+    profilesTableBody.innerHTML = ""; // Réinitialise les lignes du tableau
+    if (profiles.length === 0) {
+      profilesTableBody.innerHTML =
+        '<tr><td colspan="2">Aucun profil trouvé.</td></tr>';
+      return;
+    }
+    console.log("Profils à afficher :", profiles); // Vérification des profils affichés
+    profiles.forEach((profile) => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${profile._id}</td>
+        <td>${profile.name}</td>
+      `;
+      profilesTableBody.appendChild(row);
+    });
+  }
+
+  // Gestion du changement de filtre
+  listFilter.addEventListener("change", () => {
+    const selectedListId = listFilter.value; // Récupère l'ID sélectionné (string ou number)
+    console.log("ID de la liste sélectionnée :", selectedListId); // Vérification de l'ID sélectionné
+
+    if (selectedListId) {
+      // Trouver la liste sélectionnée et afficher ses profils
+      const selectedList = lists.find((list) => list._id === selectedListId); // Comparez correctement les types
+      if (selectedList) {
+        console.log("Liste sélectionnée :", selectedList); // Vérification de la liste
+        displayProfiles(selectedList.profiles || []);
+      }
+    } else {
+      // Afficher tous les profils si aucune liste n'est sélectionnée
+      const allProfiles = lists.flatMap((list) => list.profiles || []);
+      displayProfiles(allProfiles);
+    }
+  });
+
+  // Appel initial pour récupérer les données et initialiser le filtre
+  fetchProfiles();
+
+  //   // Fonction pour récupérer les listes depuis l'API
+  //   function fetchProfiles() {
+  //     fetch(`${BASE_URL}/lists/user/${connectedUserId}`, {
+  //       method: "GET",
+  //       headers: {
+  //         Authorization: `Bearer ${token}`, // Ajoute cette ligne si l'authentification est nécessaire
+  //         "Content-Type": "application/json",
+  //       },
   //     })
-  //     .then((data) => {
-  //       console.log("Liste créée avec succès :", data);
-  //       alert("Liste créée avec succès !");
-  //     })
-  //     .catch((error) => {
-  //       console.error("Erreur de création :", error.message);
-  //       alert("Une erreur est survenue lors de la création de la liste.");
+  //       .then((response) => {
+  //         if (!response.ok) {
+  //           throw new Error(`HTTP error! Status: ${response.status}`);
+  //         }
+  //         console.log("list data", response.json)
+  //         return response.json();
+  //       })
+  //       .then((data) => {
+  //         displayProfiles(data); // Affiche les profils récupérés
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error fetching lists:", error);
+  //         const profilesList = document.getElementById("api-profiles-list");
+  //         profilesList.innerHTML = `<p style="color: red;">Erreur lors du chargement des listes.</p>`;
+  //       });
+  //   }
+
+  //   // Fonction pour afficher les profils dans le DOM
+  //   function displayProfiles(data) {
+  //     const profilesList = document.getElementById("api-profiles-list");
+  //     profilesList.innerHTML = ""; // Réinitialise le contenu
+
+  //     if (data.length === 0) {
+  //       profilesList.innerHTML = "<p>Aucune liste trouvée.</p>";
+  //       return;
+  //     }
+
+  //     data.forEach((profile) => {
+  //       const listItem = document.createElement("div");console.log("profile", profile)
+
+  //       listItem.textContent = `${profile.name} - ${profile.profileUrl}`;
+  //       profilesList.appendChild(listItem);
   //     });
+  //   }
+  //   fetchProfiles();
+
+  //   // Filter list fonction
+
+  // const listFilter = document.getElementById("listFilter");
+  // const profilesTableBody = document.querySelector("#profilesTable tbody");
+
+  // // Fonction pour remplir le menu déroulant
+  // function populateListFilter() {
+  //   lists.forEach(list => {
+  //     const option = document.createElement("option");
+  //     option.value = list.id;
+  //     option.textContent = list.name;
+  //     listFilter.appendChild(option);
+  //   });
   // }
+
+  // // Fonction pour afficher les profils associés
+  // function displayProfiles(profiles) {
+  //   profilesTableBody.innerHTML = ""; // Nettoyer les lignes existantes
+  //   profiles.forEach(profile => {
+  //     const row = document.createElement("tr");
+  //     row.innerHTML = `
+  //       <td>${profile.id}</td>
+  //       <td>${profile.name}</td>
+  //     `;
+  //     profilesTableBody.appendChild(row);
+  //   });
+  // }
+
+  // // Gestion du changement de filtre
+  // listFilter.addEventListener("change", () => {
+  //   const selectedListId = Number(listFilter.value); // Récupérer l'ID sélectionné
+  //   if (selectedListId) {
+  //     // Filtrer la liste sélectionnée
+  //     const selectedList = lists.find(list => list.id === selectedListId);
+  //     if (selectedList) displayProfiles(selectedList.profiles);
+  //   } else {
+  //     // Afficher tous les profils si aucune liste n'est sélectionnée
+  //     const allProfiles = lists.flatMap(list => list.profiles);
+  //     displayProfiles(allProfiles);
+  //   }
+  // });
+
+  // // Initialisation
+  // populateListFilter();
+  // displayProfiles(lists.flatMap(list => list.profiles)); // Afficher tous les profils au départ
 });
