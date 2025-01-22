@@ -13,7 +13,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 import {
   Table,
   TableBody,
@@ -21,9 +21,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,6 +48,7 @@ import {
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { profile, table } from "console";
 
 export default function Dashboard() {
   const BASE_URL = "http://localhost:3000";
@@ -140,11 +141,9 @@ export default function Dashboard() {
   }, []);
 
   const handleSelectList = (list: any) => {
+    setSelectedListId(list._id);
     setSelectedProfiles(list.profiles || []);
   };
-  // const handleSelectList = (list: any) => {
-  //   setSelectedList(list);
-  // };
 
   const toggleSidebar = () => {
     setSidebarExpanded(!sidebarExpanded);
@@ -177,10 +176,6 @@ export default function Dashboard() {
     } catch (error) {
       console.error("Erreur pendant la déconnexion:", error);
     }
-  };
-
-  const toggleListSelection = (listId: string) => {
-    setSelectedListId(selectedListId === listId ? null : listId);
   };
 
   if (loading) {
@@ -241,7 +236,7 @@ export default function Dashboard() {
         </header>
 
         <div className="flex flex-1 flex-col gap-4 pt-0">
-          <span className="p-4">
+          <span className="p-4 pb-0 pt-0">
             <div className="grid auto-rows-min gap-4 md:grid-cols-3">
               <div className="aspect-video rounded-xl bg-muted/50" />
               <div className="aspect-video rounded-xl bg-muted/50" />
@@ -249,9 +244,7 @@ export default function Dashboard() {
             </div>
           </span>
           {/* <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" /> */}
-
-          <div>
-            <span className="flex h-full">
+            <span className="flex h-screen overflow-hidden">
               <aside
                 className={`bg-[#FAFAFA] text-[#000000] transition-all duration-300 ${
                   sidebarExpanded ? "w-64" : "w-16"
@@ -278,7 +271,7 @@ export default function Dashboard() {
                       <li
                         key={list._id}
                         className={`p-2 cursor-pointer hover:bg-[#F4F4F5] rounded ${
-                          selectedList?._id === list._id ? "bg-[#F4F4F5]" : ""
+                          selectedListId === list._id ? "bg-[#F4F4F5]" : ""
                         }`}
                         onClick={() => handleSelectList(list)}
                       >
@@ -292,65 +285,111 @@ export default function Dashboard() {
                 </ul>
               </aside>
               {/* Main Content */}
-      <main
-        className={`flex-1 ml-${sidebarExpanded ? "64" : "16"} transition-all duration-300 p-6 overflow-y-auto`}
-      >
-        <h2 className="text-2xl font-bold mb-4">Profils sélectionnés</h2>
+              <main
+                className={`flex-1 ml-${
+                  sidebarExpanded ? "64" : "16"
+                } transition-all duration-300 p-4 pt-0 overflow-y-auto`}
+              >
+                <h2 className="text-2xl font-bold mb-4">
+                  Profils sélectionnés
+                </h2>
 
-        {selectedProfiles.length > 0 ? (
-          <table className="table-auto w-full border-collapse border border-gray-300">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border border-gray-300 p-2">Nom</th>
-                <th className="border border-gray-300 p-2">Plateforme</th>
-                <th className="border border-gray-300 p-2">Abonnés</th>
-                <th className="border border-gray-300 p-2">Publications</th>
-                <th className="border border-gray-300 p-2">Profil</th>
-              </tr>
-            </thead>
-            <tbody>
-              {selectedProfiles.map(
-                (profile: {
-                  _id: string;
-                  name: string;
-                  plateform: string;
-                  followers: string;
-                  posts: string;
-                  profileUrl: string;
-                }) => (
-                  <tr key={profile._id} className="hover:bg-gray-100">
-                    <td className="border border-gray-300 p-2">{profile.name}</td>
-                    <td className="border border-gray-300 p-2">
-                      {profile.plateform}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {profile.followers}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      {profile.posts || "N/A"}
-                    </td>
-                    <td className="border border-gray-300 p-2">
-                      <a
-                        href={profile.profileUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 underline"
-                      >
-                        Voir
-                      </a>
-                    </td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          </table>
-        ) : (
-          <p>Sélectionnez une liste pour afficher les profils associés.</p>
-        )}
-      </main>
+                {selectedProfiles.length > 0 ? (
+                  <div className="relative overflow-x-auto border sm:rounded-lg">
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                          <th scope="col" className="p-4">
+                            <div className="flex items-center">
+                              <input
+                                id="checkbox-all-search"
+                                type="checkbox"
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                              />
+                              <label
+                                htmlFor="checkbox-all-search"
+                                className="sr-only"
+                              >
+                                checkbox
+                              </label>
+                            </div>
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Name
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Followers
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Following
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Plateform
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Url
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedProfiles.map(
+                          (profile: {
+                            _id: string;
+                            name: string;
+                            plateform: string;
+                            followers: string;
+                            posts: string;
+                            following: string;
+                            profileUrl: string;
+                          }) => (
+                            <tr className="bg-white border-b hover:bg-gray-50">
+                              <td className="w-4 p-4">
+                                <div className="flex items-center">
+                                  <input
+                                    id="checkbox-table-search-1"
+                                    type="checkbox"
+                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                  />
+                                  <label
+                                    htmlFor="checkbox-table-search-1"
+                                    className="sr-only"
+                                  >
+                                    checkbox
+                                  </label>
+                                </div>
+                              </td>
+                              <th
+                                scope="row"
+                                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                              >
+                                {profile.name}
+                              </th>
+                              <td className="px-6 py-4">{profile.followers}</td>
+                              <td className="px-6 py-4">{profile.following}</td>
+                              <td className="px-6 py-4">{profile.plateform}</td>
+                              <td className="px-6 py-4">
+                                <a
+                                  href={profile.profileUrl}
+                                  target="_blank"
+                                  className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                >
+                                  v
+                                </a>
+                              </td>
+                            </tr>
+                          )
+                        )}{" "}
+                      </tbody>{" "}
+                    </table>
+                  </div>
+                ) : (
+                  <p>
+                    Sélectionnez une liste pour afficher les profils associés.
+                  </p>
+                )}
+              </main>
             </span>
           </div>
-        </div>
       </SidebarInset>
     </SidebarProvider>
   );
