@@ -183,7 +183,7 @@
     plateform: "X",
     profileImage: `https://x.com${profileImage}`,
     profileUrl,
-    userId: updatedUserIds,
+    userId: updatedUserIds || "0",
   };
 
   console.log("Données extraites :", extractedData);

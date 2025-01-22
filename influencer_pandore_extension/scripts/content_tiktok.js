@@ -1,7 +1,7 @@
 (async () => {
   // const BASE_URL = "https://influenceurs.onrender.com";
   const BASE_URL = "http://localhost:3000";
-  
+
   // Helper function to evaluate an XPath expression and return nodes
   function evaluateXPath(xpath, context = document) {
     const iterator = document.evaluate(
@@ -161,17 +161,13 @@
   console.log("Extracted Data:", extractedData);
 
   function areDataValid(data) {
-    return (
-      data.name !== "None" &&
-      data.followers !== "0" &&
-      data.profileImage !== " "
-    );
+    return data.name !== "None" && data.followers !== "0";
   }
 
   // Send data to the backend
   async function sendToBackend(data) {
     try {
-      const response = await fetch(`${BASE_URL}/tiktok/`, {
+      const response = await fetch(`${BASE_URL}/tiktok`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

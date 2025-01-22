@@ -65,7 +65,7 @@ export class XService {
     if (!profile) {
       throw new NotFoundException('Profile not found');
     }
-    console.log(profile);
+    // console.log(profile);
 
     return profile;
   }
