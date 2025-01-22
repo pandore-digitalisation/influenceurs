@@ -1,7 +1,7 @@
 (async () => {
-  // const BASE_URL = "https://influenceurs.onrender.com";
-  const BASE_URL = "http://localhost:3000";
-  
+  const BASE_URL = "https://influenceurs.onrender.com";
+  // const BASE_URL = "http://localhost:3000";
+
   // Helper function to evaluate an XPath expression and return nodes
   function evaluateXPath(xpath, context = document) {
     const iterator = document.evaluate(
@@ -21,24 +21,24 @@
 
   // Define the XPaths
   const nameXPath =
-    "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[1]/div/div/h1";
+    "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/div[2]/div[1]/div[1]/span[1]/a/h1";
   const descriptionXPath =
-    "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h2";
+    "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/div[2]/div[1]/div[2]";
+  const locationXPath =
+    "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/div[2]/div[2]/span[1]";
   const followersXPath =
-    "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h3/div[2]/strong";
-  const followingXpath =
-    "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h3/div[1]/strong";
-  const likesXpath =
-    "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h3/div[3]/strong";
+    "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/ul/li[1]/span";
+  const connectionXpath =
+    "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/ul/li[2]/span/span";
   const profileImageXPath =
-    "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[1]/span/img";
+    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/div/span/img";
 
   // Extract data
   const nameElements = evaluateXPath(nameXPath);
   const descriptionElements = evaluateXPath(descriptionXPath);
+  const locationElements = evaluateXPath(locationXPath);
   const followersElements = evaluateXPath(followersXPath);
-  const followingElements = evaluateXPath(followingXpath);
-  const likesElements = evaluateXPath(likesXpath);
+  const connectionElements = evaluateXPath(connectionXpath);
   const profileImageElements = evaluateXPath(profileImageXPath);
 
   const name =
@@ -47,24 +47,18 @@
     descriptionElements.length > 0
       ? descriptionElements[0].textContent.trim()
       : "None";
+  const location =
+    locationElements.length > 0 ? locationElements[0].textContent.trim() : "0";
   const followers =
     followersElements.length > 0
       ? followersElements[0].textContent.trim()
       : "0";
-  const following =
-    followingElements.length > 0
-      ? followingElements[0].textContent.trim()
+  const connection =
+    connectionElements.length > 0
+      ? connectionElements[0].textContent.trim()
       : "0";
-  const likes =
-    likesElements.length > 0 ? likesElements[0].textContent.trim() : "0";
   const profileImage =
     profileImageElements.length > 0 ? profileImageElements[0].src : " ";
-
-  // Get data before sending to backend
-  if (!name || !followers || !following) {
-    console.error("Données incomplètes ou manquantes. Requête annulée.");
-    return;
-  }
 
   // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
   async function getUserData() {
@@ -88,7 +82,7 @@
   async function getExistingProfile(profileUrl) {
     try {
       const response = await fetch(
-        `${BASE_URL}/tiktok/${encodeURIComponent(profileUrl)}`,
+        `${BASE_URL}/linkedin/${encodeURIComponent(profileUrl)}`,
         {
           method: "GET",
           headers: {
@@ -127,8 +121,6 @@
     );
   }
 
-  // const userId = userData.data.userId;
-
   const profileUrl = window.location.href;
   console.log("url", profileUrl);
   const encodeUrl = encodeURIComponent(profileUrl);
@@ -146,14 +138,16 @@
     ? existingUserIds
     : [...existingUserIds, currentUserId];
 
+  // const userId = userData.data.userId;
+
   const extractedData = {
     userId: updatedUserIds,
     name,
     description,
-    likes,
+    location,
     followers,
-    following,
-    plateform: "TikTok",
+    connection,
+    plateform: "Linkedin",
     profileImage,
     profileUrl,
   };
@@ -164,14 +158,14 @@
     return (
       data.name !== "None" &&
       data.followers !== "0" &&
-      data.profileImage !== " "
+      data.connection !== "0"
     );
   }
 
   // Send data to the backend
   async function sendToBackend(data) {
     try {
-      const response = await fetch(`${BASE_URL}/tiktok/`, {
+      const response = await fetch(`${BASE_URL}/linkedin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -180,7 +174,7 @@
       });
 
       if (response.ok) {
-        console.log("Data successfully sent to the backend.", data);
+        console.log("Data successfully sent to the backend.");
         return true;
       } else {
         console.error("Error sending data to the backend.");
@@ -192,13 +186,13 @@
     }
   }
 
-  //Post the data to the backend
   if (areDataValid(extractedData)) {
     const success = await sendToBackend(extractedData);
     console.log("Success:", success);
     chrome.runtime.sendMessage({ success });
   } else {
     console.warn("Data is incomplete or invalid. Skipping POST request.");
+    window.location.reload();
     alert("Data is incomplete or invalid, please reload and try again!");
   }
 })();

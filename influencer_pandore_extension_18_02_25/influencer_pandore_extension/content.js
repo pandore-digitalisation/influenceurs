@@ -28,8 +28,7 @@ function injectButton(platform) {
   if (platform === "Facebook") {
     // targetElement = document.body;
     const facebookXPath =
-    "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]"
-      // "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]";
+      "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[3]";
     targetElement = getElementByXPath(facebookXPath);
   } else if (platform === "Instagram") {
     const instagramXPath =

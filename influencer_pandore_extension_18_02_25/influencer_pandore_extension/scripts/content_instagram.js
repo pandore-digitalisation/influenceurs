@@ -1,7 +1,9 @@
 (async () => {
-  // const BASE_URL = "https://influenceurs.onrender.com";
-  const BASE_URL = "http://localhost:3000";
-  
+  console.log("Running script for Instagram...");
+
+  const BASE_URL = "https://influenceurs.onrender.com";
+  // const BASE_URL = "http://localhost:3000";
+
   // Helper function to evaluate an XPath expression and return nodes
   function evaluateXPath(xpath, context = document) {
     const iterator = document.evaluate(
@@ -21,32 +23,27 @@
 
   // Define the XPaths
   const nameXPath =
-    "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[1]/div/div/h1";
-  const descriptionXPath =
-    "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h2";
+    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[2]/div/div/div[1]/div/a/h2/span";
+  const postXPath =
+    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[1]/div/span/span";
   const followersXPath =
-    "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h3/div[2]/strong";
+    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[2]/div/a/span/span";
   const followingXpath =
-    "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h3/div[1]/strong";
-  const likesXpath =
-    "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h3/div[3]/strong";
+    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[3]/div/a/span/span";
   const profileImageXPath =
-    "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[1]/span/img";
+    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/div/span/img";
 
   // Extract data
   const nameElements = evaluateXPath(nameXPath);
-  const descriptionElements = evaluateXPath(descriptionXPath);
+  const postElements = evaluateXPath(postXPath);
   const followersElements = evaluateXPath(followersXPath);
   const followingElements = evaluateXPath(followingXpath);
-  const likesElements = evaluateXPath(likesXpath);
   const profileImageElements = evaluateXPath(profileImageXPath);
 
   const name =
     nameElements.length > 0 ? nameElements[0].textContent.trim() : "None";
-  const description =
-    descriptionElements.length > 0
-      ? descriptionElements[0].textContent.trim()
-      : "None";
+  const posts =
+    postElements.length > 0 ? postElements[0].textContent.trim() : "0";
   const followers =
     followersElements.length > 0
       ? followersElements[0].textContent.trim()
@@ -55,8 +52,6 @@
     followingElements.length > 0
       ? followingElements[0].textContent.trim()
       : "0";
-  const likes =
-    likesElements.length > 0 ? likesElements[0].textContent.trim() : "0";
   const profileImage =
     profileImageElements.length > 0 ? profileImageElements[0].src : " ";
 
@@ -88,7 +83,7 @@
   async function getExistingProfile(profileUrl) {
     try {
       const response = await fetch(
-        `${BASE_URL}/tiktok/${encodeURIComponent(profileUrl)}`,
+        `${BASE_URL}/instagram/${encodeURIComponent(profileUrl)}`,
         {
           method: "GET",
           headers: {
@@ -114,20 +109,17 @@
   let userData = null;
   try {
     userData = await getUserData();
-    console.log("userData", userData);
   } catch (error) {
     console.error(error);
   }
 
   console.log("user data 2", userData);
-  // If user data is not found, handle accordingly (e.g., not sending userId)
+  //  If user data is not found, handle accordingly (e.g., not sending userId)
   if (!userData || !userData.data.userId) {
     console.error(
       "Utilisateur non connecté ou données utilisateur manquantes."
     );
   }
-
-  // const userId = userData.data.userId;
 
   const profileUrl = window.location.href;
   console.log("url", profileUrl);
@@ -146,14 +138,16 @@
     ? existingUserIds
     : [...existingUserIds, currentUserId];
 
+  // Get the profile URL
+  // const profileUrl = window.location.href;
+
   const extractedData = {
     userId: updatedUserIds,
     name,
-    description,
-    likes,
+    posts,
     followers,
     following,
-    plateform: "TikTok",
+    plateform: "Instagram",
     profileImage,
     profileUrl,
   };
@@ -164,14 +158,14 @@
     return (
       data.name !== "None" &&
       data.followers !== "0" &&
-      data.profileImage !== " "
+      data.posts !== " "
     );
   }
 
   // Send data to the backend
   async function sendToBackend(data) {
     try {
-      const response = await fetch(`${BASE_URL}/tiktok/`, {
+      const response = await fetch(`${BASE_URL}/instagram`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -180,7 +174,7 @@
       });
 
       if (response.ok) {
-        console.log("Data successfully sent to the backend.", data);
+        console.log("Data successfully sent to the backend.");
         return true;
       } else {
         console.error("Error sending data to the backend.");
@@ -195,10 +189,11 @@
   //Post the data to the backend
   if (areDataValid(extractedData)) {
     const success = await sendToBackend(extractedData);
-    console.log("Success:", success);
+    console.log("success", success);
+    // Send to popup.js
     chrome.runtime.sendMessage({ success });
   } else {
     console.warn("Data is incomplete or invalid. Skipping POST request.");
-    alert("Data is incomplete or invalid, please reload and try again!");
+    alert("Data is incomplete or invalid, please reload and try again!")
   }
 })();

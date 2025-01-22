@@ -17,9 +17,7 @@ export class TiktokService {
       Object.assign(existingTiktok, createTiktokDto);
       return existingTiktok.save();
     } else {
-      const newTiktok = new this.tiktokModel({
-        createTiktokDto,
-      });
+      const newTiktok = new this.tiktokModel(createTiktokDto);
       return newTiktok.save();
     }
   }
