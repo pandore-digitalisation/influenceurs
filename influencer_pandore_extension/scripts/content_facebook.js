@@ -1,8 +1,8 @@
 (async () => {
+  console.log("Running script for Facebook...");
+
   // const BASE_URL = "https://influenceurs.onrender.com";
   const BASE_URL = "http://localhost:3000";
-
-  console.log("Running script for Facebook...");
 
   function evaluateXPath(xpath, context = document) {
     const iterator = document.evaluate(
@@ -19,46 +19,19 @@
     return nodes;
   }
 
-  async function waitForElement(xpath, timeout = 10000) {
-    return new Promise((resolve, reject) => {
-      const interval = 100;
-      let elapsed = 0;
-
-      const check = () => {
-        const elements = evaluateXPath(xpath);
-        if (elements.length > 0) {
-          resolve(elements);
-        } else if (elapsed >= timeout) {
-          console.log(
-            "Timeout reached. Data not fully loaded. please reload the page and trying"
-          );
-          reject(new Error("Timeout waiting for element"));
-          const failed =
-            "Timeout reached. Data not fully loaded. please reload the page and trying again";
-          chrome.runtime.sendMessage({ failed });
-        } else {
-          elapsed += interval;
-          setTimeout(check, interval);
-        }
-      };
-
-      check();
-    });
-  }
-
   const nameXPath =
-    "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]";
+  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]"
+    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]";
   const followersXPath =
-    "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[1]/text()[1]";
+  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[1]/text()[1]"
+    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[1]/text()[1]";
   const followingXpath =
-    "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]";
+  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]"
+    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]";
   const profileImageXPath =
-    "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/a/div/svg";
+  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/div/div/svg/g/image"
+    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/a/div/svg";
 
-  // Attendre que les éléments soient disponibles
-  await waitForElement(nameXPath);
-  await waitForElement(followersXPath);
-  await waitForElement(followingXpath);
 
   const nameElements = evaluateXPath(nameXPath);
   const followersElements = evaluateXPath(followersXPath);
@@ -80,6 +53,12 @@
       ? profileImageElements[0].getAttribute("href") ||
         profileImageElements[0].getAttribute("xlink:href")
       : "Not found";
+
+    // Get data before sending to backend
+    if (!name || !followers || !following) {
+      console.error("Données incomplètes ou manquantes. Requête annulée.");
+      return;
+    }
 
   // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
   async function getUserData() {
@@ -115,6 +94,7 @@
 
       if (response.ok) {
         const data = await response.json();
+        console.log("data", data)
         return data;
       } else {
         console.warn("Profil non trouvé, un nouveau sera créé.");
@@ -169,7 +149,7 @@
     following,
     plateform: "Facebook",
     profileImage,
-    profileUrl: window.location.href,
+    profileUrl,
   };
 
   console.log("Extracted Data:", extractedData);
@@ -177,9 +157,7 @@
   function areDataValid(data) {
     return (
       data.name !== "None" &&
-      data.followers !== "0" &&
-      data.profileImage !== " "
-    );
+      data.followers !== "0"    );
   }
 
   async function sendToBackend(data) {
@@ -189,12 +167,22 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      return response.ok;
+
+      if (response.ok) {
+        console.log("Data successfully sent to the backend.");
+        return true;
+      } else {
+        console.error("Error sending data to the backend.");
+        return false;
+      }
+
     } catch (error) {
       console.error("Network error:", error);
       return false;
     }
   }
+
+  // sendToBackend(extractedData);
 
   if (areDataValid(extractedData)) {
     const success = await sendToBackend(extractedData);
@@ -202,7 +190,7 @@
     chrome.runtime.sendMessage({ success });
   } else {
     console.warn("Data is incomplete or invalid. Skipping POST request.");
-    alert("Data is incomplete or invalid, please reload and try again!");
+    // alert("Data is incomplete or invalid, please reload and try again!");
 
   }
 })();

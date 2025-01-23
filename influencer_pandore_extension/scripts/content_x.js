@@ -76,7 +76,7 @@
   const description =
     descriptionElements.length > 0
       ? descriptionElements[0].textContent.trim()
-      : "Nnt found";
+      : "Not found";
   const followers =
     followersElements.length > 0
       ? followersElements[0].textContent.trim()

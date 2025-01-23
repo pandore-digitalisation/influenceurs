@@ -8,13 +8,13 @@
       "https://pandoreinfluencerfrontend.vercel.app/",
       "https://x.com/*",
       "https://instagram.com/*",
-      "https://facebook.com/*",
       "https://linkedin.com/*",
       "https://www.tiktok.com/*",
       "https://influenceurs.onrender.com/*",
       "http://127.0.0.1:5001/*",
       "http://localhost:3001/",
-      "http://localhost:3000/"
+      "http://localhost:3000/",
+      "https://www.facebook.com/*"
 
     ],
     "background": {
@@ -38,7 +38,7 @@
         "js": ["scripts/content_instagram.js"]
       },
       {
-        "matches": ["https://facebook.com/*"],
+        "matches": ["https://www.facebook.com/*"],
         "js": ["scripts/content_facebook.js"]
       },
       {
