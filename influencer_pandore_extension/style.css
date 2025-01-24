@@ -16,9 +16,9 @@ section {
 }
 
 .head {
-  display: flex; /* Utilise Flexbox pour aligner les éléments sur une ligne */
-  justify-content: space-between; /* Place les éléments aux extrémités */
-  align-items: center; /* Aligne verticalement les éléments */
+  display: flex;
+  justify-content: space-between;
+  /* align-items: center; */
 }
 
 .left {
@@ -29,17 +29,11 @@ section {
 
 .right {
   display: flex;
-  gap: 5px;
   justify-content: flex-end;
 }
 
 .center {
   display: flex;
-}
-
-.header {
-  /* background-color: green; */
-  padding-left: 40px;
 }
 
 .container {
@@ -122,10 +116,14 @@ button {
   text-align: center;
 }
 
-#auth {
-  justify-content: flex-end;
+.header {
   display: flex;
+  align-items: center;
   margin-bottom: 10px;
+}
+
+#auth {
+  margin-left: auto;
 }
 
 .formsBlock {

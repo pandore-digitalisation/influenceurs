@@ -192,7 +192,6 @@
     chrome.runtime.sendMessage({ success });
   } else {
     console.warn("Data is incomplete or invalid. Skipping POST request.");
-    window.location.reload();
     alert("Data is incomplete or invalid, please reload and try again!");
   }
 })();

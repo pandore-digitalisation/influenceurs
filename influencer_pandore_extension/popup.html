@@ -15,18 +15,19 @@
 
   <section>
     <div id="authStatus" style="display: none">Session expired. Please log in again.</div>
-    <div id="auth">
-      <span><button class="btn btn-primary btn-sm" id="loginBtn">Login</button></span>
+    <div class="header">
+      <span class="left">Aquizition</span>
+      <span id="auth"><button class="btn btn-primary btn-sm" id="loginBtn">Login</button></span>
     </div>
+
     <!-- <span><button class="btn btn-danger btn-sm" id="logoutBtn">Logout</button></span> -->
     <div class="head">
-      <span class="left">Pandore Influencer</span>
       <span class="center gap-1"><input type="text" class="form-control form-select-sm input" list="datalistOptions"
-          id="searchInput" placeholder="Search profile..." style="width: 100px;">
+          id="searchInput" placeholder="Search profile..." style="width: 240px;">
         <span>
           <select id="platformSelect" class="form-select form-select-sm input" aria-label="All platforms"
-            style="width: 110px;">
-            <option value="">Platforms</option>
+            style="width: 120px;">
+            <option value="">All Platforms</option>
             <option value="instagram">Instagram</option>
             <option value="facebook">Facebook</option>
             <option value="linkedin">LinkedIn</option>
@@ -35,18 +36,12 @@
           </select>
         </span>
         <span>
-          <select id="listFilter" class="form-select form-select-sm input" style="width: 110px;">
-            <option value="">Lists</option>
+          <select id="listFilter" class="form-select form-select-sm input" style="width: 120px;">
+            <option value="">Your Lists</option>
           </select>
-          <!-- <div>
-            <label for="listFilter">Choisir une liste :</label>
-            <select id="listFilter">
-              <option value="">-- Toutes les listes --</option>
-            </select>
-          </div> -->
         </span>
       </span>
-      <span class="right">
+      <span class="right gap-1">
         <span><button class="btn btn btn-sm" id="scrapeBtn">Get Data</button></span>
         <span><button class="btn btn btn-sm" id="createList" disabled>Create List</button></span>
         <span><button class="btn btn-primary btn-sm" id="exportCsvBtn" disabled>Csv</button></span>

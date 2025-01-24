@@ -18,6 +18,9 @@ export class AllController {
       };
     }
   }
+
+  @Get('linkedin')
+  async getProfilesByPlate() {}
 }
 
 // import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';

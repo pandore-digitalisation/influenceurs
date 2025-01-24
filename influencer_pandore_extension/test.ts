@@ -213,3 +213,4 @@ listFilter.addEventListener("change", () => {
 
 // Appel initial pour récupérer les données et initialiser le filtre
 fetchProfiles();
+
