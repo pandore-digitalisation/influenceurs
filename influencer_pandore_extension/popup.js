@@ -100,6 +100,7 @@ function downloadCSV() {
 
 // Search functions
 document.addEventListener("DOMContentLoaded", async () => {
+  
   const searchInput = document.getElementById("searchInput");
   const platformSelect = document.getElementById("platformSelect");
   const dataContainer = document
@@ -432,6 +433,7 @@ document.getElementById("loginBtn").addEventListener("click", () => {
 
 // Get user connected data
 document.addEventListener("DOMContentLoaded", () => {
+
   chrome.runtime.sendMessage({ action: "getUserData" }, (response) => {
     if (chrome.runtime.lastError) {
       console.error(

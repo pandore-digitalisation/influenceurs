@@ -1,8 +1,8 @@
 (async () => {
   console.log("Running script for Facebook...");
 
-  const BASE_URL = "https://influenceurs.onrender.com";
-  // const BASE_URL = "http://localhost:3000";
+  // const BASE_URL = "https://influenceurs.onrender.com";
+  const BASE_URL = "http://localhost:3000";
 
   function evaluateXPath(xpath, context = document) {
     const iterator = document.evaluate(
