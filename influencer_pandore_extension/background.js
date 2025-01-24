@@ -19,7 +19,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log("Demande de données utilisateur reçue.");
     // Renvoie les données utilisateur
     sendResponse({ userData: latestUserData, token: token });
-    return true;  // Indiquer que la réponse est envoyée de manière asynchrone
+    return true;
   }
 
   // Action pour déconnecter l'utilisateur

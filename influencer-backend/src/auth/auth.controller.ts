@@ -11,12 +11,10 @@ export class AuthController {
   BASE_URL = 'http://localhost:3001';
   // BASE_URL = 'https://pandoreinfluencerfrontend.vercel.app';
 
-  // Démarre le processus d'authentification avec Google
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth(): Promise<void> {}
 
-  // Callback après l'authentification réussie avec Google
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthCallback(
@@ -50,7 +48,7 @@ export class AuthController {
   @Get('user')
   async getUser(@Req() req: Request): Promise<any> {
     try {
-      const user = req.user; // Utilisateur extrait par le JwtAuthGuard
+      const user = req.user;
       console.log('jwt user', user);
       return {
         status: 'success',
@@ -65,12 +63,20 @@ export class AuthController {
     }
   }
 
+  @Get('status')
+  @UseGuards(AuthGuard('jwt'))
+  async getAuthStatus(@Req() req: Request, @Res() res: Response) {
+    if (req.user) {
+      return res.status(200).json({ authenticated: true, user: req.user });
+    }
+    return res.status(401).json({ authentificated: false });
+  }
+
   @Post('logout')
-  @UseGuards(AuthGuard('jwt')) // Protégé par JWT
+  @UseGuards(AuthGuard('jwt'))
   async logout(@Res() res: Response) {
     await this.authService.logout();
 
-    // Effacer les cookies si utilisés
     res.clearCookie('access_token');
 
     return res.status(200).json({ message: 'Logout successful' });

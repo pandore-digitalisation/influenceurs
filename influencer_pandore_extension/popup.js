@@ -706,7 +706,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Appel initial pour récupérer les données et initialiser le filtre
   fetchProfiles();
 
   //   // Fonction pour récupérer les listes depuis l'API

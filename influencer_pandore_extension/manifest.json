@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Pandore Influencer",
+    "name": "Aquizition",
     "version": "1.0",
     "description": "Get X, Instagram, Facebook, Linkedin, Tiktok page data and export in csv format",
     "permissions": ["activeTab", "scripting", "storage", "tabs", "identity"],
