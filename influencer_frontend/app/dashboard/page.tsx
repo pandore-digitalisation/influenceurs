@@ -140,13 +140,20 @@ export default function Dashboard() {
         credentials: "include",
       });
 
-      if (!response.ok) {
+      if (response.ok) {
+        localStorage.removeItem("auth_token");
+        sessionStorage.clear();
+
+        window.postMessage ({
+          action: "logoutUser"}, 
+        window.location.origin);
+
+        window.location.href = "/login"
+        
+      } else {
         throw new Error("Erreur lors de la déconnexion.");
       }
 
-      localStorage.removeItem("auth_token");
-      sessionStorage.clear();
-      window.location.href = "/login";
     } catch (error) {
       console.error("Erreur pendant la déconnexion:", error);
     }

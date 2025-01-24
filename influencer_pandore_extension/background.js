@@ -22,11 +22,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 
   if (message.action === "logoutUser") {
+    console.log("Déconnexion de l'utilisateur demandée.");
     latestUserData = null;
     token = null;
     chrome.storage.local.clear(() => {
       console.log("Utilisateur déconnecté.");
     });
+    chrome.runtime.sendMessage({ action: "userLoggedOut" });
     sendResponse({ success: true });
     return true;
   }

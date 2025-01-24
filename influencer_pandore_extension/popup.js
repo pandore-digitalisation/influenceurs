@@ -435,7 +435,7 @@ document.addEventListener("DOMContentLoaded", () => {
   chrome.runtime.sendMessage({ action: "getUserData" }, (response) => {
     if (chrome.runtime.lastError) {
       console.error(
-        "Erreur lors de la récupération des données utilisateur:",
+        "Erreur lors de la récupération des données utilisateur:"
         // chrome.runtime.lastError.message
       );
       // fallbackToLocalStorage();
@@ -465,7 +465,28 @@ document.addEventListener("DOMContentLoaded", () => {
       console.log("Pas de données utilisateur");
       // fallbackToLocalStorage();
     }
+  });
 
+  chrome.runtime.onMessage.addListener((message) => {
+    if (message.action === "userLoggedOut") {
+      console.log(
+        "L'utilisateur a été déconnecté. Mise à jour de l'interface."
+      );
+
+      // Nettoyer les données locales
+      localStorage.removeItem("userData");
+      localStorage.removeItem("token");
+
+      // Mettre à jour l'interface utilisateur
+      document.getElementById("auth").innerHTML =
+        "<p>Vous êtes déconnecté. Veuillez vous reconnecter.</p>";
+
+      // Désactiver d'autres fonctionnalités si nécessaire
+      const createList = document.getElementById("createList");
+      if (createList) {
+        createList.disabled = true;
+      }
+    }
   });
 
   // function fallbackToLocalStorage() {
@@ -500,7 +521,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("token", token);
 
-    container.innerHTML = `<span>${user?.data.userId}</span>
+    container.innerHTML = `<span style="font-weight: bold; text-transform: uppercase; font-size:10px">${user?.data.name}</span>
 
       <div id="profileDropdown" style="position: relative; display: inline-block;">
         <img
