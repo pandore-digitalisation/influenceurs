@@ -3,7 +3,7 @@
     "name": "Aquizition",
     "version": "1.0",
     "description": "Get X, Instagram, Facebook, Linkedin, Tiktok page data and export in csv format",
-    "permissions": ["activeTab", "scripting", "storage", "tabs", "identity"],
+    "permissions": ["activeTab", "scripting", "storage", "tabs", "identity", "background"],
     "host_permissions": [
       "https://pandoreinfluencerfrontend.vercel.app/",
       "https://x.com/*",

@@ -1,4 +1,5 @@
-// const BASE_URL = "https://influenceur-list.onrender.com";
+// const BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
+const FRONT_BASE_URL = "http://localhost:3001";
 const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 let globalUserId;
@@ -426,23 +427,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Login
 document.getElementById("loginBtn").addEventListener("click", () => {
-  chrome.tabs.create({ url: `${BASE_URL}/login` });
+  chrome.tabs.create({ url: `${FRONT_BASE_URL}/login` });
 });
 
 // Get user connected data
 document.addEventListener("DOMContentLoaded", () => {
-  let messageHandled = false;
-
   chrome.runtime.sendMessage({ action: "getUserData" }, (response) => {
     if (chrome.runtime.lastError) {
       console.error(
         "Erreur lors de la récupération des données utilisateur:",
-        chrome.runtime.lastError.message
+        // chrome.runtime.lastError.message
       );
-      messageHandled = true;
-      fallbackToLocalStorage();
+      // fallbackToLocalStorage();
     } else if (response && response.userData) {
       console.log("Données utilisateur récupérées :", response.userData);
+
       localStorage.setItem("userData", JSON.stringify(response.userData));
       localStorage.setItem("token", response.token);
       profil(response.userData, response.token);
@@ -461,56 +460,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       );
 
-      profil(response.userData, response.token);
+      // profil(response.userData, response.token);
     } else {
-      console.log("Pas de données utilisateur, fallback activé");
-      fallbackToLocalStorage();
+      console.log("Pas de données utilisateur");
+      // fallbackToLocalStorage();
     }
 
-    // if (response && response.userData) {
-    //   messageHandled = true;
-    //   console.log("Données utilisateur récupérées :", response.userData);
-    //   localStorage.setItem("userData", JSON.stringify(response.userData));
-    //   localStorage.setItem("token", response.token);
-    //   profil(response.userData, response.token);
-    // } else {
-    //   console.warn("Aucune donnée utilisateur reçue, fallback activé.");
-    //   fallbackToLocalStorage();
-    // }
   });
-
-  // Si aucune réponse n'est reçue dans un délai raisonnable, fallback
-  // setTimeout(() => {
-  //   if (!messageHandled) {
-  //     console.warn(
-  //       "Aucune réponse reçue de `chrome.runtime.sendMessage`. Utilisation du fallback."
-  //     );
-  //     fallbackToLocalStorage();
-  //   }
-  // }, 2000);
-
-  function fallbackToLocalStorage() {
-    const storedUserData = localStorage.getItem("userData");
-    const storedToken = localStorage.getItem("token");
-
-    if (storedUserData && storedToken) {
-      const userData = JSON.parse(storedUserData);
-      console.log("Fallback - Données utilisateur récupérées :", userData);
-      profil(userData, storedToken);
-    } else {
-      console.log("Aucune donnée utilisateur trouvée en fallback.");
-    }
-  }
-
-  // Vérifiez après un délai si le message a été traité
-  // setTimeout(() => {
-  //   if (!messageHandled) {
-  //     console.warn(
-  //       "Aucune réponse de `chrome.runtime.sendMessage`. Utilisation du fallback."
-  //     );
-  //     fallbackToLocalStorage();
-  //   }
-  // }, 1000);
 
   // function fallbackToLocalStorage() {
   //   const storedUserData = localStorage.getItem("userData");
@@ -518,7 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //   if (storedUserData && storedToken) {
   //     const userData = JSON.parse(storedUserData);
-  //     console.log("Fallback - Données utilisateur :", userData);
+  //     console.log("Fallback - Données utilisateur récupérées :", userData);
   //     profil(userData, storedToken);
   //   } else {
   //     console.log("Aucune donnée utilisateur trouvée en fallback.");
@@ -623,7 +579,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const data = JSON.parse(connectedUserData);
 
   const connectedUserId = data.data.userId;
-  console.log("ii", data.data.userId);
 
   const listFilter = document.getElementById("listFilter");
   const profilesTableBody = document.querySelector("#profilesTable tbody");
@@ -706,6 +661,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // Appel initial pour récupérer les données et initialiser le filtre
   fetchProfiles();
 
   //   // Fonction pour récupérer les listes depuis l'API

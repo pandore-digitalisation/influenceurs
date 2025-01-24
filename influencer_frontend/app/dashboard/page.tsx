@@ -3,35 +3,11 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  DropdownMenuCheckboxItem,
-  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import {
@@ -47,12 +23,11 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
-import { profile, table } from "console";
+import { LogOut } from "lucide-react";
 
 export default function Dashboard() {
   const BASE_URL = "http://localhost:3000";
-  // const BASE_URL = "https://influenceur-list.onrender.com"";
+  // const BASE_URL = "https://influenceurs.onrender.com";
 
   const [user, setUser] = useState<any>(null);
   const [lists, setLists] = useState<any[]>([]);
@@ -171,7 +146,6 @@ export default function Dashboard() {
 
       localStorage.removeItem("auth_token");
       sessionStorage.clear();
-
       window.location.href = "/login";
     } catch (error) {
       console.error("Erreur pendant la déconnexion:", error);
@@ -244,150 +218,152 @@ export default function Dashboard() {
             </div>
           </span>
           {/* <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" /> */}
-          <span className="flex h-screen overflow-hidden">
-            <aside
-              className={`bg-[#FAFAFA] text-[#000000] transition-all duration-300 ${
-                sidebarExpanded ? "w-64" : "w-16"
-              }`}
-            >
-              <div className="p-4 flex items-center justify-between">
-                <span
-                  className={`${
-                    !sidebarExpanded ? "hidden" : "block"
-                  } text-lg font-semibold`}
-                >
-                  Mes Listes
-                </span>
-                <button
-                  onClick={toggleSidebar}
-                  className="text-[#D9E4FF] focus:outline-none hover:bg-gray-700 p-2 rounded"
-                >
-                  {sidebarExpanded ? "←" : "→"}
-                </button>
-              </div>
-              <ul className="space-y-2 p-4">
-                {lists.length > 0 ? (
-                  lists.map((list) => (
-                    <li
-                      key={list._id}
-                      className={`p-2 cursor-pointer hover:bg-[#F4F4F5] rounded ${
-                        selectedListId === list._id ? "bg-[#F4F4F5]" : ""
-                      }`}
-                      onClick={() => handleSelectList(list)}
-                    >
-                      {sidebarExpanded ? list.name : list.name[0]}{" "}
-                      {/* Affichage compact */}
-                    </li>
-                  ))
-                ) : (
-                  <li>Aucune liste disponible.</li>
-                )}
-              </ul>
-            </aside>
-            {/* Main Content */}
-            <main
-              className={`flex-1 ml-${
-                sidebarExpanded ? "64" : "16"
-              } transition-all duration-300 p-4 pt-0 overflow-y-auto`}
-            >
-              <h2 className="text-2xl font-bold mb-4">Profils sélectionnés</h2>
-
-              {selectedProfiles.length > 0 ? (
-                <div className="relative overflow-x-auto border sm:rounded-lg">
-                  <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                      <tr>
-                        <th scope="col" className="p-4">
-                          <div className="flex items-center">
-                            <input
-                              id="checkbox-all-search"
-                              type="checkbox"
-                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              htmlFor="checkbox-all-search"
-                              className="sr-only"
-                            >
-                              checkbox
-                            </label>
-                          </div>
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                          Name
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                          Followers
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                          Following
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                          Plateform
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                          Url
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedProfiles.map(
-                        (profile: {
-                          _id: string;
-                          name: string;
-                          plateform: string;
-                          followers: string;
-                          posts: string;
-                          following: string;
-                          profileUrl: string;
-                        }) => (
-                          <tr className="bg-white border-b hover:bg-gray-50">
-                            <td className="w-4 p-4">
-                              <div className="flex items-center">
-                                <input
-                                  id="checkbox-table-search-1"
-                                  type="checkbox"
-                                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                />
-                                <label
-                                  htmlFor="checkbox-table-search-1"
-                                  className="sr-only"
-                                >
-                                  checkbox
-                                </label>
-                              </div>
-                            </td>
-                            <th
-                              scope="row"
-                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                            >
-                              {profile.name}
-                            </th>
-                            <td className="px-6 py-4">{profile.followers}</td>
-                            <td className="px-6 py-4">{profile.following}</td>
-                            <td className="px-6 py-4">{profile.plateform}</td>
-                            <td className="px-6 py-4">
-                              <a
-                                href={profile.profileUrl}
-                                target="_blank"
-                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                              >
-                                v
-                              </a>
-                            </td>
-                          </tr>
-                        )
-                      )}{" "}
-                    </tbody>{" "}
-                  </table>
+            <span className="flex h-screen overflow-hidden">
+              <aside
+                className={`bg-[#FAFAFA] text-[#000000] transition-all duration-300 ${
+                  sidebarExpanded ? "w-64" : "w-16"
+                }`}
+              >
+                <div className="p-4 flex items-center justify-between">
+                  <span
+                    className={`${
+                      !sidebarExpanded ? "hidden" : "block"
+                    } text-lg font-semibold`}
+                  >
+                    Mes Listes
+                  </span>
+                  <button
+                    onClick={toggleSidebar}
+                    className="text-[#D9E4FF] focus:outline-none hover:bg-gray-700 p-2 rounded"
+                  >
+                    {sidebarExpanded ? "←" : "→"}
+                  </button>
                 </div>
-              ) : (
-                <p>
-                  Sélectionnez une liste pour afficher les profils associés.
-                </p>
-              )}
-            </main>
-          </span>
-        </div>
+                <ul className="space-y-2 p-4">
+                  {lists.length > 0 ? (
+                    lists.map((list) => (
+                      <li
+                        key={list._id}
+                        className={`p-2 cursor-pointer hover:bg-[#F4F4F5] rounded ${
+                          selectedListId === list._id ? "bg-[#F4F4F5]" : ""
+                        }`}
+                        onClick={() => handleSelectList(list)}
+                      >
+                        {sidebarExpanded ? list.name : list.name[0]}{" "}
+                        {/* Affichage compact */}
+                      </li>
+                    ))
+                  ) : (
+                    <li>Aucune liste disponible.</li>
+                  )}
+                </ul>
+              </aside>
+              {/* Main Content */}
+              <main
+                className={`flex-1 ml-${
+                  sidebarExpanded ? "64" : "16"
+                } transition-all duration-300 p-4 pt-0 overflow-y-auto`}
+              >
+                <h2 className="text-2xl font-bold mb-4">
+                  Profils sélectionnés
+                </h2>
+
+                {selectedProfiles.length > 0 ? (
+                  <div className="relative overflow-x-auto border sm:rounded-lg">
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                      <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <tr>
+                          <th scope="col" className="p-4">
+                            <div className="flex items-center">
+                              <input
+                                id="checkbox-all-search"
+                                type="checkbox"
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                              />
+                              <label
+                                htmlFor="checkbox-all-search"
+                                className="sr-only"
+                              >
+                                checkbox
+                              </label>
+                            </div>
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Name
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Followers
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Following
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Plateform
+                          </th>
+                          <th scope="col" className="px-6 py-3">
+                            Url
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {selectedProfiles.map(
+                          (profile: {
+                            _id: string;
+                            name: string;
+                            plateform: string;
+                            followers: string;
+                            posts: string;
+                            following: string;
+                            profileUrl: string;
+                          }) => (
+                            <tr className="bg-white border-b hover:bg-gray-50">
+                              <td className="w-4 p-4">
+                                <div className="flex items-center">
+                                  <input
+                                    id="checkbox-table-search-1"
+                                    type="checkbox"
+                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                  />
+                                  <label
+                                    htmlFor="checkbox-table-search-1"
+                                    className="sr-only"
+                                  >
+                                    checkbox
+                                  </label>
+                                </div>
+                              </td>
+                              <th
+                                scope="row"
+                                className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                              >
+                                {profile.name}
+                              </th>
+                              <td className="px-6 py-4">{profile.followers}</td>
+                              <td className="px-6 py-4">{profile.following}</td>
+                              <td className="px-6 py-4">{profile.plateform}</td>
+                              <td className="px-6 py-4">
+                                <a
+                                  href={profile.profileUrl}
+                                  target="_blank"
+                                  className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                                >
+                                  v
+                                </a>
+                              </td>
+                            </tr>
+                          )
+                        )}{" "}
+                      </tbody>{" "}
+                    </table>
+                  </div>
+                ) : (
+                  <p>
+                    Sélectionnez une liste pour afficher les profils associés.
+                  </p>
+                )}
+              </main>
+            </span>
+          </div>
       </SidebarInset>
     </SidebarProvider>
   );
