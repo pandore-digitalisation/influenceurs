@@ -49,15 +49,6 @@ function injectButton(platform) {
     targetElement = getElementByXPath(tiktokXPatch);
   }
 
-  // if (!targetElement) {
-  //   console.error(`Target element not found for ${platform}`);
-  // } else {
-  //   console.log(`Target element found for ${platform}:`, targetElement);
-  // }
-
-  // const scrapeBtn = document.getElementById("getData");
-  //   console.log("scrape btn: ", scrapeBtn);
-
   // Éviter d'injecter plusieurs fois
   if (document.getElementById("getData")) return;
 
@@ -86,20 +77,19 @@ function injectButton(platform) {
   button.style.cursor = "pointer";
   button.style.marginTop = "10px";
 
-  // Ajouter les styles hover
   button.addEventListener("mouseenter", () => {
     button.style.backgroundColor =
       platform === "X"
-        ? "#1a91da" // Couleur plus sombre pour X
+        ? "#1a91da"
         : platform === "Instagram"
-        ? "#c82357" // Couleur plus sombre pour Instagram
+        ? "#c82357"
         : platform === "Facebook"
-        ? "#155cbd" // Couleur plus sombre pour Facebook
+        ? "#155cbd"
         : platform === "LinkedIn"
         ? "#005f8e"
         : platform === "TikTok"
-        ? "#EA284E" // Couleur plus sombre pour LinkedIn
-        : "#333"; // Couleur plus sombre par défaut
+        ? "#EA284E"
+        : "#333";
   });
 
   button.addEventListener("mouseleave", () => {
@@ -117,14 +107,12 @@ function injectButton(platform) {
         : "#000";
   });
 
-  // Ajouter le bouton au bon endroit
   targetElement.appendChild(button);
 
-  // Ajouter une action au clic
   button.addEventListener("click", () => {
     console.log(`Fetching ${platform} data...`);
 
-    // Envoyer un message au background script pour qu'il utilise chrome.tabs
+    
     chrome.runtime.sendMessage(
       { action: "fetchData", platform: platform },
       (response) => {
@@ -132,7 +120,6 @@ function injectButton(platform) {
       }
     );
 
-    // Modifier le texte du bouton pendant l'exécution
     button.textContent = "Getting...";
   });
 }
@@ -152,7 +139,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// Fonction pour observer les modifications du DOM
 function observeDOM(platform) {
   const observer = new MutationObserver(() => {
     injectButton(platform);
@@ -197,16 +183,13 @@ window.addEventListener("message", function (event) {
     });
   }
 
-  // Traitement du message reçu
   const message = event.data;
   if (message.action === "logoutUser") {
     // Logique pour déconnecter l'utilisateur dans l'extension
     console.log("Déconnexion de l'utilisateur dans l'extension");
 
-    // Exemple : effacer les données utilisateur dans l'extension
-    data = null; // Ou toute autre méthode pour gérer l'état de l'utilisateur
+    data = null;
 
-    // Notifier l'extension ou mettre à jour l'UI si nécessaire
     chrome.runtime.sendMessage({ action: "logoutUser" });
   }
 });

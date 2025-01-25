@@ -1,8 +1,8 @@
 (async () => {
   console.log("Running script for Instagram...");
 
-  const BASE_URL = "https://influenceurs.onrender.com";
-  // const BASE_URL = "http://localhost:3000";
+  // const BASE_URL = "https://influenceurs.onrender.com";
+  const BASE_URL = "http://localhost:3000";
 
   // Helper function to evaluate an XPath expression and return nodes
   function evaluateXPath(xpath, context = document) {

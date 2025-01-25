@@ -50,6 +50,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     // window.location.reload();
   }
 });
+
 // Bouton Télécharger CSV
 document.getElementById("downloadBtn").addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -100,7 +101,6 @@ function downloadCSV() {
 
 // Search functions
 document.addEventListener("DOMContentLoaded", async () => {
-  
   const searchInput = document.getElementById("searchInput");
   const platformSelect = document.getElementById("platformSelect");
   const dataContainer = document
@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function displayData(dataToShow) {
-    dataContainer.innerHTML = " "; // Vider le tableau
+    dataContainer.innerHTML = " ";
     if (dataToShow.length === 0) {
       const noDataMessage = document.createElement("tr");
       noDataMessage.innerHTML =
@@ -268,7 +268,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     exportToXlsButton.disabled = !selected;
   }
 
-  // // Exporter les données sélectionnées en CSV
   // Exporter les données sélectionnées en CSV
   function exportToCsv() {
     // Sélectionner uniquement les cases cochées
@@ -308,7 +307,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         )
         .join("\n");
 
-    // Créer un blob pour téléchargement
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -398,7 +396,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Charger les données initiales
   data = await fetchData();
   console.log(data);
-  filteredData = data; // Par défaut, toutes les données
+  filteredData = data;
   displayData(filteredData);
 
   // Ajouter des écouteurs pour les filtres
@@ -433,17 +431,10 @@ document.getElementById("loginBtn").addEventListener("click", () => {
 
 // Get user connected data
 document.addEventListener("DOMContentLoaded", () => {
-
   chrome.runtime.sendMessage({ action: "getUserData" }, (response) => {
     if (chrome.runtime.lastError) {
-      console.error(
-        "Erreur lors de la récupération des données utilisateur:"
-        // chrome.runtime.lastError.message
-      );
-      // fallbackToLocalStorage();
+      console.error("Erreur lors de la récupération des données utilisateur");
     } else if (response && response.userData) {
-      console.log("Données utilisateur récupérées :", response.userData);
-
       localStorage.setItem("userData", JSON.stringify(response.userData));
       localStorage.setItem("token", response.token);
       profil(response.userData, response.token);
@@ -461,53 +452,29 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
       );
-
-      // profil(response.userData, response.token);
     } else {
       console.log("Pas de données utilisateur");
-      // fallbackToLocalStorage();
-    }
-  });
 
-  chrome.runtime.onMessage.addListener((message) => {
-    if (message.action === "userLoggedOut") {
-      console.log(
-        "L'utilisateur a été déconnecté. Mise à jour de l'interface."
-      );
-
-      // Nettoyer les données locales
+      // Nettoyer les données locales si l'utilisateur n'est pas connecté
       localStorage.removeItem("userData");
       localStorage.removeItem("token");
-
-      // Mettre à jour l'interface utilisateur
-      document.getElementById("auth").innerHTML =
-        "<p>Vous êtes déconnecté. Veuillez vous reconnecter.</p>";
-
-      // Désactiver d'autres fonctionnalités si nécessaire
-      const createList = document.getElementById("createList");
-      if (createList) {
-        createList.disabled = true;
-      }
+      chrome.storage.local.clear(() => {
+        if (chrome.runtime.lastError) {
+          console.error(
+            "Erreur lors du nettoyage des données :",
+            chrome.runtime.lastError
+          );
+        } else {
+          console.log("Toutes les données utilisateur ont été nettoyées.");
+        }
+      });
     }
   });
-
-  // function fallbackToLocalStorage() {
-  //   const storedUserData = localStorage.getItem("userData");
-  //   const storedToken = localStorage.getItem("token");
-
-  //   if (storedUserData && storedToken) {
-  //     const userData = JSON.parse(storedUserData);
-  //     console.log("Fallback - Données utilisateur récupérées :", userData);
-  //     profil(userData, storedToken);
-  //   } else {
-  //     console.log("Aucune donnée utilisateur trouvée en fallback.");
-  //   }
-  // }
 
   function profil(user, token) {
     tokenGlobal = token;
     globalUserId = user?.data.userId;
-    console.log("global userid", globalUserId);
+    // console.log("global userid", globalUserId);
 
     const container = document.getElementById("auth");
     const createList = document.getElementById("createList");
@@ -521,7 +488,7 @@ document.addEventListener("DOMContentLoaded", () => {
     createList.disabled = false;
     // createProfileList.disabled = false;
 
-    console.log("token", token);
+    // console.log("token", token);
 
     container.innerHTML = `<span style="font-weight: bold; text-transform: uppercase; font-size:10px">${user?.data.name}</span>
 
@@ -533,7 +500,7 @@ document.addEventListener("DOMContentLoaded", () => {
           style="background-color: #9CA3AF; width: 25px; border-radius: 50%; align-items: center; cursor: pointe;"
         />
       </div>`;
-    console.log("Profil injecté avec succès :", user?.data);
+    // console.log("Profil injecté avec succès :", user?.data);
   }
 
   // Create list
@@ -559,8 +526,8 @@ document.addEventListener("DOMContentLoaded", () => {
         JSON.parse(localStorage.getItem("selectedData")) || [];
       const userData = JSON.parse(localStorage.getItem("userData"));
 
-      console.log("user data", userData);
-      console.log("selected data", selectedData);
+      // console.log("user data", userData);
+      // console.log("selected data", selectedData);
 
       if (selectedData.length === 0) {
         alert("Aucune donnée sélectionnée pour créer une liste.");
@@ -597,7 +564,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // GEt token from localstorage
   const token = localStorage.getItem("token");
-  console.log("tokeeeee", token);
+  // console.log("tokeeeee", token);
   const connectedUserData = localStorage.getItem("userData");
   const data = JSON.parse(connectedUserData);
 
@@ -612,7 +579,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch(`${BASE_URL}/lists/user/${connectedUserId}`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${token}`, // Authentification si nécessaire
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     })
@@ -626,7 +593,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Listes récupérées :", data);
         lists = data; // Stocker les données récupérées
         populateListFilter(); // Remplir le menu déroulant
-        displayProfiles(lists.flatMap((list) => list.profiles)); // Afficher tous les profils par défaut
+        displayProfiles(lists.flatMap((list) => list.profiles));
       })
       .catch((error) => {
         console.error("Erreur lors de la récupération des listes :", error);
@@ -637,11 +604,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Fonction pour remplir le menu déroulant
   function populateListFilter() {
-    console.log("Listes pour le filtre :", lists); // Vérification des données
+    console.log("Listes pour le filtre :", lists);
     lists.forEach((list) => {
       const option = document.createElement("option");
-      option.value = list._id; // Assurez-vous que `list.id` est correct
-      option.textContent = list.name; // Assurez-vous que `list.name` est correct
+      option.value = list._id;
+      option.textContent = list.name;
       listFilter.appendChild(option);
     });
   }
