@@ -27,7 +27,7 @@ import { LogOut } from "lucide-react";
 
 export default function Dashboard() {
   // const BASE_URL = "http://localhost:3000";
-  const BASE_URL = "https://influenceur-list.onrender.com";
+  const BASE_URL = "https://influenceur-list.onrender.com/";
 
   const [user, setUser] = useState<any>(null);
   const [lists, setLists] = useState<any[]>([]);
