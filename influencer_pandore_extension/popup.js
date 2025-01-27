@@ -51,61 +51,59 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// Bouton Télécharger CSV
-document.getElementById("downloadBtn").addEventListener("click", () => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.scripting.executeScript({
-      target: { tabId: tabs[0].id },
-      function: downloadCSV,
-    });
-  });
-});
+// // Bouton Télécharger CSV
+// document.getElementById("downloadBtn").addEventListener("click", () => {
+//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//     chrome.scripting.executeScript({
+//       target: { tabId: tabs[0].id },
+//       function: downloadCSV,
+//     });
+//   });
+// });
 
-function downloadCSV() {
-  const storedData = JSON.parse(localStorage.getItem("exportedData") || "[]");
+// function downloadCSV() {
+//   const storedData = JSON.parse(localStorage.getItem("exportedData") || "[]");
 
-  if (!storedData.length || storedData.length === 0) {
-    alert("Aucune donnée disponible pour téléchargement.");
-    return;
-  }
+//   if (!storedData.length || storedData.length === 0) {
+//     alert("Aucune donnée disponible pour téléchargement.");
+//     return;
+//   }
 
-  const headers = Object.keys(storedData[0]);
-  const csvContent =
-    headers.join(",") +
-    "\n" +
-    storedData
-      .map((row) =>
-        headers
-          .map((header) => `"${(row[header] || "").replace(/"/g, '""')}"`)
-          .join(",")
-      )
-      .join("\n");
+//   const headers = Object.keys(storedData[0]);
+//   const csvContent =
+//     headers.join(",") +
+//     "\n" +
+//     storedData
+//       .map((row) =>
+//         headers
+//           .map((header) => `"${(row[header] || "").replace(/"/g, '""')}"`)
+//           .join(",")
+//       )
+//       .join("\n");
 
-  try {
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
+//   try {
+//     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+//     const url = URL.createObjectURL(blob);
 
-    // Téléchargement du fichier
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `data_export_${new Date().toISOString().slice(0, 10)}.csv`;
-    link.click();
+//     // Téléchargement du fichier
+//     const link = document.createElement("a");
+//     link.href = url;
+//     link.download = `data_export_${new Date().toISOString().slice(0, 10)}.csv`;
+//     link.click();
 
-    // Nettoyage de l'URL blob
-    URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error("Erreur lors de l'exportation des données en CSV :", error);
-    alert("Une erreur s'est produite lors de l'exportation des données.");
-  }
-}
+//     // Nettoyage de l'URL blob
+//     URL.revokeObjectURL(url);
+//   } catch (error) {
+//     console.error("Erreur lors de l'exportation des données en CSV :", error);
+//     alert("Une erreur s'est produite lors de l'exportation des données.");
+//   }
+// }
 
 // Search functions
 document.addEventListener("DOMContentLoaded", async () => {
   const searchInput = document.getElementById("searchInput");
   const platformSelect = document.getElementById("platformSelect");
-  const dataContainer = document
-    .getElementById("dataTable")
-    .querySelector("tbody");
+  const dataContainer = document.getElementById("dataTable").querySelector("tbody");
 
   const loader = document.getElementById("loader");
   const exportToCsvButton = document.getElementById("exportCsvBtn");
@@ -237,7 +235,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.querySelectorAll(".dataCheckbox").forEach((checkbox) => {
         checkbox.checked = isChecked;
       });
-      handleSelectionChange(); // Mettez à jour la sélection globale
+      handleSelectionChange();
     });
   }
 
@@ -264,8 +262,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   function updateExportButtonState() {
     const selected =
       document.querySelectorAll(".dataCheckbox:checked").length > 0;
-    exportToCsvButton.disabled = !selected;
-    exportToXlsButton.disabled = !selected;
+
+    if(exportToCsvButton) {
+      exportToCsvButton.disabled = !selected;
+    }
+
+    if(exportToXlsButton) {
+      exportToXlsButton.disabled = !selected;
+    }
+   
   }
 
   // Exporter les données sélectionnées en CSV
@@ -552,6 +557,8 @@ document.addEventListener("DOMContentLoaded", () => {
           alert("Liste créée avec succès.");
           // Vider les données sélectionnées
           localStorage.removeItem("selectedData");
+          window.location.reload();
+
         } else {
           const error = await response.json();
           alert(`Erreur : ${error.message}`);
@@ -574,8 +581,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const profilesTableBody = document.querySelector("#profilesTable tbody");
   const listsLoader = document.getElementById("listsLoader");
 
+  const exportListToCsvButton = document.getElementById("exportListCsvBtn");
+  const exportListToXlsButton = document.getElementById("exportListXlsBtn");
+  const selectAllListCheckbox = document.getElementById("selectListAll");
+
   let lists = [];
-  // listsLoader.style.display = "block";
+  
+  listsLoader.style.display = "block";
 
 
   // Fonction pour récupérer les listes depuis l'API
@@ -595,10 +607,11 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .then((data) => {
         console.log("Listes récupérées :", data);
+        listsLoader.style.display = "none";
+
         lists = data; // Stocker les données récupérées
         populateListFilter(); // Remplir le menu déroulant
         displayProfiles(lists.flatMap((list) => list.profiles));
-        // listsLoader.style.display = "none";
       })
       .catch((error) => {
         console.error("Erreur lors de la récupération des listes :", error);
@@ -658,7 +671,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const row = document.createElement("tr");
       row.innerHTML = `
-        <td><input type="checkbox" class="dataCheckbox" data-index="${key}" style="margin-right: 25px;"/> ${
+        <td><input type="checkbox" class="listDataCheckbox" data-index="${key}" style="margin-right: 25px;"/> ${
         key + 1
       }</td>
         <td>${profile.name}</td>
