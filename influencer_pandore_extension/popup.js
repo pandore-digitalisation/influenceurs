@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <td>${expandFollowingValue || expandConnectionValue || 0}</td>
         <td>${item.plateform}</td>
          <td><a href="${item.profileUrl}" target="_blank" >
-         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
             <path d="M9.99999 18.3333C14.6024 18.3333 18.3333 14.6024 18.3333 9.99999C18.3333 5.39762 14.6024 1.66666 9.99999 1.66666C5.39762 1.66666 1.66666 5.39762 1.66666 9.99999C1.66666 14.6024 5.39762 18.3333 9.99999 18.3333Z" stroke="url(#paint0_linear_105_453)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M6.66667 2.5H7.5C5.875 7.36667 5.875 12.6333 7.5 17.5H6.66667" stroke="url(#paint1_linear_105_453)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M12.5 2.5C14.125 7.36667 14.125 12.6333 12.5 17.5" stroke="url(#paint2_linear_105_453)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -514,8 +514,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   createList.addEventListener("click", () => {
     const createListForm = document.getElementById("createListForm");
+    const dataTableVisible = document.getElementById("dataTable");
+    const profilesTableVisile = document.getElementById("profilesTable");
+    const searchInputVisible = document.getElementById("searchInput");
+    const platformSelectVisible = document.getElementById("platformSelect");
+    const listFilterVisible = document.getElementById("listFilter");
     createListForm.style.display =
       createListForm.style.display === "none" ? "flex" : "none";
+    dataTableVisible.style.display =
+      dataTableVisible.style.display === "none" ? "table" : "none";
+    profilesTableVisile.style.display =
+      profilesTableVisile.style.display === "none" ? "table" : "none";
+    searchInputVisible.disabled =
+      searchInputVisible.disabled === true ? false : true;
+    platformSelectVisible.disabled = platformSelectVisible.disabled === true ? false : true;
+    listFilterVisible.disabled = listFilterVisible.disabled == true ? false: true;
   });
 
   document
@@ -615,8 +628,6 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .catch((error) => {
         console.error("Erreur lors de la récupération des listes :", error);
-        const profilesList = document.getElementById("api-profiles-list");
-        profilesList.innerHTML = `<p style="color: red;">Erreur lors du chargement des listes.</p>`;
       });
   }
 
@@ -633,10 +644,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Fonction pour afficher les profils associés
   function displayProfiles(profiles) {
-    profilesTableBody.innerHTML = ""; // Réinitialise les lignes du tableau
+    profilesTableBody.innerHTML = "";
     if (profiles.length === 0) {
+      const noDataMessage = document.createElement("tr");
       profilesTableBody.innerHTML =
-        '<tr><td colspan="2">Aucun profil trouvé.</td></tr>';
+        '<td colspan="6" style="text-align: center;"><div class="alert alert-danger" role="alert">Aucune donnée trouvée.</div></td>';
+      noDataMessage.appendChild(noDataMessage);
       return;
     }
     console.log("Profils à afficher :", profiles); // Vérification des profils affichés
@@ -751,7 +764,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     filteredListData = selectedCheckboxes.map((checkbox) => {
       const index = parseInt(checkbox.getAttribute("data-index"), 10);
-      return lists.flatMap((list) => list.profiles)[index];
+      return filteredListData[index];
+      // return lists.flatMap((list) => list.profiles)[index];
     });
     updateListExportButtonState();
   }
@@ -772,12 +786,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // // Exporter les données sélectionnées en CSV
   function convertToCSV(data) {
     const headers = ["Nom", "Followers", "Following", "Plateforme", "URL"];
+    console.log("data", data);
     const rows = data.map((profile) => [
       profile.name,
-      profile.expandFollowersListValue || 0,
-      profile.expandFollowingListValue ||
-        profile.expandConnectionListValue ||
-        0,
+      profile.followers || 0,
+      profile.following || profile.connection || 0,
       profile.plateform,
       profile.profileUrl,
     ]);
@@ -802,36 +815,36 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Fonction utilitaire pour convertir les données en Excel (XLSX)
-function convertToExcel(data) {
-  const headers = ["Nom", "Followers", "Following", "Plateforme", "URL"];
-  const rows = data.map(profile => [
-    profile.name,
-    expandFollowersListValue || 0,
-    expandFollowingListValue || expandConnectionListValue || 0,
-    profile.plateform,
-    profile.profileUrl,
-  ]);
+  function convertToExcel(data) {
+    const headers = ["Nom", "Followers", "Following", "Plateforme", "URL"];
+    const rows = data.map((profile) => [
+      profile.name,
+      profile.followers || 0,
+      profile.following || profile.connection || 0,
+      profile.plateform,
+      profile.profileUrl,
+    ]);
 
-  // Ajouter les données à une feuille Excel
-  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Profiles");
+    // Ajouter les données à une feuille Excel
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Profiles");
 
-  return XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-}
+    return XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  }
 
-// Fonction pour télécharger le fichier Excel
-function downloadExcel(filename, data) {
-  const blob = new Blob([data], { type: "application/octet-stream" });
-  const link = document.createElement("a");
-  const url = URL.createObjectURL(blob);
-  link.setAttribute("href", url);
-  link.setAttribute("download", filename);
-  link.style.visibility = "hidden";
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
+  // Fonction pour télécharger le fichier Excel
+  function downloadExcel(filename, data) {
+    const blob = new Blob([data], { type: "application/octet-stream" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 
   exportListToCsvButton.addEventListener("click", () => {
     const csvData = convertToCSV(filteredListData);
@@ -854,11 +867,13 @@ function downloadExcel(filename, data) {
       if (selectedList) {
         console.log("Liste sélectionnée :", selectedList); // Vérification de la liste
         displayProfiles(selectedList.profiles || []);
+        filteredListData = selectedList.profiles || [];
       }
     } else {
       // Afficher tous les profils si aucune liste n'est sélectionnée
       const allProfiles = lists.flatMap((list) => list.profiles || []);
       displayProfiles(allProfiles);
+      filteredListData = allProfiles;
     }
   });
 
