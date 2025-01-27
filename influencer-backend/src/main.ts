@@ -8,7 +8,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3001',
-      'https://pandoreinfluencerfrontend.vercel.app/',
+      'https://pandoreinfluencerfrontend.vercel.app',
       'chrome-extension://dnkjkcnopgdjhmkhapenjopjpiikaljc',
       'https://www.instagram.com',
       'chrome-extension://kabjhgpchbndlaignhbiibcdfpcddpml',
