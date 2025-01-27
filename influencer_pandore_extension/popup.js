@@ -1,5 +1,7 @@
-// const BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
+// const BASE_URL = "https://influenceur-list.onrender.com/platforms/all";
+// const FRONT_BASE_URL = "https://pandoreinfluencerfrontend-nqha34k5g.vercel.app";
 const FRONT_BASE_URL = "http://localhost:3001";
+
 const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 let globalUserId;
