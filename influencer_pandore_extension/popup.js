@@ -1,4 +1,4 @@
-// const BASE_URL = "https://influenceur-list.onrender.com/platforms/all";
+// const BASE_URL = "https://influenceur-list.onrender.com";
 // const FRONT_BASE_URL = "https://pandoreinfluencerfrontend-nqha34k5g.vercel.app";
 const FRONT_BASE_URL = "http://localhost:3001";
 
@@ -588,13 +588,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
   // console.log("tokeeeee", token);
   const connectedUserData = localStorage.getItem("userData");
-  const data = JSON.parse(connectedUserData);
+  const listsLoader = document.getElementById("listsLoader");
+  const profilesTableBody = document.querySelector("#profilesTable tbody");
 
-  const connectedUserId = data.data.userId;
+  const connectedData = JSON.parse(connectedUserData);
+
+  if (connectedData == null) {
+    console.log("user not connected")
+    listsLoader.style.display = "none";
+    const userNotConnected = document.createElement("tr");
+    profilesTableBody.innerHTML = '<td colspan="6" style="text-align: center;"><div class="alert alert-warning" role="alert">Veuillez-vous connecter pour voire vos listes</div></td>';
+    userNotConnected.appendChild(userNotConnected);
+    return;
+
+  }
+
+  const connectedUserId = connectedData.data.userId;
 
   const listFilter = document.getElementById("listFilter");
-  const profilesTableBody = document.querySelector("#profilesTable tbody");
-  const listsLoader = document.getElementById("listsLoader");
 
   const exportListToCsvButton = document.getElementById("exportListCsvBtn");
   const exportListToXlsButton = document.getElementById("exportListXlsBtn");
@@ -630,6 +641,7 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .catch((error) => {
         console.error("Erreur lors de la récupération des listes :", error);
+        listsLoader.style.display = "none";
       });
   }
 
@@ -649,12 +661,11 @@ document.addEventListener("DOMContentLoaded", () => {
     profilesTableBody.innerHTML = "";
     if (profiles.length === 0) {
       const noDataMessage = document.createElement("tr");
-      profilesTableBody.innerHTML =
-        '<td colspan="6" style="text-align: center;"><div class="alert alert-danger" role="alert">Aucune donnée trouvée.</div></td>';
+      profilesTableBody.innerHTML = '<td colspan="6" style="text-align: center;"><div class="alert alert-danger" role="alert">Aucune donnée trouvée.</div></td>';
       noDataMessage.appendChild(noDataMessage);
       return;
     }
-    console.log("Profils à afficher :", profiles); // Vérification des profils affichés
+    console.log("Profils à afficher :", profiles);
     profiles.forEach((profile, key) => {
       const followersList = profile.followers;
       const followingList = profile.following;

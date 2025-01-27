@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('/googleb92384401054d420.html')
+  getGoogleLinck(): string {
+    return this.appService.getHello();
+  }
 }

@@ -6,7 +6,7 @@ import React from "react";
 
 
 const BASE_URL = "http://localhost:3000";
-// const BASE_URL = "https://influenceurs.onrender.com";
+// const BASE_URL = "https://influenceur-list.onrender.com";
 
 export default function Login() {
   const handleGoogleLogin = () => {
