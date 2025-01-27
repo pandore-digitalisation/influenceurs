@@ -9,19 +9,15 @@ async function bootstrap() {
     origin: [
       'http://localhost:3001',
       'https://pandoreinfluencerfrontend.vercel.app',
-      'chrome-extension://dnkjkcnopgdjhmkhapenjopjpiikaljc',
       'https://www.instagram.com',
-      'chrome-extension://kabjhgpchbndlaignhbiibcdfpcddpml',
       'https://www.facebook.com',
-      'chrome-extension://poojmfapemijoppakejdkcpjgefmldgb',
       'https://www.linkedin.com',
-      'chrome-extension://mmbnkjbihbociakkafncmhkffhniaiff',
       'https://x.com',
-      'chrome-extension://pkahcggjmbhmpgmdhkemgfnblpjidgpa',
       'https://www.tiktok.com',
+      'chrome-extension://dnkjkcnopgdjhmkhapenjopjpiikaljc',
     ], // Liste des origines autorisées
-    methods: ['GET,POST, DELETE, PATCH'], // Méthodes HTTP autorisées
-    allowedHeaders: ['Content-Type, Authorization'], // En-têtes autorisés
+    methods: ['GET', 'POST', 'DELETE', 'PATCH'], // Méthodes HTTP autorisées
+    allowedHeaders: ['Content-Type', 'Authorization'], // En-têtes autorisés
     credentials: true,
   });
 
