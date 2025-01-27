@@ -103,7 +103,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 document.addEventListener("DOMContentLoaded", async () => {
   const searchInput = document.getElementById("searchInput");
   const platformSelect = document.getElementById("platformSelect");
-  const dataContainer = document.getElementById("dataTable").querySelector("tbody");
+  const dataContainer = document
+    .getElementById("dataTable")
+    .querySelector("tbody");
 
   const loader = document.getElementById("loader");
   const exportToCsvButton = document.getElementById("exportCsvBtn");
@@ -263,14 +265,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const selected =
       document.querySelectorAll(".dataCheckbox:checked").length > 0;
 
-    if(exportToCsvButton) {
+    if (exportToCsvButton) {
       exportToCsvButton.disabled = !selected;
     }
 
-    if(exportToXlsButton) {
+    if (exportToXlsButton) {
       exportToXlsButton.disabled = !selected;
     }
-   
   }
 
   // Exporter les données sélectionnées en CSV
@@ -409,8 +410,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   platformSelect.addEventListener("change", updateFilters);
 
   // Activer l'exportation des données
-  exportToCsvButton.addEventListener("click", exportToCsv);
-  exportToXlsButton.addEventListener("click", exportToExcel);
+  // exportToCsvButton.addEventListener("click", exportToCsv);
+  // exportToXlsButton.addEventListener("click", exportToExcel);
 
   async function updateFilters() {
     const searchValue = searchInput.value.toLowerCase();
@@ -558,7 +559,6 @@ document.addEventListener("DOMContentLoaded", () => {
           // Vider les données sélectionnées
           localStorage.removeItem("selectedData");
           window.location.reload();
-
         } else {
           const error = await response.json();
           alert(`Erreur : ${error.message}`);
@@ -586,9 +586,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const selectAllListCheckbox = document.getElementById("selectListAll");
 
   let lists = [];
-  
-  listsLoader.style.display = "block";
+  let filteredListData = [];
 
+  listsLoader.style.display = "block";
 
   // Fonction pour récupérer les listes depuis l'API
   function fetchProfiles() {
@@ -641,7 +641,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     console.log("Profils à afficher :", profiles); // Vérification des profils affichés
     profiles.forEach((profile, key) => {
-
       const followersList = profile.followers;
       const followingList = profile.following;
       const connectionList = profile.connection;
@@ -719,7 +718,130 @@ document.addEventListener("DOMContentLoaded", () => {
       // `;
       // profilesTableBody.appendChild(row);
     });
+    document.querySelectorAll(".listDataCheckbox").forEach((checkbox) => {
+      checkbox.addEventListener("change", handleListSelectionChange);
+    });
+
+    selectAllListCheckbox.addEventListener("change", handleListSelectAll);
+
+    selectAllListCheckbox.addEventListener("change", () => {
+      const isChecked = selectAllListCheckbox.checked;
+      document.querySelectorAll(".listDataCheckbox").forEach((checkbox) => {
+        checkbox.checked = isChecked;
+      });
+      handleListSelectionChange();
+    });
   }
+
+  function handleListSelectAll() {
+    const isListChecked = selectAllListCheckbox.checked;
+    const checkboxesList = document.querySelectorAll(".listDataCheckbox");
+    checkboxesList.forEach((checkbox) => {
+      checkbox.checked = isListChecked;
+    });
+    updateListExportButtonState();
+    // saveToLocalStorage();
+  }
+
+  // / Fonction pour gérer la sélection et filtrer les données exportées
+  function handleListSelectionChange() {
+    const selectedCheckboxes = Array.from(
+      document.querySelectorAll(".listDataCheckbox:checked")
+    );
+
+    filteredListData = selectedCheckboxes.map((checkbox) => {
+      const index = parseInt(checkbox.getAttribute("data-index"), 10);
+      return lists.flatMap((list) => list.profiles)[index];
+    });
+    updateListExportButtonState();
+  }
+
+  function updateListExportButtonState() {
+    const selectedList =
+      document.querySelectorAll(".listDataCheckbox:checked").length > 0;
+
+    if (exportListToCsvButton) {
+      exportListToCsvButton.disabled = !selectedList;
+    }
+
+    if (exportListToXlsButton) {
+      exportListToXlsButton.disabled = !selectedList;
+    }
+  }
+
+  // // Exporter les données sélectionnées en CSV
+  function convertToCSV(data) {
+    const headers = ["Nom", "Followers", "Following", "Plateforme", "URL"];
+    const rows = data.map((profile) => [
+      profile.name,
+      profile.expandFollowersListValue || 0,
+      profile.expandFollowingListValue ||
+        profile.expandConnectionListValue ||
+        0,
+      profile.plateform,
+      profile.profileUrl,
+    ]);
+
+    // Construire le contenu CSV
+    const csvContent = [headers, ...rows]
+      .map((row) => row.map((item) => `"${item}"`).join(","))
+      .join("\n");
+    return csvContent;
+  }
+
+  function downloadCSV(filename, data) {
+    const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", filename);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  // Fonction utilitaire pour convertir les données en Excel (XLSX)
+function convertToExcel(data) {
+  const headers = ["Nom", "Followers", "Following", "Plateforme", "URL"];
+  const rows = data.map(profile => [
+    profile.name,
+    expandFollowersListValue || 0,
+    expandFollowingListValue || expandConnectionListValue || 0,
+    profile.plateform,
+    profile.profileUrl,
+  ]);
+
+  // Ajouter les données à une feuille Excel
+  const worksheet = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Profiles");
+
+  return XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+}
+
+// Fonction pour télécharger le fichier Excel
+function downloadExcel(filename, data) {
+  const blob = new Blob([data], { type: "application/octet-stream" });
+  const link = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+  link.setAttribute("href", url);
+  link.setAttribute("download", filename);
+  link.style.visibility = "hidden";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+  exportListToCsvButton.addEventListener("click", () => {
+    const csvData = convertToCSV(filteredListData);
+    downloadCSV("profiles_list.csv", csvData);
+  });
+
+  exportListToXlsButton.addEventListener("click", () => {
+    const excelData = convertToExcel(filteredListData);
+    downloadExcel("profiles_list.xlsx", excelData);
+  });
 
   // Gestion du changement de filtre
   listFilter.addEventListener("change", () => {
@@ -742,5 +864,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Appel initial pour récupérer les données et initialiser le filtre
   fetchProfiles();
-
 });
