@@ -44,6 +44,17 @@ export class ListController {
     return this.listService.create(userId, createListDto);
   }
 
+  // Route pour créer une liste par défaut pour un utilisateur
+  @UseGuards(JwtAuthGuard)
+  @Post('default')
+  async createDefaultForUser(@Req() req): Promise<List> {
+    const userId = req.user ? req.user.userId : '0';
+    if (!userId) {
+      throw new Error('User ID is missing');
+    }
+    return this.listService.createDefaultForUser(userId);
+  }
+
   // Route pour mettre à jour une liste en ajoutant ou supprimant des profils
   @Put(':id')
   async update(
@@ -67,47 +78,3 @@ export class ListController {
     return this.listService.delete(id);
   }
 }
-
-// import {
-//   Controller,
-//   Get,
-//   Post,
-//   Delete,
-//   Body,
-//   Param,
-//   Put,
-// } from '@nestjs/common';
-// import { ListService } from './list.service';
-
-// @Controller('lists')
-// export class ListController {
-//   constructor(private readonly listService: ListService) {}
-
-//   @Get()
-//   async findAll() {
-//     return this.listService.findAll();
-//   }
-
-//   @Get(':id')
-//   async findOne(@Param('id') id: string) {
-//     return this.listService.findOne(id);
-//   }
-
-//   @Post()
-//   async create(@Body() body: { name: string }) {
-//     return this.listService.create(body);
-//   }
-
-//   @Put(':id')
-//   async update(
-//     @Param('id') id: string,
-//     @Body() body: { name?: string; profiles?: string[] },
-//   ) {
-//     return this.listService.update(id, body);
-//   }
-
-//   @Delete(':id')
-//   async delete(@Param('id') id: string) {
-//     return this.listService.delete(id);
-//   }
-// }

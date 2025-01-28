@@ -1,8 +1,8 @@
-const BASE_URL = "https://influenceur-list.onrender.com";
+// const BASE_URL = "https://influenceur-list.onrender.com";
 const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
 // const FRONT_BASE_URL = "http://localhost:3001";
 
-// const BASE_URL = "http://localhost:3000";
+const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 let globalUserId;
 
@@ -597,7 +597,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("user not connected")
     listsLoader.style.display = "none";
     const userNotConnected = document.createElement("tr");
-    profilesTableBody.innerHTML = '<td colspan="6" style="text-align: center;"><div class="alert alert-warning" role="alert">Veuillez-vous connecter pour voire vos listes</div></td>';
+    profilesTableBody.innerHTML = '<td colspan="6" style="text-align: center;"><div class="alert alert-warning" role="alert">Veuillez-vous connecter pour voir vos listes.</div></td>';
     userNotConnected.appendChild(userNotConnected);
     return;
 

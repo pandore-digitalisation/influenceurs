@@ -27,6 +27,25 @@ export class ListService {
     return newList.save();
   }
 
+  async createDefaultForUser(userId: string): Promise<List> {
+    const existingDefaultList = await this.listModel
+      .findOne({ userId, name: 'Default List' })
+      .exec();
+
+    if (existingDefaultList) {
+      return existingDefaultList;
+    }
+
+    const defaultListData = {
+      name: 'Default List',
+      profiles: [],
+      userId,
+    };
+
+    const newList = new this.listModel(defaultListData);
+    return newList.save();
+  }
+
   async update(
     id: string,
     data: { name?: string; profiles?: { add?: string[]; remove?: string[] } },
@@ -36,28 +55,23 @@ export class ListService {
       throw new NotFoundException(`List with ID "${id}" not found`);
     }
 
-    // Mise à jour du nom si fourni
     if (data.name) {
       list.name = data.name;
     }
 
-    // Ajout des profils
     if (data.profiles?.add) {
       list.profiles = [...new Set([...list.profiles, ...data.profiles.add])];
     }
 
-    // Suppression des profils
     if (data.profiles?.remove) {
       list.profiles = list.profiles.filter(
         (profile) => !data.profiles.remove.includes(profile),
       );
     }
 
-    // Sauvegarde des modifications
     return list.save();
   }
 
-  // Get list by user id
   async getListsByUserId(userId: string): Promise<List[]> {
     return this.listModel.find({ userId }).exec();
   }

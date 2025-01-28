@@ -4,7 +4,6 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Activer CORS pour des origines spécifiques (exemple : Instagram et une extension Chrome)
   app.enableCors({
     origin: [
       'http://localhost:3001',
@@ -15,9 +14,9 @@ async function bootstrap() {
       'https://x.com',
       'https://www.tiktok.com',
       'chrome-extension://dnkjkcnopgdjhmkhapenjopjpiikaljc',
-    ], // Liste des origines autorisées
-    methods: ['GET,POST, DELETE, PATCH'], // Méthodes HTTP autorisées
-    allowedHeaders: ['Content-Type, Authorization'], // En-têtes autorisés
+    ],
+    methods: ['GET', 'POST', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type, Authorization'],
     credentials: true,
   });
 
