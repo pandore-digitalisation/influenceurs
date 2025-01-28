@@ -1,69 +1,65 @@
 {
-    "manifest_version": 3,
-    "name": "Aquizition",
-    "version": "1.0",
-    "description": "Get X, Instagram, Facebook, Linkedin, Tiktok page data and export in csv format",
-    "permissions": ["activeTab", "scripting", "storage", "tabs", "background"],
-    "host_permissions": [
-      "https://pandoreinfluencerfrontend.vercel.app/*",
-      "https://x.com/*",
-      "https://instagram.com/*",
-      "https://linkedin.com/*",
-      "https://www.tiktok.com/*",
-      "https://influenceur-list.onrender.com/*",
-      "http://127.0.0.1:5001/*",
-      "http://localhost:3001/",
-      "http://localhost:3000/",
-      "https://www.facebook.com/*"
-
-    ],
-    "background": {
-      "service_worker": "background.js"
+  "manifest_version": 3,
+  "name": "Aquizition",
+  "version": "1.0",
+  "description": "Get X, Instagram, Facebook, Linkedin, Tiktok page data and export in csv format",
+  "permissions": ["activeTab", "scripting", "storage", "tabs", "background"],
+  "host_permissions": [
+    "https://pandoreinfluencerfrontend.vercel.app/*",
+    "https://x.com/*",
+    "https://instagram.com/*",
+    "https://linkedin.com/*",
+    "https://www.tiktok.com/*",
+    "https://influenceur-list.onrender.com/*",
+    "http://127.0.0.1:5001/*",
+    "http://localhost:3001/",
+    "http://localhost:3000/",
+    "https://www.facebook.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://x.com/*"],
+      "js": ["scripts/content_x.js"]
     },
-    "action": {
-      "default_popup": "popup.html",
-      "default_icon": {
-        "16": "icons/icon16.png",
-        "48": "icons/icon48.png",
-        "128": "icons/icon128.png"
-      }
+    {
+      "matches": ["https://instagram.com/*"],
+      "js": ["scripts/content_instagram.js"]
     },
-    "content_scripts": [
-      {
-        "matches": ["https://x.com/*"],
-        "js": ["scripts/content_x.js"]
-      },
-      {
-        "matches": ["https://instagram.com/*"],
-        "js": ["scripts/content_instagram.js"]
-      },
-      {
-        "matches": ["https://www.facebook.com/*"],
-        "js": ["scripts/content_facebook.js"]
-      },
-      {
-        "matches": ["https://linkedin.com/*"],
-        "js": ["scripts/content_linkedin.js"]
-      },
-      {
-        "matches": ["https://tiktok.com/*"],
-        "js": ["scripts/content_tiktok.js"]
-      },
-      {
-        "matches": [
-          "https://www.facebook.com/*",
-          "https://www.instagram.com/*",
-          "https://www.linkedin.com/*",
-          "https://x.com/*",
-          "https://www.tiktok.com/*",
-          "http://localhost:3001/*",
-          "https://pandoreinfluencerfrontend.vercel.app/"
-
-        ],
-        "js": ["content.js"]
-      }
-    ],
-    "web_accessible_resources": [
+    {
+      "matches": ["https://www.facebook.com/*"],
+      "js": ["scripts/content_facebook.js"]
+    },
+    {
+      "matches": ["https://linkedin.com/*"],
+      "js": ["scripts/content_linkedin.js"]
+    },
+    {
+      "matches": ["https://tiktok.com/*"],
+      "js": ["scripts/content_tiktok.js"]
+    },
+    {
+      "matches": [
+        "https://www.facebook.com/*",
+        "https://www.instagram.com/*",
+        "https://www.linkedin.com/*",
+        "https://x.com/*",
+        "https://www.tiktok.com/*"
+      ],
+      "js": ["content.js"]
+    }
+  ],
+  "web_accessible_resources": [
     {
       "resources": ["scripts/content_facebook.js"],
       "matches": [
@@ -75,10 +71,9 @@
       ]
     }
   ],
-    "icons": {
-      "16": "icons/icon16.png",
-      "48": "icons/icon48.png",
-      "128": "icons/icon128.png"
-    }
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   }
-  
+}

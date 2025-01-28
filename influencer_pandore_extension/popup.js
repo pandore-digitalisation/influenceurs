@@ -5,7 +5,6 @@ const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
 const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 let globalUserId;
-
 // Bouton Scraper
 document.getElementById("scrapeBtn").addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
