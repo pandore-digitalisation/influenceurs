@@ -45,7 +45,14 @@ export default function Dashboard() {
     const token = searchParams.get("token");
 
     if (token) {
-      localStorage.setItem("auth_token", token);
+      // localStorage.setItem("auth_token", token);
+
+      // Envoi du token et des données utilisateur au sidebar
+      window.postMessage(
+        { action: "userLoggedIn", token: token },
+        window.location.origin
+      );
+
       const fetchUserData = async () => {
         try {
           const response = await fetch(`${BASE_URL}/auth/user`, {
@@ -202,7 +209,9 @@ export default function Dashboard() {
                 className="w-60 px-3 py-5 my-2"
                 style={{ marginLeft: "-210px" }}
               >
-                <div className="pb-5 text-sm font-semibold">{user?.data.email}</div>
+                <div className="pb-5 text-sm font-semibold">
+                  {user?.data.email}
+                </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   onClick={handleLogout}
