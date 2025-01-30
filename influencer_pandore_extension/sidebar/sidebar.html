@@ -11,58 +11,40 @@
 </head>
 
 <body>
-  <div id="header">
-    <span id="auth">
-      <button id="loginBtn type="button" class="btn btn-secondary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">Login</button>
-    </span>
-    <button id="close-sidebar-btn">-</button>
-  </div>
-  <div class="progress" style="height: 1px; margin-bottom: 15px;">
-    <div class="progress-bar w-0" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+  <button id="close-sidebar-btn">-</button>
+
+  <div id="welcome-screen" style="display: none; text-align: center;">
+    <h2>Bienvenue !</h2>
+    <p>Veuillez vous connecter pour continuer.</p>
+    <button class="ui small compact button" id="loginBtn">Login</button>
   </div>
 
-  <button class="ui button">Annuler</button>
-  
-  <div class="ui container" style="margin-top: 20px;">
-    <h2 class="ui header">Liste des utilisateurs</h2>
-    
-    <table class="ui celled unstackable table">
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Prénom</th>
-                <th>Email</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Doe</td>
-                <td>John</td>
-                <td>john.doe@example.com</td>
-                <td>
-                    <button class="ui primary button">Modifier</button>
-                    <button class="ui red button">Supprimer</button>
-                </td>
-            </tr>
-            <tr>
-                <td>Smith</td>
-                <td>Jane</td>
-                <td>jane.smith@example.com</td>
-                <td>
-                    <button class="ui primary button">Modifier</button>
-                    <button class="ui red button">Supprimer</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+  <div id="main-content" style="display: none;">
+    <div id="header">
+      <span id="auth">
+        <!-- <button class="ui small compact button" id="loginBtn">
+          Login
+        </button> -->
+      </span>
+      <!-- <button id="close-sidebar-btn">-</button> -->
+    </div>
+    <div class="ui divider" style="margin: 0px;"></div>
+
+    <section>
+      <span class="right">
+        <div>
+          <button class="ui small compact button" id="scrapeBtn">Obtenir</button>
+        </div>
+      </span>
+
+      <div>
+        ok
+      </div>
 
 
-  <section>
+    </section>
+  </div>
 
-
-  </section>
   <script src="sidebar.js"></script>
   <script src="../libs/bootstrap.bundle.min.js"></script>
   <script src="../libs/jquery-3.6.0.min.js"></script>

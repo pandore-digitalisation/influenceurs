@@ -30,10 +30,12 @@ function refreshSidebar() {
     if (result.auth_token) {
       tokenGlobal = result.auth_token;
       console.log("Token récupéré :", tokenGlobal);
+      showMainContent();
       fetchAllSidebarData(tokenGlobal);
     } else {
       console.warn("Aucun token trouvé, utilisateur déconnecté.");
       displayLoggedOutState();
+      showWelcomeScreen();
     }
   });
 }
@@ -64,6 +66,7 @@ async function fetchUserData(token) {
     console.log("Données utilisateur :", data);
     displayUserData(data);
   } catch (error) {
+    showWelcomeScreen();
     return console.error("Erreur récupération utilisateur :", error);
   }
 }
@@ -120,14 +123,24 @@ function displayOtherSidebarData(data) {
 
 // Affichage de l'état déconnecté
 function displayLoggedOutState() {
-  const userProfil = document.getElementById("auth");
+  const userProfil = document.getElementById("loginBtn");
   // if (userProfil) userProfil.innerHTML = `<p>🔒 Utilisateur déconnecté.</p>`;
   if(userProfil) {
-    userProfil.style.display ="block";
+    userProfil.style.display ="inline";
     userProfil.addEventListener("click", () => {
     chrome.tabs.create({url : `${FRONT_BASE_URL}/login`})
     })
   }
+}
+
+function showWelcomeScreen() {
+  document.getElementById("welcome-screen").style.display = "block";
+  document.getElementById("main-content").style.display = "none";
+}
+
+function showMainContent() {
+  document.getElementById("welcome-screen").style.display = "none";
+  document.getElementById("main-content").style.display = "block";
 }
 
 // // estion de la déconnexion
