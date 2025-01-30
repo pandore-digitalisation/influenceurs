@@ -1,10 +1,12 @@
 console.log("sidebar.js chargé avec succès !");
-
+// const BASE_URL = "https://influenceur-list.onrender.com";
 // const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
 const FRONT_BASE_URL = "http://localhost:3001";
 const BASE_URL = "http://localhost:3000";
 
 let tokenGlobal;
+
+//-------------  UI SIDEBAR  -------------//
 
 // Fermer le sidebar proprement
 document.getElementById("close-sidebar-btn").addEventListener("click", () => {
@@ -154,78 +156,37 @@ function showMainContent() {
 // }
 
 
+//-------------  GET SCRAPPED DATA  -------------//
 
 
-// console.log("sidebar.js est bien chargé !");
+// Bouton Scraper
+document.getElementById("scrapeBtn").addEventListener("click", () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const url = new URL(tabs[0].url);
 
-// // // const BASE_URL = "https://influenceur-list.onrender.com";
-// // const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
-// // // const FRONT_BASE_URL = "http://localhost:3001";
+    // Détecter la plateforme actuelle
+    let scriptFile;
+    if (url.hostname.includes("x.com")) {
+      scriptFile = "scripts/content_x.js";
+    } else if (url.hostname.includes("instagram.com")) {
+      scriptFile = "scripts/content_instagram.js";
+    } else if (url.hostname.includes("facebook.com")) {
+      scriptFile = "scripts/content_facebook.js";
+    } else if (url.hostname.includes("linkedin.com")) {
+      scriptFile = "scripts/content_linkedin.js";
+    } else if (url.hostname.includes("tiktok.com")) {
+      scriptFile = "scripts/content_tiktok.js";
+    } else {
+      alert("This platform is not supported.");
+      window.location.reload();
+    }
 
-// const BASE_URL = "http://localhost:3000";
+    // Injecter et exécuter le script correspondant
+    chrome.scripting.executeScript({
+      target: { tabId: tabs[0].id },
+      files: [scriptFile],
+    });
+  });
 
-// let tokenGlobal;
-
-
-// document.getElementById("close-sidebar-btn").addEventListener("click", () => {
-//   window.parent.postMessage("close-sidebar", "*");
-// });
-
-// chrome.storage.sync.get(["auth_token"], (result) => {
-//   if (result.auth_token) {
-//     tokenGlobal = result.auth_token;
-
-//     console.log("Token récupéré dans sidebar.js :", tokenGlobal);
-
-//     fetchUserData(tokenGlobal);
-//   } else {
-//     console.warn("Aucun token trouvé dans chrome.storage.sync, utilisateur deconnecté");
-//   }
-// });
-
-// const fetchUserData = (token) => {
-//   fetch(`${BASE_URL}/auth/user`, {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${token}`,
-//     },
-//     credentials: "include",
-//   })
-//     .then((response) => {
-//       if (!response.ok) throw new Error("Erreur de récupération des données.");
-//       return response.json();
-//     })
-//     .then((data) => {
-//       console.log("Données utilisateur :", data);
-//       displayUserData(data);
-//     })
-//     .catch((error) => console.error("Erreur :", error));
-// };
-
-// const displayUserData = (user) => {
-//   const userProfil = document.getElementById("auth");
-
-//   if (!userProfil) {
-//     console.error("Élément #sidebar-content non trouvé !");
-//     return;
-//   }
-
-//   userProfil.innerHTML = `<img id="profileImage" src="${user?.data.picture}" title="${user?.data.name}" style="background-color: #9CA3AF; width: 25px; border-radius: 50%; align-items: center; cursor: pointe;" /> <span style="font-weight: bold; text-transform: uppercase; font-size:10px">${user?.data.name}</span>
-//   <!--<button id="logout-btn" style="
-//         background-color: red; color: white; border: none; 
-//         padding: 8px 12px; cursor: pointer; border-radius: 5px;
-//       ">Déconnexion</button> -->
-//   </div>`;
-
-//   document.getElementById("logout-btn").addEventListener("click", handleLogoutUser);
-// };
-
-// // Logout via sidebar
-// const handleLogoutUser = () => {
-//     chrome.storage.sync.remove("auth_token", () => {
-//       console.log("Déconnexion confirmée.");
-//       window.postMessage({ action: "logoutUser" }, "*");
-//       location.reload();
-//     });
-// };
+  document.getElementById("scrapeBtn").textContent = "En cours...";
+});
