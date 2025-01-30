@@ -130,7 +130,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     alert("Data not ready to scrape, please reload the page and try again.");
     setTimeout(() => window.location.reload(), 3000);
   } else {
-    console.log("Timeout reached, please reload the page and try again.");
+    // console.log("Timeout reached, please reload the page and try again.");
     // alert("Timeout reached, please reload the page and try again.");
     // window.location.reload();
   }

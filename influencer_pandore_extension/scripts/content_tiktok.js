@@ -69,7 +69,7 @@
   // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
   async function getUserData() {
     return new Promise((resolve, reject) => {
-      chrome.storage.local.get("userData", (result) => {
+      chrome.storage.sync.get("userData", (result) => {
         if (chrome.runtime.lastError) {
           reject(
             new Error(

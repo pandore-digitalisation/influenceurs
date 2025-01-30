@@ -63,7 +63,7 @@
   // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
   async function getUserData() {
     return new Promise((resolve, reject) => {
-      chrome.storage.local.get("userData", (result) => {
+      chrome.storage.sync.get("userData", (result) => {
         if (chrome.runtime.lastError) {
           reject(
             new Error(
@@ -94,7 +94,6 @@
 
       if (response.ok) {
         const data = await response.json();
-        console.log("data", data)
         return data;
       } else {
         console.warn("Profil non trouvé, un nouveau sera créé.");
@@ -110,12 +109,11 @@
   let userData = null;
   try {
     userData = await getUserData();
-    console.log("userData", userData);
   } catch (error) {
     console.error(error);
   }
 
-  console.log("user data 2", userData);
+  // console.log("user data ", userData);
   // If user data is not found, handle accordingly (e.g., not sending userId)
   if (!userData || !userData.data.userId) {
     console.error(

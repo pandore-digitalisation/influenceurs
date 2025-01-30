@@ -66,6 +66,9 @@ async function fetchUserData(token) {
     if (!response.ok) throw new Error("Erreur lors de la récupération des données utilisateur.");
     const data = await response.json();
     console.log("Données utilisateur :", data);
+    chrome.storage.sync.set({ userData: data }, () => {
+      console.log("Données utilisateur sauvegardé dans l'extension.");
+    });
     displayUserData(data);
   } catch (error) {
     showWelcomeScreen();
@@ -158,7 +161,6 @@ function showMainContent() {
 
 //-------------  GET SCRAPPED DATA  -------------//
 
-
 // Bouton Scraper
 document.getElementById("scrapeBtn").addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -167,18 +169,26 @@ document.getElementById("scrapeBtn").addEventListener("click", () => {
     // Détecter la plateforme actuelle
     let scriptFile;
     if (url.hostname.includes("x.com")) {
-      scriptFile = "scripts/content_x.js";
+      scriptFile = "./scripts/content_x.js";
     } else if (url.hostname.includes("instagram.com")) {
-      scriptFile = "scripts/content_instagram.js";
+      scriptFile = "./scripts/content_instagram.js";
     } else if (url.hostname.includes("facebook.com")) {
-      scriptFile = "scripts/content_facebook.js";
+      scriptFile = "./scripts/content_facebook.js";
     } else if (url.hostname.includes("linkedin.com")) {
-      scriptFile = "scripts/content_linkedin.js";
+      scriptFile = "./scripts/content_linkedin.js";
     } else if (url.hostname.includes("tiktok.com")) {
-      scriptFile = "scripts/content_tiktok.js";
+      scriptFile = "./scripts/content_tiktok.js";
     } else {
-      alert("This platform is not supported.");
-      window.location.reload();
+      const notSupportedMessage = document.getElementById("notSupportedMessage")
+      notSupportedMessage.style.display = "block";
+      document.getElementById("scrapeBtn").style.display = "none";
+      const notSupportedMessageClose = document.getElementById("notSupportedMessageClose")
+      notSupportedMessageClose.addEventListener("click", () => {
+        notSupportedMessage.style.display = "none";
+        document.getElementById("scrapeBtn").style.display = "flex";
+        document.getElementById("scrapeBtn").textContent = "Obtenir";
+        // window.location.reload();
+      })
     }
 
     // Injecter et exécuter le script correspondant

@@ -1,8 +1,8 @@
 (async () => {
   console.log("Running script for Instagram...");
 
-  const BASE_URL = "https://influenceur-list.onrender.com";
-  // const BASE_URL = "http://localhost:3000";
+  // const BASE_URL = "https://influenceur-list.onrender.com";
+  const BASE_URL = "http://localhost:3000";
 
   // Helper function to evaluate an XPath expression and return nodes
   function evaluateXPath(xpath, context = document) {
@@ -64,7 +64,7 @@
   // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
   async function getUserData() {
     return new Promise((resolve, reject) => {
-      chrome.storage.local.get("userData", (result) => {
+      chrome.storage.sync.get("userData", (result) => {
         if (chrome.runtime.lastError) {
           reject(
             new Error(
@@ -113,7 +113,7 @@
     console.error(error);
   }
 
-  console.log("user data 2", userData);
+  // console.log("user data ", userData);
   //  If user data is not found, handle accordingly (e.g., not sending userId)
   if (!userData || !userData.data.userId) {
     console.error(

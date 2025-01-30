@@ -7,14 +7,16 @@
   "host_permissions": [
     "https://pandoreinfluencerfrontend.vercel.app/",
     "https://x.com/*",
-    "https://instagram.com/*",
     "https://linkedin.com/*",
+    "https://www.linkedin.com/*",
     "https://www.tiktok.com/*",
+    "https://www.facebook.com/*",
+    "https://www.instagram.com/*",
     "https://influenceurs.onrender.com/*",
     "http://127.0.0.1:5001/*",
     "http://localhost:3000/",
-    "http://localhost:3001/",
-    "https://www.facebook.com/*"
+    "http://localhost:3001/"
+ 
   ],
   "background": {
     "service_worker": "background.js"
@@ -34,7 +36,7 @@
     },
     {
       "matches": ["https://instagram.com/*"],
-      "js": ["scripts/content_instagram.js"]
+      "js": ["./scripts/content_instagram.js"]
     },
     {
       "matches": ["https://www.facebook.com/*"],
