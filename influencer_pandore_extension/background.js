@@ -40,3 +40,20 @@ chrome.runtime.onStartup.addListener(() => {
     console.log("Données utilisateur rechargées :", latestUserData, token);
   });
 });
+
+chrome.action.onClicked.addListener((tab) => {
+  chrome.tabs.sendMessage(tab.id, { action: "toggle-sidebar" });
+});
+
+
+// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//   if (message.action === "userLoggedIn") {
+//     console.log("Token reçu :", message.token);
+
+//     chrome.storage.local.set({ token: message.token }, () => {
+//       console.log("Token enregistré dans chrome.storage");
+//     });
+
+//     sendResponse({ status: "OK" });
+//   }
+// });

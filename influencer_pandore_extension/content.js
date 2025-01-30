@@ -130,8 +130,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     alert("Data not ready to scrape, please reload the page and try again.");
     setTimeout(() => window.location.reload(), 3000);
   } else {
-    alert("Timeout reached, please reload the page and try again.");
-    window.location.reload();
+    console.log("Timeout reached, please reload the page and try again.");
+    // alert("Timeout reached, please reload the page and try again.");
+    // window.location.reload();
   }
 });
 
@@ -183,96 +184,105 @@ window.addEventListener("message", (event) => {
   }
 });
 
-(function () {
-  // Création et style du bouton pour ouvrir la sidebar
-  const button = document.createElement("button");
-  button.id = "sidebar-toggle-btn";
-  button.textContent = "AQ";
-  button.style.position = "fixed";
-  button.style.top = "50px";
-  button.style.right = "0px";
-  button.style.zIndex = "9999";
-  button.style.padding = "13px 8px 13px 8px";
-  button.style.backgroundColor = "#1da1f2";
-  button.style.color = "#fff";
-  button.style.border = "none";
-  button.style.borderTopLeftRadius = "8px";
-  button.style.borderBottomLeftRadius = "8px";
-  button.style.cursor = "pointer";
+// ---------------  SIDE BAR ---------------//
 
-  // Ajout du bouton au DOM
-  document.body.appendChild(button);
+// Création et style du bouton pour ouvrir la sidebar
+const button = document.createElement("button");
+button.id = "sidebar-toggle-btn";
+button.textContent = "AQ";
+button.style.position = "fixed";
+button.style.top = "9%"; // Ajusté pour un positionnement adaptatif
+button.style.right = "0";
+button.style.zIndex = "3047483647";
+button.style.padding = "10px 8px";
+button.style.backgroundImage = "linear-gradient(to bottom, #E98A0D, #F4B731)";
+button.style.color = "#fff";
+button.style.border = "none";
+button.style.borderTopLeftRadius = "8px";
+button.style.borderBottomLeftRadius = "8px";
+button.style.cursor = "pointer";
+button.style.fontSize = "14px";
+button.style.transition = "background 0.3s ease, opacity 0.3s ease"
 
-  // Création et style de la sidebar
-  const sidebar = document.createElement("div");
-  sidebar.id = "extension-sidebar";
-  sidebar.style.borderTopLeftRadius = "15px";
-  sidebar.style.position = "fixed";
-  sidebar.style.top = "0";
-  sidebar.style.right = "-460px"; // Cachée initialement
-  sidebar.style.width = "460px";
-  sidebar.style.height = "100vh";
-  sidebar.style.backgroundColor = "#fff";
-  sidebar.style.zIndex = "9999";
-  sidebar.style.transition = "right 1s ease";
-  sidebar.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.3)";
-  sidebar.innerHTML = `
-    <div style="padding: 10px; border-bottom: 1px solid #ddd;">
-      <button id="close-sidebar-btn" style="
-        display: block;
-        margin-top: 0px;
-        width: 20px;
-        height: 20px;
-        padding: 0px;
-        background-color: #DBEAC7;
-        color: #fff;
-        border: none;
-        border-radius: 50%;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      ">-</button>
+// Ajout du bouton au DOM
+document.body.appendChild(button);
 
-    </div>
-    <p style="padding: 10px;"> .</p>
-  `;
+// Injecter le sidebar dans la page
+const sidebar = document.createElement("iframe");
+sidebar.src = chrome.runtime.getURL("sidebar/sidebar.html");
+sidebar.id = "extension-sidebar";
+sidebar.style.borderTopLeftRadius = "15px";
+sidebar.style.position = "fixed";
+sidebar.style.top = "0";
+sidebar.style.right = "-460px"; // Cachée initialement
+sidebar.style.width = "460px";
+sidebar.style.height = "100vh";
+sidebar.style.backgroundColor = "#fff";
+sidebar.style.zIndex = "3147483647";
+sidebar.style.border = "none";
+sidebar.style.transition = "right 1s ease";
+sidebar.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.3)";
 
-  // Ajout de la sidebar au DOM
-  document.body.appendChild(sidebar);
+// Ajout de la sidebar au DOM
+document.body.appendChild(sidebar);
 
-  // Fonction pour ouvrir la sidebar
-  button.addEventListener("click", () => {
-    sidebar.style.right = "0px"; // Slide-in
-  });
-
-  // Fonction pour fermer la sidebar (via le bouton interne)
-  sidebar.addEventListener("click", (event) => {
-    if (event.target.id === "close-sidebar-btn") {
-      sidebar.style.right = "-460px"; // Slide-out
-    }
-  });
-
-
-// Gestionnaires d'événements hover pour le button close sidebar
-const closeButton = document.getElementById("close-sidebar-btn");
-
-closeButton.addEventListener("mouseover", () => {
-  closeButton.style.backgroundColor = "#e1eada";
+// Fonction pour ouvrir la sidebar
+button.addEventListener("click", () => {
+  sidebar.style.right = "0"; // Slide-in
 });
 
-closeButton.addEventListener("mouseout", () => {
-  closeButton.style.backgroundColor = "#DBEAC7";
-});
-
-// Gestionnaire d'événements hover pour le sidebar open button
+// Gestionnaire d'événements hover pour le bouton open sidebar
 button.addEventListener("mouseover", () => {
-  button.style.backgroundColor = "#0d8dd6";
+  button.style.opacity = "0.98";
 });
 
 button.addEventListener("mouseout", () => {
-  button.style.backgroundColor = "#1da1f2";
+  button.style.opacity = "1"
 });
 
+// Écouter les messages envoyés par le sidebar pour le fermer
+window.addEventListener("message", (event) => {
+  if (event.data === "close-sidebar") {
+    sidebar.style.right = "-470px"; // Slide-out
+  }
+});
 
-})();
+//Écoute les messages du background script pour fermer ou ouvrir le sidebar via le click sur l'icon de l'extension
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.action === "toggle-sidebar") {
+    if (sidebar.style.right === "0px") {
+      sidebar.style.right = "-460px"; // Ferme la sidebar
+    } else {
+      sidebar.style.right = "0px"; // Ouvre la sidebar
+    }
+  }
+});
+
+// Message de connexion
+window.addEventListener("message", (event) => {
+  // Vérifier que le message provient du bon domaine
+  if (event.origin !== window.location.origin) return;
+
+  if (event.data.action === "userLoggedIn") {
+    const { token } = event.data;
+    localStorage.setItem("auth_token", token);
+
+    if (token) {
+      // Sauvegarder le token dans chrome.storage.sync
+      chrome.storage.sync.set({ auth_token: token }, () => {
+        console.log("Token sauvegardé dans l'extension.", token);
+      });
+    }
+  }
+});
+
+// Message de deconnexion
+window.addEventListener("message", (event) => {
+  // Vérifier que le message provient du bon domaine
+  if (event.origin !== window.location.origin) return;
+
+  if (event.data.action === "logoutUser") {
+    chrome.storage.sync.remove("auth_token")
+    localStorage.removeItem("auth_token");
+  }
+});

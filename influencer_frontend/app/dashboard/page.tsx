@@ -44,14 +44,12 @@ export default function Dashboard() {
   useEffect(() => {
     const token = searchParams.get("token");
 
-    if (token) {
-      // localStorage.setItem("auth_token", token);
+    // console.log("Token récupéré:", token);
 
-      // Envoi du token et des données utilisateur au sidebar
-      window.postMessage(
-        { action: "userLoggedIn", token: token },
-        window.location.origin
-      );
+    if (token) {
+      localStorage.setItem("token", token);
+
+      window.postMessage({ action: "userLoggedIn", token }, "*");
 
       const fetchUserData = async () => {
         try {
@@ -67,10 +65,11 @@ export default function Dashboard() {
           if (!response.ok) {
             throw new Error("Erreur lors de la récupération des données.");
           }
+
           const data = await response.json();
           setUser(data);
 
-          sendDataToExtension(data, token);
+          // sendDataToExtension(data, token);
           const fetchUserLists = async () => {
             try {
               const listsResponse = await fetch(
@@ -98,26 +97,32 @@ export default function Dashboard() {
           };
 
           fetchUserLists();
+
+          // Envoi des infos utilisateur au sidebar
+          // window.postMessage({ action: "updateUserInfo", userData: data }, "*");
         } catch (error) {
+          console.error("Erreur:", error);
           window.location.href = "/login";
-          setError("Session expirée. Veuillez vous reconnecter.");
         } finally {
           setLoading(false);
         }
       };
 
       fetchUserData();
-    } else {
-      setError("Aucun token trouvé dans l'URL.");
-      setLoading(false);
     }
 
-    // Send data to extension after user connected
-    const sendDataToExtension = (userData: any, token: any) => {
-      window.postMessage(
-        { action: "sendData", data: userData, token: token },
-        window.location.origin
-      );
+    const handleLogoutUser = (event: any) => {
+      if (event.data.action === "logoutUser") {
+        console.log("Déconnexion détectée depuis l'extension.");
+        localStorage.removeItem("token");
+        window.location.href = "/login";
+      }
+    };
+
+    window.addEventListener("message", handleLogoutUser);
+
+    return () => {
+      window.removeEventListener("message", handleLogoutUser);
     };
   }, []);
 
@@ -151,12 +156,12 @@ export default function Dashboard() {
         localStorage.removeItem("auth_token");
         sessionStorage.clear();
 
-        window.postMessage(
-          {
-            action: "logoutUser",
-          },
-          window.location.origin
-        );
+        window.postMessage({ action: "logoutUser", token }, "*");
+
+
+        window.postMessage({action: "logoutUser",},window.location.origin);
+        // window.postMessage({ action: "logoutUser",  }, "*");
+
 
         window.location.href = "/login";
       } else {

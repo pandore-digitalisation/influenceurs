@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aquizition Extension</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="../libs/bootstrap.min.css" />
+  <link rel="stylesheet" href="../libs/semantic.min.css" />
+</head>
+
+<body>
+  <div id="header">
+    <span id="auth">
+      <button id="loginBtn type="button" class="btn btn-secondary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">Login</button>
+    </span>
+    <button id="close-sidebar-btn">-</button>
+  </div>
+  <div class="progress" style="height: 1px; margin-bottom: 15px;">
+    <div class="progress-bar w-0" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+  </div>
+
+  <button class="ui button">Annuler</button>
+  
+  <div class="ui container" style="margin-top: 20px;">
+    <h2 class="ui header">Liste des utilisateurs</h2>
+    
+    <table class="ui celled unstackable table">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Doe</td>
+                <td>John</td>
+                <td>john.doe@example.com</td>
+                <td>
+                    <button class="ui primary button">Modifier</button>
+                    <button class="ui red button">Supprimer</button>
+                </td>
+            </tr>
+            <tr>
+                <td>Smith</td>
+                <td>Jane</td>
+                <td>jane.smith@example.com</td>
+                <td>
+                    <button class="ui primary button">Modifier</button>
+                    <button class="ui red button">Supprimer</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+  <section>
+
+
+  </section>
+  <script src="sidebar.js"></script>
+  <script src="../libs/bootstrap.bundle.min.js"></script>
+  <script src="../libs/jquery-3.6.0.min.js"></script>
+  <script src="../libs/semantic.min.js"></script>
+  <script src="../libs/xlsx.full.min.js"></script>
+</body>
+
+</html>

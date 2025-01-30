@@ -1,10 +1,11 @@
 // const BASE_URL = "https://influenceur-list.onrender.com";
-const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
-// const FRONT_BASE_URL = "http://localhost:3001";
+// const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
+const FRONT_BASE_URL = "http://localhost:3001";
 
 const BASE_URL = "http://localhost:3000";
 let tokenGlobal;
 let globalUserId;
+
 // Bouton Scraper
 document.getElementById("scrapeBtn").addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
