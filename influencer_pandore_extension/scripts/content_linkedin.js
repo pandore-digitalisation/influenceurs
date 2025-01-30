@@ -21,6 +21,7 @@
     location: "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/div[2]/div[2]/span[1]",
     followers: "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/ul/li[1]/span",
     connection: "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/ul/li[2]/span/span",
+    connection_1: "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/ul/li[2]/a/span/span",
     profileImage: "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/div/span/img"
   };
 
@@ -28,9 +29,9 @@
   const extractedData = {
     name: getXPathText(xPaths.name) || "None",
     description: getXPathText(xPaths.description) || "None",
-    location: getXPathText(xPaths.location) || "0",
-    followers: getXPathText(xPaths.followers) || "0",
-    connection: getXPathText(xPaths.connection) || "0",
+    location: getXPathText(xPaths.location) || " ",
+    followers: getXPathText(xPaths.followers) || " ",
+    connection: getXPathText(xPaths.connection) || getXPathText(xPaths.connection_1) || " ",
     profileImage: getXPathText(xPaths.profileImage, "src") || " ",
     profileUrl: window.location.href,
     plateform: "Linkedin"
@@ -79,7 +80,7 @@
     : [...(existingProfile?.userId || []), currentUserId];
 
   // Validate extracted data
-  const isValidData = ({ name, followers, connection }) => name !== "None" && followers !== "0" && connection !== " ";
+  const isValidData = ({ name, followers, connection }) => name !== "None" && followers !== "0" && connection !== "None";
 
   // Send data to the backend
   if (isValidData(extractedData)) {
