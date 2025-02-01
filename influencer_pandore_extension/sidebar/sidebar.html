@@ -11,45 +11,167 @@
 </head>
 
 <body>
-  <button id="close-sidebar-btn">-</button>
-
-  <div id="welcome-screen" style="display: none; text-align: center;">
-    <h2>Bienvenue !</h2>
-    <p>Veuillez vous connecter pour continuer.</p>
-    <button class="ui small compact button" id="loginBtn">Login</button>
-  </div>
-
-  <div id="main-content" style="display: none;">
-    <div id="header">
-      <span id="auth">
-        <!-- <button class="ui small compact button" id="loginBtn">
-          Login
-        </button> -->
-      </span>
-      <!-- <button id="close-sidebar-btn">-</button> -->
+  <div>
+    <div class="close-container">
+      <button id="close-sidebar-btn">-</button>
     </div>
-    <div class="ui divider" style="margin: 0px;"></div>
 
-    <section>
-      <span class="right">
-        <div>
-          <button class="ui small compact button" id="scrapeBtn">Obtenir</button>
-        </div>
-      </span>
-      <!-- This platform is not supported message -->
-      <span>
-        <div class="ui info message" style="display: none;" id="notSupportedMessage">
-          <i class="close icon" id="notSupportedMessageClose"></i>
-          <div class="header">
-            Cette plateforme n'est pas prise en charge!
+    <div class="welcome" id="welcome-screen" style="display: none; text-align: center;">
+      <h2>Bienvenue !</h2>
+      <p>Veuillez cliquer sur le boutton suivant pour conituer.</p>
+      <button class="ui small compact button" id="loginBtn">Conctez-vous</button>
+      <button class="ui small compact button" id="createAccountBtn">Creer un compte</button>
+    </div>
+  </div>
+  <div id="main-content" style="display: none;">
+    <div id="header" style="background-color: #111827;">
+      <span id="auth"></span>
+      <!-- <button id="close-sidebar-btn">-</button> -->
+      <span class="right" style="gap: 2px;">
+        <div class="ui mini form" style="width: 150px;">
+          <div class="field">
+            <select id="listFilter">
+              <option value="">Votre Listes</option>
+            </select>
           </div>
-          <ul class="list">
-            <li>Aller sur X, TikTok, LinkedIn, Instagram ou Facebook</li>
-          </ul>
         </div>
+        <button class="mini ui button" style="margin: 0px;"><i class="download icon"></i></button>
+        <button class="mini ui button" id="createBtn" style="margin: 0px;">Créer liste</button>
+        <button class="mini ui button" id="scrapeBtn">Obtenir</button>
       </span>
-
       <div>
+        <div></div>
+        <!-- This platform Info message -->
+        <span>
+          <!-- Profil saved successfully  message -->
+          <div class="ui success message" style="display: none; margin: 1rem 0;" id="dataGetSuccessMessage">
+            <i class="close icon" id="dataGetSuccessMessageCLose"></i>
+            <div class="header">
+              Vos données ont été sauvegardées avec succès.
+            </div>
+            <p>Vous pouvez maintenant les consulter dans votre tableau de bord ou l'utiliser pour créer une liste.</p>
+          </div>
+          <!-- This platform is not supported message -->
+          <div class="ui info message" style="display: none;" id="notSupportedMessage">
+            <i class="close icon" id="notSupportedMessageClose"></i>
+            <div class="header">
+              Cette plateforme n'est pas prise en charge!
+            </div>
+            <ul class="list">
+              <li>Aller sur X, TikTok, LinkedIn, Instagram ou Facebook</li>
+            </ul>
+          </div>
+          <!-- Data not getted error message -->
+          <div class="ui error message" style="display: none;" id="dataGetErrorsMessage">
+            <i class="close icon" id="dataGetErrorsMessageClose"></i>
+            <div class="header">
+              Oops! Des erreurs se sont glissées dans votre envoi.
+            </div>
+            <p>Veuillez rafraîchir la page et réessayer.</p>
+          </div>
+        </span>
+
+        <table class="ui celled table unstackable">
+          <thead>
+            <tr>
+              <th><div class="ui checked checkbox"><input type="checkbox"><label>Tout</label></div></th>
+              <th>Nom</th>
+              <th>Followers</th>
+              <th>Following</th>
+              <th>Url</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Tout"><div class="ui checked checkbox"><input type="checkbox"><label></label></div></td>
+              <td data-label="Name">James</td>
+              <td data-label="Age">24</td>
+              <td data-label="Job">Engineer</td>
+              <td data-label="Url">Pandore</td>
+            </tr>
+            <tr>
+              <td data-label="Tout"><div class="ui checked checkbox"><input type="checkbox"><label></label></div></td>
+              <td data-label="Name">Jill</td>
+              <td data-label="Age">26</td>
+              <td data-label="Job">Engineer</td>
+              <td data-label="Url">Pandore</td>
+            </tr>
+            <tr>
+              <td data-label="Tout"><div class="ui checked checkbox"><input type="checkbox"><label></label></div></td>
+              <td data-label="Name">Elyse</td>
+              <td data-label="Age">24</td>
+              <td data-label="Job">Designer</td>
+              <td data-label="Url">Pandore</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin: 15px;">
+          <div class="ui card" style="width: 100%; box-shadow: non;">
+            <div class="content">
+              <div class="header"></div>
+              <div class="meta"></div>
+              <div class="description">
+                <p></p>
+                <p></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin: 15px;">
+          Vos Données
+        </div>
+
+        <div>
+
+          <table class="ui selectable celled table unstackable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>John</td>
+                <td>No Action</td>
+                <td>None</td>
+              </tr>
+              <tr>
+                <td>Jamie</td>
+                <td>Approved</td>
+                <td>Requires call</td>
+              </tr>
+              <tr>
+                <td>Jill</td>
+                <td>Denied</td>
+                <td>None</td>
+              </tr>
+              <tr class="warning">
+                <td>John</td>
+                <td>No Action</td>
+                <td>None</td>
+              </tr>
+              <tr>
+                <td>Jamie</td>
+                <td class="positive">Approved</td>
+                <td class="warning">Requires call</td>
+              </tr>
+              <tr>
+                <td>Jill</td>
+                <td class="negative">Denied</td>
+                <td>None</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="ui divider" style="margin: 0"></div> -->
+    <section>
+
+      <!-- <div>
         ok
       </div>
 
@@ -64,10 +186,15 @@
 
       <div>
         ok
-      </div>
+      </div> -->
 
     </section>
   </div>
+
+  <section>
+
+
+  </section>
 
   <script src="sidebar.js"></script>
   <script src="../libs/bootstrap.bundle.min.js"></script>

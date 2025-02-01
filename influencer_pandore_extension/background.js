@@ -2,7 +2,7 @@ let latestUserData = null;
 let token = null;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log("Message reçu :", message);
+  // console.log("Message reçu :", message);
 
   if (message.action === "getUserData") {
     chrome.storage.local.get(["userData", "token"], (result) => {
