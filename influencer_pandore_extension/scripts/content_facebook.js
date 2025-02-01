@@ -1,196 +1,115 @@
 (async () => {
-  console.log("Running script for Facebook...");
-
-  // const BASE_URL = "https://influenceur-list.onrender.com";
+  //const BASE_URL = "https://influenceur-list.onrender.com";
   const BASE_URL = "http://localhost:3000";
 
-  function evaluateXPath(xpath, context = document) {
-    const iterator = document.evaluate(
+  function getXPathText(xpath, attr = "textContent") {
+    const node = document.evaluate(
       xpath,
-      context,
+      document,
       null,
-      XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
       null
-    );
-    const nodes = [];
-    for (let i = 0; i < iterator.snapshotLength; i++) {
-      nodes.push(iterator.snapshotItem(i));
-    }
-    return nodes;
+    ).singleNodeValue;
+    return node
+      ? attr === "textContent"
+        ? node.textContent.trim()
+        : node[attr]
+      : null;
   }
 
-  const nameXPath =
-  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]"
-    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]";
-  const followersXPath =
-  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[1]/text()[1]"
-    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[1]/text()[1]";
-  const followingXpath =
-  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]"
-    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]";
-  const profileImageXPath =
-  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/div/div/svg/g/image"
-    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/a/div/svg";
+  function cleanNumber(value) {
+    if (!value) return "0";
+    let cleanedValue = value.replace(/[^\dKM.]/g, "");
 
-
-  const nameElements = evaluateXPath(nameXPath);
-  const followersElements = evaluateXPath(followersXPath);
-  const followingElements = evaluateXPath(followingXpath);
-  const profileImageElements = evaluateXPath(profileImageXPath);
-
-  const name =
-    nameElements.length > 0 ? nameElements[0].textContent.trim() : "None";
-  const followers =
-    followersElements.length > 0
-      ? followersElements[0].textContent.trim()
-      : "0";
-  const following =
-    followingElements.length > 0
-      ? followingElements[0].textContent.trim()
-      : "0";
-  const profileImage =
-    profileImageElements.length > 0
-      ? profileImageElements[0].getAttribute("href") ||
-        profileImageElements[0].getAttribute("xlink:href")
-      : "Not found";
-
-    // Get data before sending to backend
-    if (!name || !followers || !following) {
-      console.error("Données incomplètes ou manquantes. Requête annulée.");
-      return;
-    }
-
-  // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
-  async function getUserData() {
-    return new Promise((resolve, reject) => {
-      chrome.storage.sync.get("userData", (result) => {
-        if (chrome.runtime.lastError) {
-          reject(
-            new Error(
-              "Erreur lors de la récupération des données : " +
-                chrome.runtime
-                .lastError
-            )
-          );
-        } else {
-          resolve(result.userData);
-        }
-      });
-    });
+    if (cleanedValue.endsWith("M")) return parseFloat(cleanedValue.replace("M", "").replace(",", "") * 1000000);
+    if (cleanedValue.endsWith("K")) return parseFloat(cleanedValue.replace("K", "").replace(",", "") * 1000);
+    return cleanedValue;
   }
 
-  // Fonction pour récupérer les données existantes du profil depuis le backend
-  async function getExistingProfile(profileUrl) {
-    try {
-      const response = await fetch(
-        `${BASE_URL}/facebook/${encodeURIComponent(profileUrl)}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+  const xPaths = {
+    name: "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]",
+    followers:
+      "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[1]/text()[1]",
+    following:
+      "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]",
+    profileImage: "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/a/div/svg",
+  };
 
-      if (response.ok) {
-        const data = await response.json();
-        return data;
-      } else {
-        console.warn("Profil non trouvé, un nouveau sera créé.");
-        return null;
-      }
-    } catch (error) {
-      console.error("Erreur lors de la récupération du profil :", error);
-      return null;
-    }
-  }
-
-  // Get user data and add it to the extracted data
-  let userData = null;
-  try {
-    userData = await getUserData();
-  } catch (error) {
-    console.error(error);
-  }
-
-  // console.log("user data ", userData);
-  // If user data is not found, handle accordingly (e.g., not sending userId)
-  if (!userData || !userData.data.userId) {
-    console.error(
-      "Utilisateur non connecté ou données utilisateur manquantes."
-    );
-  }
-
-  const profileUrl = window.location.href;
-  console.log("url", profileUrl);
-  const encodeUrl = encodeURIComponent(profileUrl);
-  console.log("encode", encodeUrl);
-
-  const existingProfile = await getExistingProfile(profileUrl);
-  console.log("existing", existingProfile);
-
-  // Préparer le champ userId
-  const currentUserId = userData?.data?.userId || null;
-  const existingUserIds = existingProfile?.userId || [];
-
-  // Ajouter uniquement si l'userId actuel n'est pas déjà présent
-  const updatedUserIds = existingUserIds.includes(currentUserId)
-    ? existingUserIds
-    : [...existingUserIds, currentUserId];
-
-  // const userId = userData.data.userId;
+  let followers = getXPathText(xPaths.followers);
+  let following = getXPathText(xPaths.following);
 
   const extractedData = {
-    userId: updatedUserIds,
-    name,
-    followers,
-    following,
+    name: getXPathText(xPaths.name) || "None",
+    followers: cleanNumber(followers) || "0",
+    following: cleanNumber(following) || "0",
+    profileImage: getXPathText(xPaths.profileImage, "src") || " ",
+    profileUrl: window.location.href,
     plateform: "Facebook",
-    profileImage,
-    profileUrl,
   };
 
   console.log("Extracted Data:", extractedData);
 
-  function areDataValid(data) {
-    return (
-      data.name !== "None" &&
-      data.followers !== "0"    );
+  const getUserData = () =>
+    new Promise((resolve, reject) => {
+      chrome.storage.sync.get("userData", (result) =>
+        chrome.runtime.lastError
+          ? reject(new Error(chrome.runtime.lastError))
+          : resolve(result.userData)
+      );
+    });
+
+  const getExistingProfile = async (profileUrl) => {
+    try {
+      const response = await fetch(
+        `${BASE_URL}/facebook/${encodeURIComponent(profileUrl)}`
+      );
+      return response.ok ? response.json() : null;
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      return null;
+    }
+  };
+
+  let userData;
+  try {
+    userData = await getUserData();
+  } catch (error) {
+    console.error(error);
+    return;
   }
 
-  async function sendToBackend(data) {
+  if (!userData?.data?.userId) {
+    console.error("User not logged in or missing data.");
+    return;
+  }
+
+  const currentUserId = userData.data.userId;
+  const existingProfile = await getExistingProfile(extractedData.profileUrl);
+
+  extractedData.userId = existingProfile?.userId?.includes(currentUserId)
+    ? existingProfile.userId
+    : [...(existingProfile?.userId || []), currentUserId];
+
+  const isValidData = ({ name, followers, following }) =>
+    name !== "None" && followers !== "None" && following !== "None";
+
+  if (isValidData(extractedData)) {
     try {
       const response = await fetch(`${BASE_URL}/facebook`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(extractedData),
       });
 
-      if (response.ok) {
-        console.log("Data successfully sent to the backend.");
-        return true;
-      } else {
-        console.error("Error sending data to the backend.");
-        return false;
-      }
-
+      const success = response.ok;
+      console.log("Success:", success);
+      chrome.runtime.sendMessage({ success });
     } catch (error) {
       console.error("Network error:", error);
-      return false;
+      chrome.runtime.sendMessage({ networkError });
     }
-  }
-
-  
-
-  // sendToBackend(extractedData);
-
-  if (areDataValid(extractedData)) {
-    const success = await sendToBackend(extractedData);
-    console.log("Success:", success);
-    chrome.runtime.sendMessage({ success });
   } else {
-    console.warn("Data is incomplete or invalid. Skipping POST request.");
-    // alert("Data is incomplete or invalid, please reload and try again!");
-
+    chrome.runtime.sendMessage({ dataNotExtracted });
+    console.warn("Invalid data. Skipping POST request.");
   }
 })();

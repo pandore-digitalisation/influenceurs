@@ -27,6 +27,17 @@
     <div id="header" style="background-color: #111827;">
       <span id="auth"></span>
       <!-- <button id="close-sidebar-btn">-</button> -->
+
+      <!-- Platforms to use alert -->
+      <div style="height: 66px; margin-top: 15px;">
+        <div id="usePlatformsAlert" style="margin-top: 15px;">
+          <div class="ui info message">
+            <i class="close icon" id="usePlatformsAlertClose"></i>
+            <div class="header"><i class="bullhorn icon"></i>Assurez-vous d'être sur un compte public de créateur de
+              contenu avant de cliquer sur "Obtenir" !</div>
+          </div>
+        </div>
+      </div>
       <span class="right" style="gap: 2px;">
         <div class="ui mini form" style="width: 150px;">
           <div class="field">
@@ -74,7 +85,9 @@
         <table class="ui celled table unstackable">
           <thead>
             <tr>
-              <th><div class="ui checked checkbox"><input type="checkbox"><label>Tout</label></div></th>
+              <th>
+                <div class="ui checked checkbox"><input type="checkbox"><label>Tout</label></div>
+              </th>
               <th>Nom</th>
               <th>Followers</th>
               <th>Following</th>
@@ -83,21 +96,27 @@
           </thead>
           <tbody>
             <tr>
-              <td data-label="Tout"><div class="ui checked checkbox"><input type="checkbox"><label></label></div></td>
+              <td data-label="Tout">
+                <div class="ui checked checkbox"><input type="checkbox"><label></label></div>
+              </td>
               <td data-label="Name">James</td>
               <td data-label="Age">24</td>
               <td data-label="Job">Engineer</td>
               <td data-label="Url">Pandore</td>
             </tr>
             <tr>
-              <td data-label="Tout"><div class="ui checked checkbox"><input type="checkbox"><label></label></div></td>
+              <td data-label="Tout">
+                <div class="ui checked checkbox"><input type="checkbox"><label></label></div>
+              </td>
               <td data-label="Name">Jill</td>
               <td data-label="Age">26</td>
               <td data-label="Job">Engineer</td>
               <td data-label="Url">Pandore</td>
             </tr>
             <tr>
-              <td data-label="Tout"><div class="ui checked checkbox"><input type="checkbox"><label></label></div></td>
+              <td data-label="Tout">
+                <div class="ui checked checkbox"><input type="checkbox"><label></label></div>
+              </td>
               <td data-label="Name">Elyse</td>
               <td data-label="Age">24</td>
               <td data-label="Job">Designer</td>
@@ -123,49 +142,44 @@
         </div>
 
         <div>
-
-          <table class="ui selectable celled table unstackable">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>John</td>
-                <td>No Action</td>
-                <td>None</td>
-              </tr>
-              <tr>
-                <td>Jamie</td>
-                <td>Approved</td>
-                <td>Requires call</td>
-              </tr>
-              <tr>
-                <td>Jill</td>
-                <td>Denied</td>
-                <td>None</td>
-              </tr>
-              <tr class="warning">
-                <td>John</td>
-                <td>No Action</td>
-                <td>None</td>
-              </tr>
-              <tr>
-                <td>Jamie</td>
-                <td class="positive">Approved</td>
-                <td class="warning">Requires call</td>
-              </tr>
-              <tr>
-                <td>Jill</td>
-                <td class="negative">Denied</td>
-                <td>None</td>
-              </tr>
-            </tbody>
-          </table>
+          <div>
+            <!-- No scrapped profile data found message -->
+            <div class="ui negative message" id="noScrappedData" style="display: none;">
+              <i class="close icon"></i>
+              <div class="header">
+                We're sorry we can't apply that discount
+              </div>
+              <p>That offer has expired
+              </p>
+            </div>
+          </div>
+          <div id="scrappedData">
+            <table class="ui selectable celled table unstackable" id="scrappedDataTable">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Followers</th>
+                  <th>Following</th>
+                  <th>Plateforme</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Scrapped sata will appear there -->
+              </tbody>
+            </table>
+            <!-- Pagination Controls -->
+            <div class="ui mini right floated pagination menu">
+              <a class="icon item" id="prevBtn">
+                <i class="left chevron icon"></i>
+              </a>
+              <a class="item" id="pageInfo"></a>
+              <a class="icon item" id="nextBtn">
+                <i class="right chevron icon"></i>
+              </a>
+            </div>
+          </div>
         </div>
+
       </div>
     </div>
     <!-- <div class="ui divider" style="margin: 0"></div> -->

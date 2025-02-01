@@ -33,10 +33,9 @@ function refreshSidebar() {
   chrome.storage.sync.get(["auth_token", "userData"], (result) => {
     if (result.auth_token) {
       tokenGlobal = result.auth_token;
-      userData = result.userData
-      userId = userData.data.userId
+      userData = result.userData;
+      userId = userData.data.userId;
       console.log("Token récupéré :", tokenGlobal);
-      console.log("user data", userData)
       showMainContent();
       fetchAllSidebarData(tokenGlobal);
       fetchProfiles(userId, tokenGlobal);
@@ -87,7 +86,7 @@ async function fetchUserData(token) {
   }
 }
 
-// Exemple : Autres données à charger (remplace ou ajoute d'autres appels API)
+// Autres données à charger (remplace ou ajoute d'autres appels API)
 async function fetchOtherSidebarData(token) {
   try {
     const response = await fetch(`${BASE_URL}/other-data`, {
@@ -128,7 +127,7 @@ function displayUserData(user) {
   // document.getElementById("logout-btn").addEventListener("click", handleLogoutUser);
 }
 
-// Exemple : Affichage des autres données (personnalise selon tes besoins)
+// Affichage des autres données
 function displayOtherSidebarData(data) {
   const sidebarContent = document.getElementById("other-data");
 
@@ -232,13 +231,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         document.getElementById("scrapeBtn").style.display = "flex";
         document.getElementById("scrapeBtn").textContent = "Obtenir";
       });
-  } else if (message.dataNotExtrated) {
+  } else if (message.dataNotExtracted) {
     document.getElementById("dataGetErrorsMessage").style.display = "block";
     document.getElementById("scrapeBtn").style.display = "none";
-    document
-      .getElementById("dataGetErrorsMessage")
-      .addEventListener("click", () => {
-        document.getElementById("dataGetErrorsMessage").style.display = "none";
+    document.getElementById("dataGetErrorsMessage").addEventListener("click", () => {
+        document.getElementById("dataGetErrorsMessageClose").style.display = "none";
         document.getElementById("scrapeBtn").style.display = "flex";
         document.getElementById("scrapeBtn").textContent = "Obtenir";
       });
@@ -250,12 +247,28 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-//-------------  GET PROFILE DATA BY USER CONNECTED  -------------//
+// Platforms use alert
+
+document.addEventListener("DOMContentLoaded", () => {
+  const usePlatformsAlert = document.getElementById("usePlatformsAlert");
+  usePlatformsAlert.style.display = "block";
+});
+
+document
+  .getElementById("usePlatformsAlertClose")
+  .addEventListener("click", () => {
+    const usePlatformsAlert = document.getElementById("usePlatformsAlert");
+    usePlatformsAlert.style.display = "none";
+  });
+
+//-------------  GET SCRAPPED PROFILE DATA BY USER CONNECTED  -------------//
+let scrappedData = [];
+let filterdScrappedData = [];
 
 async function fetchScrappedProfiles(userId) {
   try {
     const response = await fetch(`${BASE_URL}/platforms/all`);
-    
+
     if (!response.ok) {
       throw new Error(`Erreur HTTP ! Statut : ${response.status}`);
     }
@@ -263,14 +276,93 @@ async function fetchScrappedProfiles(userId) {
     const data = await response.json();
 
     // Filtrer les profils dont `userId` contient l'ID de l'utilisateur connecté
-    const filteredProfiles = data.filter(profile => profile.userId.includes(userId));
+    const scrappedProfiles = data.filter((profile) =>
+      profile.userId.includes(userId)
+    );
 
-    console.log("Profils filtrés :", filteredProfiles);
-
+    console.log("Profils filtrés :", scrappedProfiles);
+    scrappedData = scrappedProfiles;
+    displayScrappedData(scrappedData);
+    return scrappedProfiles;
   } catch (error) {
     console.error("Erreur lors de la récupération des listes :", error);
-    listsLoader.style.display = "none";
+    // listsLoader.style.display = "none";
+    return [];
   }
+}
+
+async function displayScrappedData(dataToShow) {
+  const scrappedData = document.querySelector("#scrappedDataTable tbody");
+  const scrappedDataBlock = document.getElementById("scrappedData");
+  const prevBtn = document.getElementById("prevBtn");
+  const nextBtn = document.getElementById("nextBtn");
+  const pageInfo = document.getElementById("pageInfo");
+
+  if (dataToShow.lenght === 0) {
+    const noScrappedData = document.getElementById("noScrappedData");
+    noScrappedData.style.display = "block";
+    scrappedDataBlock.style.display = "none";
+    return;
+  }
+
+  const rowsPerPage = 5;
+  let currentPage = 1;
+
+  dataToShow.sort((a, b) => a.name.localeCompare(b.name));
+
+  function displayPage(page) {
+    scrappedData.innerHTML = ""; // Vider le contenu existant
+
+    const start = (page - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const paginatedData = dataToShow.slice(start, end);
+
+    function truncateName(name) {
+      return name.length > 12 ? name.slice(0, 12) + "..." : name;
+    }
+
+    paginatedData.forEach((item) => {
+      const row = document.createElement("tr");
+      const name = truncateName(item.name);
+      const followers = item.followers;
+      const following = item.following;
+      const connection = item.connection;
+      const profileUrl = item.profileUrl;
+      const plateform = item.plateform;
+
+      row.innerHTML = `
+        <td><a href="${profileUrl}" target="_blanc" style="text-decoration="none"">${name}</a></td>
+        <td>${followers}</td>
+        <td>${following || connection || " "}</td>
+        <td>${plateform}</td>
+      `;
+      scrappedData.appendChild(row);
+    });
+
+    pageInfo.textContent = `${currentPage}/${Math.ceil(
+      dataToShow.length / rowsPerPage
+    )}`;
+
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled =
+      currentPage === Math.ceil(dataToShow.length / rowsPerPage);
+  }
+
+  prevBtn.addEventListener("click", () => {
+    if (currentPage > 1) {
+      currentPage--;
+      displayPage(currentPage);
+    }
+  });
+
+  nextBtn.addEventListener("click", () => {
+    if (currentPage < Math.ceil(dataToShow.length / rowsPerPage)) {
+      currentPage++;
+      displayPage(currentPage);
+    }
+  });
+
+  displayPage(currentPage);
 }
 
 //-------------  GET LIST DATA  -------------//
@@ -307,13 +399,13 @@ async function fetchProfiles(userId, token) {
   }
 }
 
-  // Fonction pour remplir le menu déroulant
-  function populateListFilter() {
-    console.log("Listes pour le filtre :", lists);
-    lists.forEach((list) => {
-      const option = document.createElement("option");
-      option.value = list._id;
-      option.textContent = list.name;
-      listFilter.appendChild(option);
-    });
-  }
+// Fonction pour remplir le menu déroulant
+function populateListFilter() {
+  console.log("Listes pour le filtre :", lists);
+  lists.forEach((list) => {
+    const option = document.createElement("option");
+    option.value = list._id;
+    option.textContent = list.name;
+    listFilter.appendChild(option);
+  });
+}

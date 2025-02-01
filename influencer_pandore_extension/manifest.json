@@ -13,6 +13,7 @@
     "https://www.facebook.com/*",
     "https://www.instagram.com/*",
     "https://influenceurs.onrender.com/*",
+    "https://influenceur-list.onrender.com/*",
     "http://127.0.0.1:5001/*",
     "http://localhost:3000/",
     "http://localhost:3001/"
@@ -24,14 +25,13 @@
   "action": {
     "default_title": "Pandore Aquizition Extension",
     "default_icon": {
-      "16": "icons/icon16.png",
       "48": "icons/icon48.png",
       "128": "icons/icon128.png"
     }
   },
   "content_scripts": [
     {
-      "matches": ["https://x.com/*"],
+      "matches": ["https://.com/*"],
       "js": ["scripts/content_x.js"]
     },
     {
@@ -39,7 +39,7 @@
       "js": ["./scripts/content_instagram.js"]
     },
     {
-      "matches": ["https://www.facebook.com/*"],
+      "matches": ["https://facebook.com/*"],
       "js": ["scripts/content_facebook.js"]
     },
     {
@@ -91,7 +91,6 @@
     }
   ],
   "icons": {
-    "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   }

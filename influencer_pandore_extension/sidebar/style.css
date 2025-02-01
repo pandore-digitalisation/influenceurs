@@ -18,7 +18,7 @@ section {
   align-items: center;
   padding: 8px 10px 10px 10px ;
   margin-top: -22px;
-  height: 150px;
+  height: 15rem;
 }
 
 .close-container {
@@ -51,8 +51,7 @@ section {
 
 .right {
   display: flex;
-  /* justify-content: flex-end; */
-  margin-top: 50px;
+  margin-top: 20px;
 }
 
 .welcome {
