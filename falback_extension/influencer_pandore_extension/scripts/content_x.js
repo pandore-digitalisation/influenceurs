@@ -1,9 +1,9 @@
 (async () => {
-  console.log("Running script for Facebook...");
-
-  const BASE_URL = "https://influenceur-list.onrender.com";
+  console.log("Running script for X...");
+  const BASE_URL = "https://influenceurs.onrender.com";
   // const BASE_URL = "http://localhost:3000";
 
+  // Helper function to evaluate an XPath expression and return nodes
   function evaluateXPath(xpath, context = document) {
     const iterator = document.evaluate(
       xpath,
@@ -16,30 +16,67 @@
     for (let i = 0; i < iterator.snapshotLength; i++) {
       nodes.push(iterator.snapshotItem(i));
     }
+
     return nodes;
   }
 
+  async function waitForElement(xpath, timeout = 10000) {
+    return new Promise((resolve, reject) => {
+      const interval = 100;
+      let elapsed = 0;
+
+      const check = () => {
+        const elements = evaluateXPath(xpath);
+        if (elements.length > 0) {
+          resolve(elements);
+        } else if (elapsed >= timeout) {
+          console.log(
+            "Timeout reached. Data not fully loaded. please reload the page and trying"
+          );
+          reject(new Error("Timeout waiting for element"));
+          const failed =
+            "Timeout reached. Data not fully loaded. please reload the page and trying again";
+          chrome.runtime.sendMessage({ failed });
+        } else {
+          elapsed += interval;
+          setTimeout(check, interval);
+        }
+      };
+
+      check();
+    });
+  }
+
+  // Define the XPaths
   const nameXPath =
-  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]"
-    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]";
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/span/span[1]";
+  const descriptionXPath =
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[3]";
   const followersXPath =
-  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[1]/text()[1]"
-    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[1]/text()[1]";
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[5]/div[2]/a/span[1]/span";
   const followingXpath =
-  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]"
-    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]";
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[5]/div[1]/a/span[1]/span";
   const profileImageXPath =
-  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/div/div/svg/g/image"
-    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/a/div/svg";
+    "/html/body/div[1]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div/div/div/div[1]/div[1]/div[2]/div/div[2]/div/a";
 
+  // Attendre que les éléments soient disponibles
+  await waitForElement(nameXPath);
+  await waitForElement(followersXPath);
+  await waitForElement(followingXpath);
 
+  // Extract data
   const nameElements = evaluateXPath(nameXPath);
+  const descriptionElements = evaluateXPath(descriptionXPath);
   const followersElements = evaluateXPath(followersXPath);
   const followingElements = evaluateXPath(followingXpath);
   const profileImageElements = evaluateXPath(profileImageXPath);
 
   const name =
     nameElements.length > 0 ? nameElements[0].textContent.trim() : "None";
+  const description =
+    descriptionElements.length > 0
+      ? descriptionElements[0].textContent.trim()
+      : "Not found";
   const followers =
     followersElements.length > 0
       ? followersElements[0].textContent.trim()
@@ -51,14 +88,14 @@
   const profileImage =
     profileImageElements.length > 0
       ? profileImageElements[0].getAttribute("href") ||
-        profileImageElements[0].getAttribute("xlink:href")
-      : "Not found";
+        profileImageElements[0].getAttribute("src")
+      : " ";
 
-    // Get data before sending to backend
-    if (!name || !followers || !following) {
-      console.error("Données incomplètes ou manquantes. Requête annulée.");
-      return;
-    }
+  // Get data before sending to backend
+  if (!name || !followers || !following) {
+    console.error("Données incomplètes ou manquantes. Requête annulée.");
+    return;
+  }
 
   // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
   async function getUserData() {
@@ -68,8 +105,7 @@
           reject(
             new Error(
               "Erreur lors de la récupération des données : " +
-                chrome.runtime
-                .lastError
+                chrome.runtime.lastError
             )
           );
         } else {
@@ -83,7 +119,7 @@
   async function getExistingProfile(profileUrl) {
     try {
       const response = await fetch(
-        `${BASE_URL}/facebook/${encodeURIComponent(profileUrl)}`,
+        `${BASE_URL}/x/${encodeURIComponent(profileUrl)}`,
         {
           method: "GET",
           headers: {
@@ -94,7 +130,6 @@
 
       if (response.ok) {
         const data = await response.json();
-        console.log("data", data)
         return data;
       } else {
         console.warn("Profil non trouvé, un nouveau sera créé.");
@@ -110,13 +145,12 @@
   let userData = null;
   try {
     userData = await getUserData();
-    console.log("userData", userData);
   } catch (error) {
     console.error(error);
   }
 
   console.log("user data 2", userData);
-  // If user data is not found, handle accordingly (e.g., not sending userId)
+  //  If user data is not found, handle accordingly (e.g., not sending userId)
   if (!userData || !userData.data.userId) {
     console.error(
       "Utilisateur non connecté ou données utilisateur manquantes."
@@ -140,31 +174,32 @@
     ? existingUserIds
     : [...existingUserIds, currentUserId];
 
-  // const userId = userData.data.userId;
-
+  // Préparer les données à envoyer
   const extractedData = {
-    userId: updatedUserIds,
     name,
+    description,
     followers,
     following,
-    plateform: "Facebook",
-    profileImage,
+    plateform: "X",
+    profileImage: `https://x.com${profileImage}`,
     profileUrl,
+    userId: updatedUserIds,
   };
 
-  console.log("Extracted Data:", extractedData);
+  console.log("Données extraites :", extractedData);
 
   function areDataValid(data) {
-    return (
-      data.name !== "None" &&
-      data.followers !== "0"    );
+    return data.name !== "None" && data.followers !== "0";
   }
 
+  // Send data to the backend
   async function sendToBackend(data) {
     try {
-      const response = await fetch(`${BASE_URL}/facebook`, {
+      const response = await fetch(`${BASE_URL}/x`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
       });
 
@@ -175,24 +210,19 @@
         console.error("Error sending data to the backend.");
         return false;
       }
-
     } catch (error) {
       console.error("Network error:", error);
       return false;
     }
   }
 
-  
-
-  // sendToBackend(extractedData);
-
+  // Post the data to the backend
   if (areDataValid(extractedData)) {
     const success = await sendToBackend(extractedData);
     console.log("Success:", success);
     chrome.runtime.sendMessage({ success });
   } else {
     console.warn("Data is incomplete or invalid. Skipping POST request.");
-    // alert("Data is incomplete or invalid, please reload and try again!");
-
+    alert("Data is incomplete or invalid, please reload and try again!");
   }
 })();

@@ -1,9 +1,8 @@
 (async () => {
-  console.log("Running script for Facebook...");
-
-  const BASE_URL = "https://influenceur-list.onrender.com";
+  const BASE_URL = "https://influenceurs.onrender.com";
   // const BASE_URL = "http://localhost:3000";
 
+  // Helper function to evaluate an XPath expression and return nodes
   function evaluateXPath(xpath, context = document) {
     const iterator = document.evaluate(
       xpath,
@@ -16,49 +15,50 @@
     for (let i = 0; i < iterator.snapshotLength; i++) {
       nodes.push(iterator.snapshotItem(i));
     }
+
     return nodes;
   }
 
+  // Define the XPaths
   const nameXPath =
-  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]"
-    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]";
+    "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/div[2]/div[1]/div[1]/span[1]/a/h1";
+  const descriptionXPath =
+    "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/div[2]/div[1]/div[2]";
+  const locationXPath =
+    "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/div[2]/div[2]/span[1]";
   const followersXPath =
-  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[1]/text()[1]"
-    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[1]/text()[1]";
-  const followingXpath =
-  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]"
-    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]";
+    "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/ul/li[1]/span";
+  const connectionXpath =
+    "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/ul/li[2]/span/span";
   const profileImageXPath =
-  "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/div/div/svg/g/image"
-    // "/html/body/div[1]/div/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/a/div/svg";
+    "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/div/span/img";
 
-
+  // Extract data
   const nameElements = evaluateXPath(nameXPath);
+  const descriptionElements = evaluateXPath(descriptionXPath);
+  const locationElements = evaluateXPath(locationXPath);
   const followersElements = evaluateXPath(followersXPath);
-  const followingElements = evaluateXPath(followingXpath);
+  const connectionElements = evaluateXPath(connectionXpath);
   const profileImageElements = evaluateXPath(profileImageXPath);
 
   const name =
     nameElements.length > 0 ? nameElements[0].textContent.trim() : "None";
+  const description =
+    descriptionElements.length > 0
+      ? descriptionElements[0].textContent.trim()
+      : "None";
+  const location =
+    locationElements.length > 0 ? locationElements[0].textContent.trim() : "0";
   const followers =
     followersElements.length > 0
       ? followersElements[0].textContent.trim()
       : "0";
-  const following =
-    followingElements.length > 0
-      ? followingElements[0].textContent.trim()
+  const connection =
+    connectionElements.length > 0
+      ? connectionElements[0].textContent.trim()
       : "0";
   const profileImage =
-    profileImageElements.length > 0
-      ? profileImageElements[0].getAttribute("href") ||
-        profileImageElements[0].getAttribute("xlink:href")
-      : "Not found";
-
-    // Get data before sending to backend
-    if (!name || !followers || !following) {
-      console.error("Données incomplètes ou manquantes. Requête annulée.");
-      return;
-    }
+    profileImageElements.length > 0 ? profileImageElements[0].src : " ";
 
   // Fonction asynchrone pour récupérer les données utilisateur depuis le chrome storage
   async function getUserData() {
@@ -68,8 +68,7 @@
           reject(
             new Error(
               "Erreur lors de la récupération des données : " +
-                chrome.runtime
-                .lastError
+                chrome.runtime.lastError
             )
           );
         } else {
@@ -83,7 +82,7 @@
   async function getExistingProfile(profileUrl) {
     try {
       const response = await fetch(
-        `${BASE_URL}/facebook/${encodeURIComponent(profileUrl)}`,
+        `${BASE_URL}/linkedin/${encodeURIComponent(profileUrl)}`,
         {
           method: "GET",
           headers: {
@@ -94,7 +93,6 @@
 
       if (response.ok) {
         const data = await response.json();
-        console.log("data", data)
         return data;
       } else {
         console.warn("Profil non trouvé, un nouveau sera créé.");
@@ -145,9 +143,11 @@
   const extractedData = {
     userId: updatedUserIds,
     name,
+    description,
+    location,
     followers,
-    following,
-    plateform: "Facebook",
+    connection,
+    plateform: "Linkedin",
     profileImage,
     profileUrl,
   };
@@ -157,14 +157,19 @@
   function areDataValid(data) {
     return (
       data.name !== "None" &&
-      data.followers !== "0"    );
+      data.followers !== "0" &&
+      data.connection !== "0"
+    );
   }
 
+  // Send data to the backend
   async function sendToBackend(data) {
     try {
-      const response = await fetch(`${BASE_URL}/facebook`, {
+      const response = await fetch(`${BASE_URL}/linkedin`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
       });
 
@@ -175,16 +180,11 @@
         console.error("Error sending data to the backend.");
         return false;
       }
-
     } catch (error) {
       console.error("Network error:", error);
       return false;
     }
   }
-
-  
-
-  // sendToBackend(extractedData);
 
   if (areDataValid(extractedData)) {
     const success = await sendToBackend(extractedData);
@@ -192,7 +192,7 @@
     chrome.runtime.sendMessage({ success });
   } else {
     console.warn("Data is incomplete or invalid. Skipping POST request.");
-    // alert("Data is incomplete or invalid, please reload and try again!");
-
+    window.location.reload();
+    alert("Data is incomplete or invalid, please reload and try again!");
   }
 })();
