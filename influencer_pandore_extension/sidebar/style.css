@@ -50,7 +50,7 @@ section {
 }
 
 .right {
-  display: flex;
+  display: inline-flex;
   margin-top: 20px;
 }
 

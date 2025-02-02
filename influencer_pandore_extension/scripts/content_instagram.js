@@ -53,7 +53,7 @@
     posts: cleanNumber(posts) || "0",
     profileImage: getXPathText(xPaths.profileImage, "src") || " ",
     profileUrl: window.location.href,
-    platform: "Facebook",
+    plateform: "Instagram",
   };
 
   console.log("Extracted Data:", extractedData);
@@ -118,7 +118,7 @@
       chrome.runtime.sendMessage({ networkError });
     }
   } else {
-    chrome.runtime.sendMessage({ dataNotExtracted });
     console.warn("Invalid data. Skipping POST request.");
+    chrome.runtime.sendMessage({ dataNotExtracted: true });
   }
 })();

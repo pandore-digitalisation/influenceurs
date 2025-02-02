@@ -109,7 +109,7 @@
       chrome.runtime.sendMessage({ networkError });
     }
   } else {
-    chrome.runtime.sendMessage({ dataNotExtracted });
     console.warn("Invalid data. Skipping POST request.");
+    chrome.runtime.sendMessage({ dataNotExtracted: true });
   }
 })();

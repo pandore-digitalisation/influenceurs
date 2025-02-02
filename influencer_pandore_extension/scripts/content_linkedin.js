@@ -49,7 +49,7 @@
   let backFollowers = getXPathText(xPaths.backFollowers);
   let connection = getXPathText(xPaths.connection);
   let connection_1 = getXPathText(xPaths.connection_1);
-  let followers_1 = getXPathText(xPaths.followers_1);
+  // let followers_1 = getXPathText(xPaths.followers_1);
 
   if (!connection && !connection_1) {
     connection = followers || " ";
@@ -63,8 +63,8 @@
     name: getXPathText(xPaths.name) || "None",
     description: getXPathText(xPaths.description) || "None",
     location: getXPathText(xPaths.location) || " ",
-    followers: cleanNumber(followers) || "0",
-    connection: cleanNumber(connection) || "0",
+    followers: cleanNumber(followers) || " ",
+    connection: cleanNumber(connection) || " ",
     profileImage: getXPathText(xPaths.profileImage, "src") || " ",
     profileUrl: window.location.href,
     plateform: "Linkedin",
@@ -113,8 +113,8 @@
     ? existingProfile.userId
     : [...(existingProfile?.userId || []), currentUserId];
 
-  const isValidData = ({ name, followers, connection }) =>
-    name !== "None" && followers !== "0" && connection !== "None";
+  const isValidData = ({ name, followers, connection, following }) =>
+    name !== "None" && followers !== "0" && connection !== "None" && following !== "0";
 
   if (isValidData(extractedData)) {
     try {
@@ -133,6 +133,6 @@
     }
   } else {
     console.warn("Invalid data. Skipping POST request.");
-    chrome.runtime.sendMessage({ dataNotExtrated });
+    chrome.runtime.sendMessage({ dataNotExtracted: true });
   }
 })();
