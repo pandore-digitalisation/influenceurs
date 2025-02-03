@@ -38,7 +38,7 @@
         "https://x.com/*",
         "https://www.tiktok.com/*",
         "http://localhost:3001/*",
-        "https://pandoreinfluencerfrontend.vercel.app/"
+        "https://pandoreinfluencerfrontend.vercel.app/*"
       ],
       "js": ["content.js"]
     }
@@ -66,7 +66,8 @@
         "https://www.linkedin.com/*",
         "https://x.com/*",
         "https://www.tiktok.com/*",
-        "http://localhost:3001/*"
+        "http://localhost:3001/*",
+        "https://pandoreinfluencerfrontend.vercel.app/*"
       ]
     }
   ],
