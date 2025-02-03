@@ -4,6 +4,13 @@ let token = null;
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // console.log("Message reçu :", message);
 
+  if (message.action === "fetchData") {
+  // Simulez la récupération des données pour la plateforme
+  const fetchedData = { message: `Data fetched successfully for ${message.platform}` };
+  sendResponse(fetchedData); // Assurez-vous de renvoyer un objet contenant la clé "message"
+  return true;
+}
+
   if (message.action === "getUserData") {
     chrome.storage.local.get(["userData", "token"], (result) => {
       sendResponse({ userData: result.userData || null, token: result.token || null });

@@ -344,7 +344,7 @@ async function displayScrappedData(dataToShow) {
       row.innerHTML = `
         <td><a href="${profileUrl}" target="_blanc" style="text-decoration="none" title=${name}>${name}</a></td>
         <td>${followers}</td>
-        <td>${following || connection || " "}</td>
+        <td>${following || "-" || " "}</td>
         <td>${plateform}</td>
       `;
       scrappedData.appendChild(row);
@@ -514,7 +514,7 @@ async function displayProfiles(profiles) {
       const row = document.createElement("tr");
       const name = truncateName(item.name);
       const followers = item.followers;
-      const followingOrConnection = item.following || item.connection || " ";
+      const followingOrConnection = item.following || "-" || " ";
       const profileUrl = item.profileUrl;
       const plateform = item.plateform;
 

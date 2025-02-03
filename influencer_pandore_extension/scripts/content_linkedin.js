@@ -36,7 +36,7 @@
     followers_1:
       "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/ul/li/span",
     backFollowers:
-      "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[2]/div[2]/div/div/div/p/span[1]",
+      "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[3]/div[2]/div/div/div/p/span[1]/text()",
     connection:
       "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/ul/li[2]/span/span",
     connection_1:
@@ -51,20 +51,25 @@
   let connection_1 = getXPathText(xPaths.connection_1);
   // let followers_1 = getXPathText(xPaths.followers_1);
 
-  if (!connection && !connection_1) {
-    connection = followers || " ";
-    followers = backFollowers || " ";
-  } else if (!connection && connection_1) {
-    followers = followers || " ";
-    connection = connection_1;
-  }
+  // if (!connection && !connection_1) {
+  //   connection = followers || " ";
+  //   followers = backFollowers || " ";
+  // } else if (!connection && connection_1) {
+  //   followers = followers || " ";
+  //   connection = connection_1;
+  // }
+
+  // if(followers && !connection) {
+  //   followers = backFollowers;
+  //   connection = "-";
+  // }
 
   const extractedData = {
     name: getXPathText(xPaths.name) || "None",
     description: getXPathText(xPaths.description) || "None",
-    location: getXPathText(xPaths.location) || " ",
-    followers: cleanNumber(followers) || " ",
-    connection: cleanNumber(connection) || " ",
+    location: getXPathText(xPaths.location) || "None",
+    followers: cleanNumber(followers) || "None",
+    connection: cleanNumber(connection) || "-",
     profileImage: getXPathText(xPaths.profileImage, "src") || " ",
     profileUrl: window.location.href,
     plateform: "Linkedin",
@@ -114,7 +119,7 @@
     : [...(existingProfile?.userId || []), currentUserId];
 
   const isValidData = ({ name, followers, connection, following }) =>
-    name !== "None" && followers !== "0" && connection !== "None" && following !== "0";
+    name !== "None" && followers !== "None" && connection !== "None" && following !== "None";
 
   if (isValidData(extractedData)) {
     try {

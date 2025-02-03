@@ -105,13 +105,19 @@ function injectButton(platform) {
 
       button.addEventListener("click", () => {
         console.log(`Fetching ${platform} data...`);
+        button.textContent = "Getting...";
         chrome.runtime.sendMessage(
           { action: "fetchData", platform: platform },
           (response) => {
-            console.log(response.message);
+            if (response && response.message) {
+              console.log(response.message);
+              button.textContent = `Get ${platform} Data`;
+            } else {
+              console.log("No response received or message is undefined.");
+              button.textContent = "Retry";
+            }
           }
         );
-        button.textContent = "Getting...";
       });
 
       targetElement.appendChild(button);
@@ -121,7 +127,7 @@ function injectButton(platform) {
   }
 }
 
-// Écoute les messages envoyés par l'extension
+// Écoute les messages envoyés par le bacground.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "scriptInjected") {
     alert(`Data for ${message.platform} fetched successfully!`);
@@ -202,7 +208,7 @@ button.style.borderTopLeftRadius = "8px";
 button.style.borderBottomLeftRadius = "8px";
 button.style.cursor = "pointer";
 button.style.fontSize = "14px";
-button.style.transition = "background 0.3s ease, opacity 0.3s ease"
+button.style.transition = "background 0.3s ease, opacity 0.3s ease";
 
 // Ajout du bouton au DOM
 document.body.appendChild(button);
@@ -237,7 +243,7 @@ button.addEventListener("mouseover", () => {
 });
 
 button.addEventListener("mouseout", () => {
-  button.style.opacity = "1"
+  button.style.opacity = "1";
 });
 
 // Écouter les messages envoyés par le sidebar pour le fermer
@@ -282,7 +288,7 @@ window.addEventListener("message", (event) => {
   if (event.origin !== window.location.origin) return;
 
   if (event.data.action === "logoutUser") {
-    chrome.storage.sync.remove("auth_token")
+    chrome.storage.sync.remove("auth_token");
     localStorage.removeItem("auth_token");
   }
 });

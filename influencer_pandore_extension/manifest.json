@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Aquizition",
-  "version": "1.0",
+  "version": "0.0.1",
   "description": "Get X, Instagram, Facebook, Linkedin, Tiktok page data and export in csv format",
   "permissions": ["activeTab", "scripting", "storage", "tabs"],
   "host_permissions": [
@@ -30,26 +30,6 @@
     }
   },
   "content_scripts": [
-    {
-      "matches": ["https://.com/*"],
-      "js": ["scripts/content_x.js"]
-    },
-    {
-      "matches": ["https://instagram.com/*"],
-      "js": ["./scripts/content_instagram.js"]
-    },
-    {
-      "matches": ["https://facebook.com/*"],
-      "js": ["scripts/content_facebook.js"]
-    },
-    {
-      "matches": ["https://linkedin.com/*"],
-      "js": ["scripts/content_linkedin.js"]
-    },
-    {
-      "matches": ["https://tiktok.com/*"],
-      "js": ["scripts/content_tiktok.js"]
-    },
     {
       "matches": [
         "https://www.facebook.com/*",
