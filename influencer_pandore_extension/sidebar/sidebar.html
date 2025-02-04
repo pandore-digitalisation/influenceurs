@@ -187,32 +187,40 @@
       <section>
 
         <span>
-          <div id="popup" style=" width: 30rem; display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
-            <!-- Popup -->
+          <!-- Popup -->
+          <div id="popup"
+            style=" width: 30rem; display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
             <!-- <button id="closePopupBtn">Fermer</button> -->
-            <form class="ui form segment">
-              <p style="color: #008080;">Pour créer une liste vous devez définir un <b>nom</b> et choisir <b>un ou plusieurs profiles</b> dans le menu déroulant.</p>
+            <div class="ui form segment">
+              <p style="color: #008080;">Pour créer une liste vous devez définir un <b>nom</b> et choisir <b>un ou
+                  plusieurs profiles</b> dans le menu déroulant.</p>
               <div class="two fields">
                 <div class="field">
-                  <label>Nommé votre liste.</label>
-                  <input placeholder="First Name" name="name" type="text">
+                  <label>Nomme ta liste.</label>
+                  <input placeholder="Ex: Ma liste" name="name" type="text" id="listName">
                 </div>
                 <div class="field">
-                  <label>Choisir le/les profiles.</label>
-                  <select class="ui dropdown" name="gender">
-                    <option value="">Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                  </select>
+                  <label for="profiles">Choisir le/les profiles.</label>
+                  <div class="dropdown">
+                    <div class="ui teal submit button" id="dropdownBtn">Profiles</div>
+                    <div id="profilesDropdown" class="dropdown-content" style="display: none;">
+                      <div id="profilesCheckboxContainer"><!-- Scrapped data will appear there -->                      </div>
+                    </div>
+                    <!-- <select class="ui fluid dropdown" name="profiles" id="profileSelect">
+                     
+                    </select> -->
+                  </div>
+                  <div class="ui teal submit button" id="createListSubmitBtn" style="margin-top: 15px;">Créer</div>
+                  <div class="ui error message"></div>
+                  <!-- <button id="createListSubmitBtn">Créer la liste</button> -->
                 </div>
               </div>
+            </div>
+          </div>
+          <div id="overlay"
+            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #26262623; z-index: 999;">
+          </div>
 
-              <div class="ui teal submit button">Créer</div>
-              <div class="ui error message"></div>
-            </form>
-          </div>
-          <div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #26262623; z-index: 999;">
-          </div>
         </span>
 
         <!-- <div>
