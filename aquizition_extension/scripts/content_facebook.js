@@ -1,6 +1,6 @@
 (async () => {
-  // const BASE_URL = "https://influenceur-list.onrender.com";
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = "https://influenceur-list.onrender.com";
+  // const BASE_URL = "http://localhost:3000";
 
   function getXPathText(xpath, attr = "textContent") {
     const node = document.evaluate(
@@ -18,42 +18,33 @@
   }
 
   function cleanNumber(value) {
-    if (!value) return " ";
+    if (!value) return "0";
     let cleanedValue = value.replace(/[^\dKM.]/g, "");
 
-    if (cleanedValue.endsWith("M"))
-      return parseFloat(
-        cleanedValue.replace("M", "").replace(",", "") * 1000000
-      );
-    if (cleanedValue.endsWith("K"))
-      return parseFloat(cleanedValue.replace("K", "").replace(",", "") * 1000);
+    if (cleanedValue.endsWith("M")) return parseFloat(cleanedValue.replace("M", "").replace(",", "") * 1000000);
+    if (cleanedValue.endsWith("K")) return parseFloat(cleanedValue.replace("K", "").replace(",", "") * 1000);
     return cleanedValue;
   }
 
   const xPaths = {
-    name: "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[2]/div/div/div[1]/div/a/h2/span",
-    posts:
-      "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[1]/div/span/span",
+    name: "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[1]/div/div/span/h1/text()[1]",
     followers:
-      "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[2]/div/a/span/span",
+      "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[1]/text()[1]",
     following:
-      "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[3]/div/a/span/span",
-    profileImage:
-      "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/div/span/img",
+      "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]",
+    profileImage: "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/a/div/svg",
   };
 
   let followers = getXPathText(xPaths.followers);
   let following = getXPathText(xPaths.following);
-  let posts = getXPathText(xPaths.posts);
 
   const extractedData = {
     name: getXPathText(xPaths.name) || "None",
     followers: cleanNumber(followers) || "0",
     following: cleanNumber(following) || "0",
-    posts: cleanNumber(posts) || "0",
     profileImage: getXPathText(xPaths.profileImage, "src") || " ",
     profileUrl: window.location.href,
-    plateform: "Instagram",
+    plateform: "Facebook",
   };
 
   console.log("Extracted Data:", extractedData);
@@ -70,7 +61,7 @@
   const getExistingProfile = async (profileUrl) => {
     try {
       const response = await fetch(
-        `${BASE_URL}/instagram/${encodeURIComponent(profileUrl)}`
+        `${BASE_URL}/facebook/${encodeURIComponent(profileUrl)}`
       );
       return response.ok ? response.json() : null;
     } catch (error) {
@@ -99,12 +90,12 @@
     ? existingProfile.userId
     : [...(existingProfile?.userId || []), currentUserId];
 
-  const isValidData = ({ name, followers, following, posts }) =>
-    name !== "None" && followers !== "None" && following !== "None" && posts !== "None";
+  const isValidData = ({ name, followers, following }) =>
+    name !== "None" && followers !== "None" && following !== "None";
 
   if (isValidData(extractedData)) {
     try {
-      const response = await fetch(`${BASE_URL}/instagram`, {
+      const response = await fetch(`${BASE_URL}/facebook`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(extractedData),

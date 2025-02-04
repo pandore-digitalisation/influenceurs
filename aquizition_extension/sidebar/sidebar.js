@@ -1,8 +1,8 @@
 console.log("sidebar.js chargé avec succès !");
-// const BASE_URL = "https://influenceur-list.onrender.com";
-// const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
-const FRONT_BASE_URL = "http://localhost:3001";
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://influenceur-list.onrender.com";
+const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
+// const FRONT_BASE_URL = "http://localhost:3001";
+// const BASE_URL = "http://localhost:3000";
 
 let tokenGlobal;
 let userData;
