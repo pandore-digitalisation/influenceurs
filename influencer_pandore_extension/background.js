@@ -53,14 +53,14 @@ chrome.action.onClicked.addListener((tab) => {
 });
 
 
-// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-//   if (message.action === "userLoggedIn") {
-//     console.log("Token reçu :", message.token);
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "userLoggedIn") {
+    console.log("Token reçu :", message.token);
 
-//     chrome.storage.local.set({ token: message.token }, () => {
-//       console.log("Token enregistré dans chrome.storage");
-//     });
+    chrome.storage.local.set({ token: message.token }, () => {
+      console.log("Token enregistré dans chrome.storage");
+    });
 
-//     sendResponse({ status: "OK" });
-//   }
-// });
+    sendResponse({ status: "OK" });
+  }
+});
