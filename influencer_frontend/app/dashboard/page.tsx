@@ -49,7 +49,7 @@ export default function Dashboard() {
     if (token) {
       localStorage.setItem("token", token);
 
-      window.postMessage({ action: "userLoggedIn", token }, "*");
+      // window.postMessage({ action: "userLoggedIn", token }, "*");
 
       const fetchUserData = async () => {
         try {
@@ -97,6 +97,8 @@ export default function Dashboard() {
           };
 
           fetchUserLists();
+
+          window.postMessage({ action: "userLoggedIn", token, data }, "*");
 
           // Envoi des infos utilisateur au sidebar
           // window.postMessage({ action: "updateUserInfo", userData: data }, "*");
@@ -158,10 +160,8 @@ export default function Dashboard() {
 
         window.postMessage({ action: "logoutUser", token }, "*");
 
-
-        window.postMessage({action: "logoutUser",},window.location.origin);
+        window.postMessage({ action: "logoutUser" }, window.location.origin);
         // window.postMessage({ action: "logoutUser",  }, "*");
-
 
         window.location.href = "/login";
       } else {

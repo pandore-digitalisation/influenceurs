@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aquizition Extension</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="../libs/bootstrap.min.css" />
+  <link rel="stylesheet" href="../libs/semantic.min.css" />
+</head>
+
+<body>
+  <div>
+    <div class="close-container">
+      <button id="close-sidebar-btn">-</button>
+    </div>
+
+    <div class="welcome" id="welcome-screen" style="display: none; text-align: center;">
+      <h2>Bienvenue !</h2>
+      <p>Veuillez cliquer sur le boutton suivant pour conituer.</p>
+      <button class="ui small compact button" id="loginBtn">Se connecter</button>
+      <button class="ui small compact button" id="createAccountBtn">Creer un compte</button>
+    </div>
+  </div>
+  <div id="main-content" style="display: none;">
+    <div id="header" style="background-color: #111827;">
+      <span id="auth"></span>
+      <!-- <button id="close-sidebar-btn">-</button> -->
+
+      <!-- Platforms to use alert -->
+      <div style="height: 66px; margin-top: 15px;">
+        <div id="usePlatformsAlert" style="margin-top: 15px;">
+          <div class="ui info message">
+            <i class="close icon" id="usePlatformsAlertClose"></i>
+            <div class="header"><i class="bullhorn icon"></i>Assurez-vous d'être sur un compte public de créateur de
+              contenu avant de cliquer sur "Obtenir" !</div>
+          </div>
+        </div>
+      </div>
+      <span class="right" style="gap: 2px;">
+        <div class="ui mini form" style="width: 150px;">
+          <div class="field">
+            <select id="listFilter">
+              <option value="">Votre Listes</option>
+            </select>
+          </div>
+        </div>
+        <button class="mini ui button" style="margin-right: 0px;" id="exportBtn" disabled><i
+            class="download icon"></i></button>
+        <button class="mini ui button" id="createListBtn" style="margin: 0px;">Créer liste</button>
+        <button class="mini ui button" id="scrapeBtn">Obtenir</button>
+        <div class="ui small active inline loader" id="loader" style="display: none;"></div>
+      </span>
+      <div>
+        <div></div>
+        <!-- This platform Info message -->
+        <span>
+          <!-- Profil saved successfully  message -->
+          <div class="ui success message" style="display: none; margin: 1rem 0;" id="dataGetSuccessMessage">
+            <i class="close icon" id="dataGetSuccessMessageCLose"></i>
+            <div class="header">
+              Vos données ont été sauvegardées avec succès.
+            </div>
+            <p>Vous pouvez maintenant les consulter dans votre tableau de bord ou l'utiliser pour créer une liste.</p>
+          </div>
+          <!-- This platform is not supported message -->
+          <div class="ui info message" style="display: none;" id="notSupportedMessage">
+            <i class="close icon" id="notSupportedMessageClose"></i>
+            <div class="header">
+              Cette plateforme n'est pas prise en charge!
+            </div>
+            <ul class="list">
+              <li>Aller sur X, TikTok, LinkedIn, Instagram ou Facebook</li>
+            </ul>
+          </div>
+          <!-- Data not getted error message -->
+          <div class="ui error message" style="display: none;" id="dataGetErrorsMessage">
+            <i class="close icon" id="dataGetErrorsMessageClose"></i>
+            <div class="header">
+              Oops! Des erreurs se sont glissées dans votre envoi.
+            </div>
+            <p>Veuillez rafraîchir la page et réessayer.</p>
+          </div>
+        </span>
+        <div>
+          <div style="margin-top: 10px;">
+            <!-- No scrapped profile data found message -->
+            <div class="ui negative message" id="noProfileListData" style="display: none;">
+              <!-- <i class="close icon"></i> -->
+              <div class="header">
+                Désolé !, vous n'avez pas de données liste.
+              </div>
+              <p>Veuillez cliquer sur le bouton <b>Créé liste</b> pour créer une liste avec vos données.
+              </p>
+            </div>
+          </div>
+          <div style="margin-top: 5px;" id="profileListData">
+            <table class="ui celled table unstackable" id="userListsProfiles">
+              <thead>
+                <tr>
+                  <th>
+                    <div class="ui checked checkbox"><input type="checkbox" id="selectAllProfilesLists"><label></label>
+                    </div>
+                  </th>
+                  <th>Nom</th>
+                  <th>Followers</th>
+                  <th>Following</th>
+                  <th>Platefome</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Profile list data will appear there -->
+              </tbody>
+            </table>
+            <!-- Pagination Controls -->
+            <div class="ui mini right floated pagination menu" style="margin-bottom: 5px;">
+              <a class="icon item" id="listPrevBtn">
+                <i class="left chevron icon"></i>
+              </a>
+              <a class="item" id="listPageInfo"></a>
+              <a class="icon item" id="listNextBtn">
+                <i class="right chevron icon"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="ui card" style="width: 100%; box-shadow: non; margin-top: 60px;">
+            <div class="content" style="margin-top: 5px;">
+              <div class="" style="text-align: center;">Statistiques</div>
+              <div class="meta"></div>
+              <div class="description">
+                <p></p>
+                <p></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin: 15px;">
+          Vos Données
+        </div>
+
+        <div>
+          <div>
+            <!-- No scrapped profile data found message -->
+            <div class="ui negative message" id="noScrappedData" style="display: none;">
+              <i class="close icon"></i>
+              <div class="header">
+                We're sorry we can't apply that discount
+              </div>
+              <p>That offer has expired
+              </p>
+            </div>
+          </div>
+          <div id="scrappedData">
+            <table class="ui selectable celled table unstackable" id="scrappedDataTable">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Followers</th>
+                  <th>Following</th>
+                  <th>Plateforme</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Scrapped data will appear there -->
+              </tbody>
+            </table>
+            <!-- Pagination Controls -->
+            <div class="ui mini right floated pagination menu">
+              <a class="icon item" id="prevBtn">
+                <i class="left chevron icon"></i>
+              </a>
+              <a class="item" id="pageInfo"></a>
+              <a class="icon item" id="nextBtn">
+                <i class="right chevron icon"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- <div class="ui divider" style="margin: 0"></div> -->
+      <section>
+
+        <span>
+          <!-- Popup -->
+          <div id="popup"
+            style=" width: 30rem; display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
+            <!-- <button id="closePopupBtn">Fermer</button> -->
+            <div class="ui form segment">
+              <p style="color: #008080;">Pour créer une liste vous devez définir un <b>nom</b> et choisir <b>un ou
+                  plusieurs profiles</b> dans le menu déroulant.</p>
+              <div class="two fields">
+                <div class="field">
+                  <label>Nomme ta liste.</label>
+                  <input placeholder="Ex: Ma liste" name="name" type="text" id="listName">
+                </div>
+                <div class="field">
+                  <label for="profiles">Choisir le/les profiles.</label>
+                  <div class="dropdown">
+                    <div class="ui teal submit button" id="dropdownBtn">Profiles</div>
+                    <div id="profilesDropdown" class="dropdown-content" style="display: none;">
+                      <div id="profilesCheckboxContainer"><!-- Scrapped data will appear there -->                      </div>
+                    </div>
+                    <!-- <select class="ui fluid dropdown" name="profiles" id="profileSelect">
+                     
+                    </select> -->
+                  </div>
+                  <div class="ui teal submit button" id="createListSubmitBtn" style="margin-top: 15px;">Créer</div>
+                  <div class="ui error message"></div>
+                  <!-- <button id="createListSubmitBtn">Créer la liste</button> -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="overlay"
+            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #26262623; z-index: 999;">
+          </div>
+
+        </span>
+
+        <!-- <div>
+          ok
+        </div>
+
+        <div>
+          ok
+        </div>
+
+        <div>
+          ok
+        </div> -->
+
+      </section>
+    </div>
+
+    <section>
+
+
+    </section>
+
+    <script src="sidebar.js"></script>
+    <script src="../libs/bootstrap.bundle.min.js"></script>
+    <script src="../libs/jquery-3.6.0.min.js"></script>
+    <script src="../libs/semantic.min.js"></script>
+    <script src="../libs/xlsx.full.min.js"></script>
+</body>
+
+</html>

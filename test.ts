@@ -130,3 +130,108 @@ createListSubmitBtn.addEventListener("click", async () => {
 </div>
 
 <div id="overlay" class="overlay" style="display: none;"></div>
+
+
+
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.action === "userLoggedIn" && message.token) {
+    chrome.storage.sync.set({ auth_token: message.token }, () => {
+      console.log("Token sauvegardé :", message.token);
+      sendResponse({ status: "success" });
+    });
+
+    // Permet de répondre de manière asynchrone
+    return true;
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Next.js - AuthContext.js
+import { createContext, useContext, useEffect, useState } from 'react';
+
+const AuthContext = createContext(null);
+
+export const AuthProvider = ({ children }) => {
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem('authToken');
+    if (savedToken) setToken(savedToken);
+
+    const handleStorageChange = (event) => {
+      if (event.key === 'authToken') {
+        setToken(event.newValue);
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const login = (newToken) => {
+    localStorage.setItem('authToken', newToken);
+    setToken(newToken);
+    window.postMessage({ type: 'LOGIN', token: newToken }, '*');
+  };
+
+  const logout = () => {
+    localStorage.removeItem('authToken');
+    setToken(null);
+    window.postMessage({ type: 'LOGOUT' }, '*');
+  };
+
+  return (
+    <AuthContext.Provider value={{ token, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => useContext(AuthContext);
+
+
+// Next.js - pages/_app.js
+import { AuthProvider } from '../context/AuthContext';
+
+function MyApp({ Component, pageProps }) {
+  return (
+    <AuthProvider>
+      <Component {...pageProps} />
+    </AuthProvider>
+  );
+}
+
+export default MyApp;
+
+
+// Extension Chrome - background.js
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'LOGIN') {
+    console.log('User logged in:', message.token);
+  }
+  if (message.type === 'LOGOUT') {
+    console.log('User logged out');
+  }
+});
+
+
+// Extension Chrome - content.js
+window.addEventListener('message', (event) => {
+  if (event.source !== window) return;
+
+  if (event.data.type === 'LOGIN' || event.data.type === 'LOGOUT') {
+    chrome.runtime.sendMessage(event.data);
+  }
+});
