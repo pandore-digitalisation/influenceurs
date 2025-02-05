@@ -34,7 +34,7 @@ function refreshSidebar() {
   chrome.storage.sync.get(["auth_token", "userData"], (result) => {
     if (result.auth_token) {
       tokenGlobal = result.auth_token;
-  
+
       console.log("Token récupéré :", tokenGlobal);
       showMainContent();
       fetchAllSidebarData(tokenGlobal);
@@ -49,17 +49,13 @@ function refreshSidebar() {
       displayLoggedOutState();
       showWelcomeScreen();
       // console.warn("Aucun token trouvé, utilisateur déconnecté.");
-
     }
   });
 }
 
 // Récupérer toutes les données nécessaires au sidebar
 function fetchAllSidebarData(token) {
-  Promise.all([
-    fetchUserData(token),
-    fetchOtherSidebarData(token),
-  ])
+  Promise.all([fetchUserData(token), fetchOtherSidebarData(token)])
     .then(() => console.log("Toutes les données ont été chargées."))
     .catch((error) =>
       console.error("Erreur lors du chargement des données :", error)
@@ -657,22 +653,25 @@ if (exportBtn) {
   console.error("Le bouton d'export avec l'ID 'exportBtn' est introuvable.");
 }
 
-//-------------  CREATE LIST  POPUP -------------//
+//-------------  CREATE LIST POPUP -------------//
 
 const openPopupBtn = document.getElementById("createListBtn");
 // const closePopupBtn = document.getElementById("closePopupBtn");
 const popup = document.getElementById("popup");
-const profileSelect = document.getElementById("profileSelect")
+const profileSelect = document.getElementById("profileSelect");
 const overlay = document.getElementById("overlay");
-const profilesCheckboxContainer = document.getElementById("profilesCheckboxContainer");
+const profilesCheckboxContainer = document.getElementById(
+  "profilesCheckboxContainer"
+);
 const createListSubmitBtn = document.getElementById("createListSubmitBtn");
 const dropdownBtn = document.getElementById("dropdownBtn");
 const profilesDropdown = document.getElementById("profilesDropdown");
+const listCreateSuccess = document.getElementById("listCreateSuccess");
 
 let allProfiles = [];
 
 // Ouvrir le popup
-openPopupBtn.addEventListener("click", async() => {
+openPopupBtn.addEventListener("click", async () => {
   popup.style.display = "block";
   overlay.style.display = "block";
 
@@ -684,7 +683,6 @@ openPopupBtn.addEventListener("click", async() => {
       loadProfiles(userId);
     }
   });
-
 });
 
 // Fermer le popup en cliquant sur l'overlay
@@ -697,7 +695,7 @@ function closePopup() {
   popup.style.display = "none";
   overlay.style.display = "none";
   profilesCheckboxContainer.innerHTML = "";
-  profilesDropdown.style.display = "none"; 
+  profilesDropdown.style.display = "none";
 }
 
 // Fermer le popup
@@ -708,7 +706,8 @@ closePopupBtn.addEventListener("click", () => {
 
 // Gestion du dropdown
 dropdownBtn.addEventListener("click", () => {
-  profilesDropdown.style.display = profilesDropdown.style.display === "block" ? "none" : "block";
+  profilesDropdown.style.display =
+    profilesDropdown.style.display === "block" ? "none" : "block";
 });
 
 // Charger les profils et les afficher dans le <select>
@@ -718,26 +717,22 @@ async function loadProfiles(userId) {
   allProfiles = profiles;
   profilesCheckboxContainer.innerHTML = "";
 
-  profiles.forEach(profile => {
+  profiles.forEach((profile) => {
     const checkboxWrapper = document.createElement("div");
     checkboxWrapper.classList.add("checkbox-item");
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    checkbox.id = `profile-${profile._id}`;
+    checkbox.id = profile._id;
     checkbox.value = profile._id;
 
     const label = document.createElement("label");
-    label.htmlFor = `profile-${profile._id}`;
-    label.textContent = profile.name; 
+    label.htmlFor = profile._id;
+    label.textContent = profile.name;
 
     checkboxWrapper.appendChild(checkbox);
     checkboxWrapper.appendChild(label);
     profilesCheckboxContainer.appendChild(checkboxWrapper);
-
-    // option.value = profile.id;
-    // option.textContent = profile.name;
-    // profileSelect.appendChild(option);
   });
 }
 
@@ -745,24 +740,40 @@ async function loadProfiles(userId) {
 createListSubmitBtn.addEventListener("click", async () => {
   const listName = document.getElementById("listName").value;
 
-  const selectedProfileIds = Array.from(profilesCheckboxContainer.querySelectorAll("input[type='checkbox']:checked"))
-    .map(checkbox => checkbox.value);
+  const selectedProfileIds = Array.from(
+    profilesCheckboxContainer.querySelectorAll("input[type='checkbox']:checked")
+  ).map((checkbox) => checkbox.value);
 
   if (!listName || selectedProfileIds.length === 0) {
-    alert("Veuillez remplir tous les champs.");
+    const listCreateError = document.getElementById("listCreateError");
+
+    listCreateError.style.display = "block";
+
+    setTimeout(() => {
+      listCreateError.style.display = "none";
+    }, 500);
+
     return;
   }
 
-  // Obtenir les données complètes des profils sélectionnés
-  const selectedProfiles = allProfiles.filter(profile => selectedProfileIds.includes(profile._id));
+  // if (!listName || selectedProfileIds.length === 0) {
+  //   // alert("Veuillez remplir tous les champs.");
+  //   document.getElementById("listCreateError").style.display = "block";
+  //   return;
+  // }
 
-  const profilesData = selectedProfiles.map(profile => ({
+  // Obtenir les données complètes des profils sélectionnés
+  const selectedProfiles = allProfiles.filter((profile) =>
+    selectedProfileIds.includes(profile._id)
+  );
+
+  const profilesData = selectedProfiles.map((profile) => ({
     id: profile._id,
     name: profile.name,
     followers: profile.followers,
     following: profile.following,
     plateform: profile.plateform,
-    profileUrl: profile.profileUrl
+    profileUrl: profile.profileUrl,
   }));
 
   try {
@@ -780,8 +791,17 @@ createListSubmitBtn.addEventListener("click", async () => {
     });
 
     if (response.ok) {
-      alert("Liste créée avec succès !");
-      closePopup();
+      listCreateSuccess.style.display = "block";
+
+      setTimeout(() => {
+        listCreateSuccess.style.display = "none";
+        closePopup();
+      }, 10000);
+      
+      loader.style.display = "flex";
+      refreshSidebar();
+      // closePopup();
+      // setTimeout(closePopup(), 3000);
     } else {
       throw new Error("Erreur lors de la création de la liste.");
     }

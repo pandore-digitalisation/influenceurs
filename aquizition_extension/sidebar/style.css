@@ -89,17 +89,17 @@ section {
   text-align: left;
 }
 
-.dropdown-content {
-  position: absolute;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  max-height: 200px;
-  overflow-y: auto;
+#profilesDropdown {
+  position: absolute; 
+  top: 100%;
+  left: 0;
+  z-index: 1050;
+  background: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   width: 100%;
-  z-index: 1000;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-top: 1px;
+  margin-top: 2px; 
 }
+
 
 .checkbox-item {
   padding: 8px;
@@ -112,3 +112,14 @@ section {
   background-color: #f9f9f9;
 }
 
+.ui.card {
+  position: absolute;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 1px;
+}

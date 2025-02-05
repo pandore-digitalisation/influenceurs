@@ -200,20 +200,24 @@
                   plusieurs profiles</b> dans le menu déroulant.</p>
               <div class="two fields">
                 <div class="field">
-                  <label>Nomme ta liste.</label>
+                  <div id="listCreateSuccess" style="display: none;">Liste créée avec succès !</div>
+                  <div id="listCreateError" style="display: none;">Veuillez remplir tous les champs.</div>
+
+                  <label>Nomme la liste.</label>
                   <input placeholder="Ex: Ma liste" name="name" type="text" id="listName">
                 </div>
                 <div class="field">
                   <label for="profiles">Choisir le/les profiles.</label>
                   <div class="dropdown">
-                    <button class="ui basic button" id="dropdownBtn" style="position: relative;">Profiles<i class="dropdown icon""></i></button>
-                    <div id="profilesDropdown" class="dropdown-content" style="display: none;">
-                      <div id="profilesCheckboxContainer"><!-- Scrapped data will appear there --></div>
+                    <button class="ui basic button" id="dropdownBtn" style="position: relative; padding: 13px 1px 13px 1em">Profiles<i class="dropdown icon" style="margin-left: 293px;"></i></button>
+                    <div id="profilesDropdown" class="dropdown-content ui card" style="display: none; width: 100%;">
+                      
+                      <!-- Scrapped data will appear there -->
+                        <div class="ui checkbox" id="profilesCheckboxContainer"></div>
                     </div>
                   </div>
                   <div class="ui teal submit button" id="createListSubmitBtn" style="margin-top: 15px;">Créer</div>
-                  <div class="ui error message">vv</div>
-                  <!-- <button id="createListSubmitBtn">Créer la liste</button> -->
+                  <div class="ui error message"></div>
                 </div>
               </div>
             </div>
