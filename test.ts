@@ -152,86 +152,53 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 
 
+<span>
+  <!-- Popup -->
+  <div id="popup" style="width: 30rem; display: none; position: fixed; top: 50%; left: 50%; 
+      transform: translate(-50%, -50%); z-index: 1000; background: white; padding: 20px; position: relative;">
+    
+    <!-- Close Button -->
+    <button class="circular ui icon button mini" id="closePopupBtn" 
+        style="position: absolute; top: 10px; right: 10px;">
+      <i class="icon close"></i>
+    </button>
+
+    <div class="ui form segment" style="margin-top: 0.5px;">
+      <p style="color: #008080;">Pour créer une liste vous devez définir un <b>nom</b> et choisir 
+        <b>un ou plusieurs profiles</b> dans le menu déroulant.</p>
+        
+      <div class="two fields">
+        <div class="field">
+          <label>Nomme ta liste.</label>
+          <input placeholder="Ex: Ma liste" name="name" type="text" id="listName">
+        </div>
+
+        <div class="field">
+          <label for="profiles">Choisir le/les profiles.</label>
+          <div class="dropdown">
+            <button class="ui basic button" id="dropdownBtn">Profiles <i class="dropdown icon"></i></button>
+            <div id="profilesDropdown" class="dropdown-content" style="display: none;">
+              <div id="profilesCheckboxContainer"><!-- Scrapped data will appear there --></div>
+            </div>
+          </div>
+
+          <div class="ui teal submit button" id="createListSubmitBtn" style="margin-top: 15px;">Créer</div>
+          <div class="ui error message"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; 
+      height: 100%; background: #26262623; z-index: 999;">
+  </div>
+</span>
 
 
 
 
 
 
-// Next.js - AuthContext.js
-import { createContext, useContext, useEffect, useState } from 'react';
-
-const AuthContext = createContext(null);
-
-export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
-
-  useEffect(() => {
-    const savedToken = localStorage.getItem('authToken');
-    if (savedToken) setToken(savedToken);
-
-    const handleStorageChange = (event) => {
-      if (event.key === 'authToken') {
-        setToken(event.newValue);
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
-  const login = (newToken) => {
-    localStorage.setItem('authToken', newToken);
-    setToken(newToken);
-    window.postMessage({ type: 'LOGIN', token: newToken }, '*');
-  };
-
-  const logout = () => {
-    localStorage.removeItem('authToken');
-    setToken(null);
-    window.postMessage({ type: 'LOGOUT' }, '*');
-  };
-
-  return (
-    <AuthContext.Provider value={{ token, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-export const useAuth = () => useContext(AuthContext);
 
 
-// Next.js - pages/_app.js
-import { AuthProvider } from '../context/AuthContext';
 
-function MyApp({ Component, pageProps }) {
-  return (
-    <AuthProvider>
-      <Component {...pageProps} />
-    </AuthProvider>
-  );
-}
-
-export default MyApp;
-
-
-// Extension Chrome - background.js
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'LOGIN') {
-    console.log('User logged in:', message.token);
-  }
-  if (message.type === 'LOGOUT') {
-    console.log('User logged out');
-  }
-});
-
-
-// Extension Chrome - content.js
-window.addEventListener('message', (event) => {
-  if (event.source !== window) return;
-
-  if (event.data.type === 'LOGIN' || event.data.type === 'LOGOUT') {
-    chrome.runtime.sendMessage(event.data);
-  }
-});

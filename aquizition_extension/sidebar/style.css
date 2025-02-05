@@ -85,9 +85,6 @@ section {
 #dropdownBtn {
   width: 100%;
   padding: 10px;
-  background-color: #ffffff;
-  border: 1px solid #9ca3af;
-  color: red;
   cursor: pointer;
   text-align: left;
 }

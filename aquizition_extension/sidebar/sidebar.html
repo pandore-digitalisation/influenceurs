@@ -190,8 +190,12 @@
           <!-- Popup -->
           <div id="popup"
             style=" width: 30rem; display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
-            <!-- <button id="closePopupBtn">Fermer</button> -->
-            <div class="ui form segment">
+
+            <button class="circular ui icon button mini" id="closePopupBtn" style="position: absolute; top: -31px; right: 0px;">
+              <i class="icon close"></i>
+            </button>
+
+            <div class="ui form segment" style="margin-top: 0.5px;">
               <p style="color: #008080;">Pour créer une liste vous devez définir un <b>nom</b> et choisir <b>un ou
                   plusieurs profiles</b> dans le menu déroulant.</p>
               <div class="two fields">
@@ -202,16 +206,13 @@
                 <div class="field">
                   <label for="profiles">Choisir le/les profiles.</label>
                   <div class="dropdown">
-                    <div class="ui teal submit button" id="dropdownBtn">Profiles</div>
+                    <button class="ui basic button" id="dropdownBtn" style="position: relative;">Profiles<i class="dropdown icon""></i></button>
                     <div id="profilesDropdown" class="dropdown-content" style="display: none;">
-                      <div id="profilesCheckboxContainer"><!-- Scrapped data will appear there -->                      </div>
+                      <div id="profilesCheckboxContainer"><!-- Scrapped data will appear there --></div>
                     </div>
-                    <!-- <select class="ui fluid dropdown" name="profiles" id="profileSelect">
-                     
-                    </select> -->
                   </div>
                   <div class="ui teal submit button" id="createListSubmitBtn" style="margin-top: 15px;">Créer</div>
-                  <div class="ui error message"></div>
+                  <div class="ui error message">vv</div>
                   <!-- <button id="createListSubmitBtn">Créer la liste</button> -->
                 </div>
               </div>

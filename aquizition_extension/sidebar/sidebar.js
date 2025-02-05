@@ -1,8 +1,8 @@
 console.log("sidebar.js chargé avec succès !");
-// const BASE_URL = "https://influenceur-list.onrender.com";
-// const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
-const FRONT_BASE_URL = "http://localhost:3001";
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://influenceur-list.onrender.com";
+const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
+// const FRONT_BASE_URL = "http://localhost:3001";
+// const BASE_URL = "http://localhost:3000";
 
 let tokenGlobal;
 let userData;
@@ -34,18 +34,22 @@ function refreshSidebar() {
   chrome.storage.sync.get(["auth_token", "userData"], (result) => {
     if (result.auth_token) {
       tokenGlobal = result.auth_token;
-      userData = result.userData;
-      console.log("elllllllllllll", userData)
-      userId = userData.data.userId;
+  
       console.log("Token récupéré :", tokenGlobal);
       showMainContent();
       fetchAllSidebarData(tokenGlobal);
+
+      userData = result.userData;
+      userId = userData.data.userId;
+
       fetchProfiles(userId, tokenGlobal);
       fetchScrappedProfiles(userId);
+      // console.log("userData", userData)
     } else {
-      // console.warn("Aucun token trouvé, utilisateur déconnecté.");
       displayLoggedOutState();
       showWelcomeScreen();
+      // console.warn("Aucun token trouvé, utilisateur déconnecté.");
+
     }
   });
 }
@@ -54,7 +58,7 @@ function refreshSidebar() {
 function fetchAllSidebarData(token) {
   Promise.all([
     fetchUserData(token),
-    fetchOtherSidebarData(token), // Ajoute ici d'autres appels API si nécessaire
+    fetchOtherSidebarData(token),
   ])
     .then(() => console.log("Toutes les données ont été chargées."))
     .catch((error) =>
@@ -653,7 +657,7 @@ if (exportBtn) {
   console.error("Le bouton d'export avec l'ID 'exportBtn' est introuvable.");
 }
 
-//-------------  CREATE LIST  -------------//
+//-------------  CREATE LIST  POPUP -------------//
 
 const openPopupBtn = document.getElementById("createListBtn");
 // const closePopupBtn = document.getElementById("closePopupBtn");
@@ -684,10 +688,10 @@ openPopupBtn.addEventListener("click", async() => {
 });
 
 // Fermer le popup en cliquant sur l'overlay
-overlay.addEventListener("click", () => {
-  popup.style.display = "none";
-  overlay.style.display = "none";
-});
+// overlay.addEventListener("click", () => {
+//   popup.style.display = "none";
+//   overlay.style.display = "none";
+// });
 
 function closePopup() {
   popup.style.display = "none";
@@ -697,10 +701,10 @@ function closePopup() {
 }
 
 // Fermer le popup
-// closePopupBtn.addEventListener("click", () => {
-//   popup.style.display = "none";
-//   overlay.style.display = "none";
-// });
+closePopupBtn.addEventListener("click", () => {
+  popup.style.display = "none";
+  overlay.style.display = "none";
+});
 
 // Gestion du dropdown
 dropdownBtn.addEventListener("click", () => {
