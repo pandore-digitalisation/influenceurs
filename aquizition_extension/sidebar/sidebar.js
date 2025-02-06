@@ -841,7 +841,7 @@ const listCreateSuccess = document.getElementById("listCreateSuccess");
 
 let allProfiles = [];
 
-// Ouvrir le popup
+// Ouvrir le popups
 openPopupBtn.addEventListener("click", async () => {
   popup.style.display = "block";
   overlay.style.display = "block";
