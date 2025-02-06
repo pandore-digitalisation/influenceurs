@@ -593,7 +593,7 @@ function exportToExcel() {
   ].map((checkbox) => profiles[checkbox.dataset.index]);
 
   const dataToExport = [
-    ["Nom Complet", "URL du Profil", "Followers", "Following", "Plateforme"],
+    ["Nom Complet", "Followers", "Following", "Plateforme", "URL du Profil"],
   ];
   const exportData = selectedProfiles.length ? selectedProfiles : profiles;
 
