@@ -1,8 +1,7 @@
-console.log("sidebar.js chargé avec succès !");
-const BASE_URL = "https://influenceur-list.onrender.com";
-const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
-// const FRONT_BASE_URL = "http://localhost:3001";
-// const BASE_URL = "http://localhost:3000";
+// const BASE_URL = "https://influenceur-list.onrender.com";
+// const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
+const FRONT_BASE_URL = "http://localhost:3001";
+const BASE_URL = "http://localhost:3000";
 
 let tokenGlobal;
 let userData;
@@ -144,14 +143,14 @@ function displayLoggedOutState() {
   const loginBtn = document.getElementById("loginBtn");
   const createAccountBtn = document.getElementById("createAccountBtn");
   // if (userProfil) userProfil.innerHTML = `<p>🔒 Utilisateur déconnecté.</p>`;
-  if (loginBtn && createAccountBtn) {
+  if (loginBtn) {
     loginBtn.style.display = "inline";
     loginBtn.addEventListener("click", () => {
       chrome.tabs.create({ url: `${FRONT_BASE_URL}/login` });
     });
-    createAccountBtn.addEventListener("click", () => {
-      chrome.tabs.create({ url: `${FRONT_BASE_URL}/login` });
-    });
+    // createAccountBtn.addEventListener("click", () => {
+    //   chrome.tabs.create({ url: `${FRONT_BASE_URL}/login` });
+    // });
   }
 }
 
@@ -622,209 +621,8 @@ selectAllProfilesLists?.addEventListener("change", () => {
   updateExportButtonState();
 });
 
-// // Mise à jour de l'état du bouton d'export
-// function updateExportButtonState() {
-//   const hasSelected = document.querySelector("input.profileCheckbox:checked");
-//   exportBtn.disabled = !hasSelected && profiles.length === 0;
-// }
-
 // Gestion du bouton d'export
 exportBtn?.addEventListener("click", exportToExcel);
-
-// let profiles = [];
-
-// // Fonction pour afficher les profils avec pagination
-// async function displayProfiles(profiles) {
-//   const userListsProfiles = document.querySelector("#userListsProfiles tbody");
-//   const profileListDataBlock = document.getElementById("profileListData");
-//   const listPrevBtn = document.getElementById("listPrevBtn");
-//   const listNextBtn = document.getElementById("listNextBtn");
-//   const listPageInfo = document.getElementById("listPageInfo");
-
-//   if (profiles.length === 0) {
-//     const noProfileListData = document.getElementById("noProfileListData");
-//     if (noProfileListData) {
-//       noProfileListData.style.display = "block";
-//     }
-//     if (profileListDataBlock) {
-//       profileListDataBlock.style.display = "none";
-//     }
-//     if (userListsProfiles) {
-//       userListsProfiles.innerHTML = "";
-//     }
-//     // Désactiver le bouton d'export s'il n'y a aucune donnée
-//     exportBtn.disabled = true;
-//     return;
-//   } else {
-//     const noProfileListData = document.getElementById("noProfileListData");
-//     if (noProfileListData) {
-//       noProfileListData.style.display = "none";
-//     }
-//     if (profileListDataBlock) {
-//       profileListDataBlock.style.display = "block";
-//     }
-//   }
-
-//   const rowsPerPage = 5;
-//   let currentPage = 1;
-
-//   // Tri des profils par nom
-//   profiles.sort((a, b) => a.name.localeCompare(b.name));
-
-//   // Fonction d'affichage d'une page donnée
-//   function displayPage(page) {
-//     userListsProfiles.innerHTML = "";
-//     const start = (page - 1) * rowsPerPage;
-//     const end = start + rowsPerPage;
-//     const paginatedData = profiles.slice(start, end);
-
-//     // Fonction pour tronquer un nom si trop long
-//     function truncateName(name) {
-//       return name.length > 8 ? name.slice(0, 8) + "..." : name;
-//     }
-
-//     // Création des lignes du tableau
-//     paginatedData.forEach((item, index) => {
-//       const row = document.createElement("tr");
-//       const name = truncateName(item.name);
-//       const followers = item.followers;
-//       const followingOrConnection = item.following || "-" || " ";
-//       const profileUrl = item.profileUrl;
-//       const plateform = item.plateform;
-
-//       row.innerHTML = `
-//         <td data-fullname = "${item.name}" data-profileurl = "${profileUrl}">
-//           <div class="ui checkbox">
-//             <input type="checkbox" class="profileCheckbox" data-index="${index}">
-//             <label></label>
-//           </div>
-//         </td>
-//         <td>
-//           <a href="${profileUrl}" target="_blank" style="text-decoration: none;" title="${item.name}">
-//             ${name}
-//           </a>
-//         </td>
-//         <td>${followers}</td>
-//         <td>${followingOrConnection}</td>
-//         <td>${plateform}</td>
-//       `;
-//       userListsProfiles.appendChild(row);
-//     });
-
-//     // Mise à jour de l'information de pagination
-//     listPageInfo.textContent = `${currentPage}/${Math.ceil(
-//       profiles.length / rowsPerPage
-//     )}`;
-//     listPrevBtn.disabled = currentPage === 1;
-//     listNextBtn.disabled =
-//       currentPage === Math.ceil(profiles.length / rowsPerPage);
-
-//     // Réinitialiser la case "Select All" à chaque changement de page
-//     if (selectAllProfilesLists) {
-//       selectAllProfilesLists.checked = false;
-//     }
-
-//     // Ajouter les écouteurs de changement sur les cases pour mettre à jour le bouton d'export
-//     const checkboxes = userListsProfiles.querySelectorAll(
-//       "input.profileCheckbox"
-//     );
-//     checkboxes.forEach((checkbox) => {
-//       checkbox.addEventListener("change", updateExportButtonState);
-//     });
-//     // Mise à jour initiale de l'état du bouton d'export
-//     updateExportButtonState();
-//   }
-
-//   // Gestion de la pagination
-//   listPrevBtn.addEventListener("click", () => {
-//     if (currentPage > 1) {
-//       currentPage--;
-//       displayPage(currentPage);
-//     }
-//   });
-
-//   listNextBtn.addEventListener("click", () => {
-//     if (currentPage < Math.ceil(profiles.length / rowsPerPage)) {
-//       currentPage++;
-//       displayPage(currentPage);
-//     }
-//   });
-
-//   displayPage(currentPage);
-// }
-
-// // Fonction d'export vers Excel en fonction de la sélection
-// function exportToExcel() {
-//   // Récupérer le tableau affiché
-//   const table = document.getElementById("userListsProfiles");
-//   if (!table) {
-//     console.error("Le tableau avec l'ID 'userListsProfiles' est introuvable.");
-//     return;
-//   }
-
-//   // Récupérer les lignes dont les cases à cocher sont sélectionnées
-//   const checkboxes = table.querySelectorAll("input.profileCheckbox");
-//   let selectedRows = [];
-
-//   checkboxes.forEach((checkbox) => {
-//     if (checkbox.checked) {
-//       const row = checkbox.closest("tr");
-//       if (row) {
-//         // Cloner la ligne pour l'export
-//         selectedRows.push(row.cloneNode(true));
-//       }
-//     }
-//   });
-
-//   let exportTable;
-//   if (selectedRows.length > 0) {
-//     // Créer une table temporaire pour l'export avec l'en-tête et les lignes sélectionnées
-//     exportTable = document.createElement("table");
-//     const thead = table.querySelector("thead");
-//     if (thead) {
-//       exportTable.appendChild(thead.cloneNode(true));
-//     }
-//     const newTbody = document.createElement("tbody");
-//     selectedRows.forEach((row) => {
-//       newTbody.appendChild(row);
-//     });
-//     exportTable.appendChild(newTbody);
-//   } else {
-//     // Si aucune case n'est cochée, ne devrait pas être possible (bouton désactivé),
-//     // mais on prévoit l'export de l'intégralité du tableau
-//     exportTable = table;
-//   }
-
-//   // Création du workbook et déclenchement du téléchargement
-//   const workbook = XLSX.utils.table_to_book(exportTable, { sheet: "Profils" });
-//   XLSX.writeFile(workbook, "export_profiles.xlsx");
-// }
-
-// // Gestion du "Select All" dans l'en-tête
-// if (selectAllProfilesLists) {
-//   selectAllProfilesLists.addEventListener("change", () => {
-//     const table = document.getElementById("userListsProfiles");
-//     if (!table) return;
-//     const checkboxes = table.querySelectorAll("input.profileCheckbox");
-//     checkboxes.forEach((checkbox) => {
-//       checkbox.checked = selectAllProfilesLists.checked;
-//     });
-//     // Met à jour l'état du bouton d'export
-//     updateExportButtonState();
-//   });
-// } else {
-//   console.error(
-//     "La case 'Select All' (selectAllProfilesLists) est introuvable."
-//   );
-// }
-
-// if (exportBtn) {
-//   exportBtn.addEventListener("click", exportToExcel);
-// } else {
-//   console.error("Le bouton d'export avec l'ID 'exportBtn' est introuvable.");
-// }
-
-//-------------  CREATE LIST POPUP -------------//
 
 const openPopupBtn = document.getElementById("createListBtn");
 // const closePopupBtn = document.getElementById("closePopupBtn");
