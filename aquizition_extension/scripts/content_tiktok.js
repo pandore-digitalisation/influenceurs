@@ -1,24 +1,23 @@
 (async () => {
   //  const BASE_URL = "https://influenceur-list.onrender.com";
-   const BASE_URL = "http://localhost:3000";
-  
-   function getXPathText(xpath, attr = "textContent") {
-     const node = document.evaluate(
-       xpath,
-       document,
-       null,
-       XPathResult.FIRST_ORDERED_NODE_TYPE,
-       null
-     ).singleNodeValue;
-     return node
-       ? attr === "textContent"
-         ? node.textContent.trim()
-         : node[attr]
-       : null;
-   }
+  const BASE_URL = "http://localhost:3000";
 
-    
-   function cleanNumber(value) {
+  function getXPathText(xpath, attr = "textContent") {
+    const node = document.evaluate(
+      xpath,
+      document,
+      null,
+      XPathResult.FIRST_ORDERED_NODE_TYPE,
+      null
+    ).singleNodeValue;
+    return node
+      ? attr === "textContent"
+        ? node.textContent.trim()
+        : node[attr]
+      : null;
+  }
+
+  function cleanNumber(value) {
     if (!value) return " ";
     let cleanedValue = value.replace(/[^\dKM]/g, "");
 
@@ -39,7 +38,8 @@
       "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h3/div[2]/strong",
     following:
       "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h3/div[1]/strong",
-    likes: "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h3/div[3]/strong",
+    likes:
+      "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h3/div[3]/strong",
     profileImage:
       "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[1]/span/img",
   };
@@ -60,7 +60,7 @@
   };
 
   console.log("Extracted Data:", extractedData);
-  
+
   const getUserData = () =>
     new Promise((resolve, reject) => {
       chrome.storage.sync.get("userData", (result) =>
@@ -70,59 +70,101 @@
       );
     });
 
-    const getExistingProfile = async (profileUrl) => {
-      try {
-        const response = await fetch(
-          `${BASE_URL}/tiktok/${encodeURIComponent(profileUrl)}`
-        );
-        return response.ok ? response.json() : null;
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-        return null;
-      }
-    };
-
-    let userData;
+  const getExistingProfile = async (profileUrl) => {
     try {
-      userData = await getUserData();
+      const response = await fetch(
+        `${BASE_URL}/tiktok/${encodeURIComponent(profileUrl)}`
+      );
+      return response.ok ? response.json() : null;
     } catch (error) {
-      console.error(error);
-      return;
+      console.error("Error fetching profile:", error);
+      return null;
     }
-  
-    if (!userData?.data?.userId) {
-      console.error("User not logged in or missing data.");
-      return;
-    }
+  };
 
-    const currentUserId = userData.data.userId;
-    const existingProfile = await getExistingProfile(extractedData.profileUrl);
-  
-    extractedData.userId = existingProfile?.userId?.includes(currentUserId)
-      ? existingProfile.userId
-      : [...(existingProfile?.userId || []), currentUserId];
+  let userData;
+  try {
+    userData = await getUserData();
+  } catch (error) {
+    console.error(error);
+    return;
+  }
 
-      const isValidData = ({ name, followers, following }) =>
-        name !== "None" && followers !== "None" && following !== "None";
-    
-      if (isValidData(extractedData)) {
-        try {
-          const response = await fetch(`${BASE_URL}/tiktok`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(extractedData),
-          });
-    
-          const success = response.ok;
-          console.log("Success:", success);
-          chrome.runtime.sendMessage({ success });
-        } catch (error) {
-          console.error("Network error:", error);
-          chrome.runtime.sendMessage({ networkError });
+  // Fonction pour récupérer selectedList de manière asynchrone
+  const getSelectedList = () => {
+    return new Promise((resolve, reject) => {
+      chrome.storage.sync.get(["selectedList"], function (result) {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError));
+        } else {
+          resolve(result.selectedList);
         }
+      });
+    });
+  };
+
+  let selectedList;
+
+  try {
+    selectedList = await getSelectedList(); // Attends que selectedList soit récupéré
+    console.log("selectedList récupéré:", selectedList);
+  } catch (error) {
+    console.error("Erreur lors de la récupération de selectedList:", error);
+  }
+
+  if (!userData?.data?.userId) {
+    console.error("User not logged in or missing data.");
+    return;
+  }
+
+  const currentUserId = userData.data.userId;
+  const existingProfile = await getExistingProfile(extractedData.profileUrl);
+
+  extractedData.userId = existingProfile?.userId?.includes(currentUserId)
+    ? existingProfile.userId
+    : [...(existingProfile?.userId || []), currentUserId];
+
+  const isValidData = ({ name, followers, following }) =>
+    name !== "None" && followers !== "None" && following !== "None";
+
+  if (isValidData(extractedData)) {
+    try {
+      const response = await fetch(`${BASE_URL}/tiktok`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(extractedData),
+      });
+
+      const data = await response.json();
+
+      console.log("data to send to list", data);
+
+      if (selectedList) {
+        const profilesUpdate = {
+          profiles: {
+            add: [data],
+          },
+        };
+
+        await fetch(`${BASE_URL}/lists/${selectedList}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(profilesUpdate),
+        });
+        console.log("List update");
       } else {
-        chrome.runtime.sendMessage({ dataNotExtracted });
-        console.warn("Invalid data. Skipping POST request.");
+        console.log("List not update");
       }
 
+      const success = response.ok;
+      console.log("Success:", success);
+      chrome.runtime.sendMessage({ success });
+    } catch (error) {
+      console.error("Network error:", error);
+      chrome.runtime.sendMessage({ networkError });
+    }
+  } else {
+    chrome.runtime.sendMessage({ dataNotExtracted });
+    console.warn("Invalid data. Skipping POST request.");
+  }
 })();

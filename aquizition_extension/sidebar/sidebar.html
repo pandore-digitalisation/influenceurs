@@ -39,7 +39,7 @@
         </div>
       </div>
       <span class="right" style="gap: 2px;">
-        <div class="ui mini form" style="width: 150px;">
+        <div class="ui mini form" style="width: 100px;">
           <div class="field">
             <select id="listFilter">
               <option value="">Votre Listes</option>
@@ -50,9 +50,24 @@
             class="download icon"></i></button>
         <button class="mini ui button" id="createListBtn" style="margin: 0px;">Créer liste</button>
         <button class="mini ui button" id="scrapeBtn">Obtenir</button>
+        <button class="mini ui button" id="getDataBtn">Avoir</button>
         <div class="ui small active inline loader" id="loader" style="display: none;"></div>
       </span>
       <div>
+
+        <div class="sidebar-container">
+          <h2>Facebook Scraper</h2>
+
+          <label for="listSelection">Sélectionner une liste :</label>
+          <select id="listSelection">
+            <option value="" disabled selected>Choisissez une liste</option>
+          </select>
+
+          <button id="scrapeButton">Démarrer le Scraping</button>
+
+          <p id="statusMessage"></p>
+        </div>
+
         <div></div>
         <!-- This platform Info message -->
         <span>
@@ -191,7 +206,8 @@
           <div id="popup"
             style=" width: 30rem; display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
 
-            <button class="circular ui icon button mini" id="closePopupBtn" style="position: absolute; top: -31px; right: 0px;">
+            <button class="circular ui icon button mini" id="closePopupBtn"
+              style="position: absolute; top: -31px; right: 0px;">
               <i class="icon close"></i>
             </button>
 
@@ -209,11 +225,13 @@
                 <div class="field">
                   <label for="profiles">Choisir le/les profiles.</label>
                   <div class="dropdown">
-                    <button class="ui basic button" id="dropdownBtn" style="position: relative; padding: 13px 1px 13px 1em">Profiles<i class="dropdown icon" style="margin-left: 293px;"></i></button>
+                    <button class="ui basic button" id="dropdownBtn"
+                      style="position: relative; padding: 13px 1px 13px 1em">Profiles<i class="dropdown icon"
+                        style="margin-left: 293px;"></i></button>
                     <div id="profilesDropdown" class="dropdown-content ui card" style="display: none; width: 100%;">
-                      
+
                       <!-- Scrapped data will appear there -->
-                        <div class="ui checkbox" id="profilesCheckboxContainer"></div>
+                      <div class="ui checkbox" id="profilesCheckboxContainer"></div>
                     </div>
                   </div>
                   <div class="ui teal submit button" id="createListSubmitBtn" style="margin-top: 15px;">Créer</div>

@@ -21,8 +21,12 @@
     if (!value) return "0";
     let cleanedValue = value.replace(/[^\dKM.]/g, "");
 
-    if (cleanedValue.endsWith("M")) return parseFloat(cleanedValue.replace("M", "").replace(",", "") * 1000000);
-    if (cleanedValue.endsWith("K")) return parseFloat(cleanedValue.replace("K", "").replace(",", "") * 1000);
+    if (cleanedValue.endsWith("M"))
+      return parseFloat(
+        cleanedValue.replace("M", "").replace(",", "") * 1000000
+      );
+    if (cleanedValue.endsWith("K"))
+      return parseFloat(cleanedValue.replace("K", "").replace(",", "") * 1000);
     return cleanedValue;
   }
 
@@ -32,7 +36,8 @@
       "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[1]/text()[1]",
     following:
       "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]/span/a[2]/text()[1]",
-    profileImage: "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/a/div/svg",
+    profileImage:
+      "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[1]/div/a/div/svg",
   };
 
   let followers = getXPathText(xPaths.followers);
@@ -78,6 +83,28 @@
     return;
   }
 
+  // Fonction pour récupérer selectedList de manière asynchrone
+  const getSelectedList = () => {
+    return new Promise((resolve, reject) => {
+      chrome.storage.sync.get(["selectedList"], function (result) {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError));
+        } else {
+          resolve(result.selectedList);
+        }
+      });
+    });
+  };
+
+  let selectedList;
+
+  try {
+    selectedList = await getSelectedList(); // Attends que selectedList soit récupéré
+    console.log("selectedList récupéré:", selectedList);
+  } catch (error) {
+    console.error("Erreur lors de la récupération de selectedList:", error);
+  }
+
   if (!userData?.data?.userId) {
     console.error("User not logged in or missing data.");
     return;
@@ -100,6 +127,27 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(extractedData),
       });
+
+      const data = await response.json();
+
+      console.log("data to send to list", data);
+
+      if (selectedList) {
+        const profilesUpdate = {
+          profiles: {
+            add: [data],
+          },
+        };
+
+        await fetch(`${BASE_URL}/lists/${selectedList}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(profilesUpdate),
+        });
+        console.log("List update");
+      } else {
+        console.log("List not update");
+      }
 
       const success = response.ok;
       console.log("Success:", success);

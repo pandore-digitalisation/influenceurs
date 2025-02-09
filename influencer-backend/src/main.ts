@@ -15,7 +15,7 @@ async function bootstrap() {
       'https://www.tiktok.com',
       'chrome-extension://dnkjkcnopgdjhmkhapenjopjpiikaljc',
     ],
-    methods: ['GET', 'POST', 'DELETE', 'PATCH'],
+    methods: ['GET', 'POST', 'DELETE', 'PUT'],
     allowedHeaders: ['Content-Type, Authorization'],
     credentials: true,
   });

@@ -115,6 +115,28 @@
     return;
   }
 
+  // Fonction pour récupérer selectedList de manière asynchrone
+  const getSelectedList = () => {
+    return new Promise((resolve, reject) => {
+      chrome.storage.sync.get(["selectedList"], function (result) {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError));
+        } else {
+          resolve(result.selectedList);
+        }
+      });
+    });
+  };
+
+  let selectedList;
+
+  try {
+    selectedList = await getSelectedList(); // Attends que selectedList soit récupéré
+    console.log("selectedList récupéré:", selectedList);
+  } catch (error) {
+    console.error("Erreur lors de la récupération de selectedList:", error);
+  }
+
   if (!userData?.data?.userId) {
     console.error("User not logged in or missing data.");
     return;
@@ -137,6 +159,27 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(extractedData),
       });
+
+      const data = await response.json();
+
+      console.log("data to send to list", data);
+
+      if (selectedList) {
+        const profilesUpdate = {
+          profiles: {
+            add: [data],
+          },
+        };
+
+        await fetch(`${BASE_URL}/lists/${selectedList}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(profilesUpdate),
+        });
+        console.log("List update");
+      } else {
+        console.log("List not update");
+      }
 
       const success = response.ok;
       console.log("Success:", success);

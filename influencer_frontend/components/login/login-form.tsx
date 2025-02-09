@@ -4,10 +4,8 @@ import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-
 const BASE_URL = "http://localhost:3000";
 // // const BASE_URL = "https://influenceur-list.onrender.com";
-
 
 export function Login({
   className,
@@ -22,11 +20,11 @@ export function Login({
   if (!isClient) return null;
 
   const handleGoogleLogin = () => {
-    window.location.href = `${BASE_URL}/auth/google`
-  }
+    window.location.href = `${BASE_URL}/auth/google`;
+  };
 
   return (
-    <form className={cn("flex flex-col gap-6 ", className)} {...props}>
+    <form className="flex flex-col gap-6">
       <div className="flex flex-col items-center gap-2 text-center ">
         <h1 className="text-2xl font-bold">Bienvenue à nouveau</h1>
         <p className="text-balance text-sm text-muted-foreground">
@@ -34,7 +32,12 @@ export function Login({
         </p>
       </div>
       <div className="grid gap-6">
-        <Button variant="outline" className="w-full" type="button" onClick={handleGoogleLogin}>
+        <Button
+          variant="outline"
+          className="w-full"
+          type="button"
+          onClick={handleGoogleLogin}
+        >
           <svg
             className="w-4 h-4 me-2"
             xmlns="http://www.w3.org/2000/svg"
