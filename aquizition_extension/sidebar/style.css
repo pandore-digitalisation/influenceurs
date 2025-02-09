@@ -67,7 +67,7 @@ section {
   justify-content: center;
   
 
-  background: linear-gradient(45deg, #1f2937, #4b5563, #9ca3af, #d1d5db);
+  background: #FF6600;
   background-size: 300% 300%;
   animation: gradientAnimation 6s infinite alternate ease-in-out;
 }

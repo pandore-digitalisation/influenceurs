@@ -49,204 +49,207 @@
         <button class="mini ui button" style="margin-right: 0px;" id="exportBtn" disabled><i
             class="download icon"></i></button>
         <button class="mini ui button" id="createListBtn" style="margin: 0px;">Créer liste</button>
-        <button class="mini ui button" id="scrapeBtn">Obtenir</button>
-        <button class="mini ui button" id="getDataBtn">Avoir</button>
+        <button class="mini ui button" id="openContainer">Obtenir</button>
+        <!-- <button class="mini ui button" id="scrapeBtn">Obteni</button> -->
         <div class="ui small active inline loader" id="loader" style="display: none;"></div>
       </span>
-      <div>
 
-        <div class="sidebar-container">
-          <h2>Facebook Scraper</h2>
-
-          <label for="listSelection">Sélectionner une liste :</label>
-          <select id="listSelection">
-            <option value="" disabled selected>Choisissez une liste</option>
-          </select>
-
-          <button id="scrapeButton">Démarrer le Scraping</button>
-
-          <p id="statusMessage"></p>
+      <div></div>
+      <!-- This platform Info message -->
+      <span>
+        <!-- Profil saved successfully  message -->
+        <div class="ui success message" style="display: none; margin: 1rem 0;" id="dataGetSuccessMessage">
+          <i class="close icon" id="dataGetSuccessMessageCLose"></i>
+          <div class="header">
+            Vos données ont été sauvegardées avec succès.
+          </div>
+          <p>Vous pouvez maintenant les consulter dans votre tableau de bord ou l'utiliser pour créer une liste.</p>
         </div>
+        <!-- This platform is not supported message -->
+        <div class="ui info message" style="display: none;" id="notSupportedMessage">
+          <i class="close icon" id="notSupportedMessageClose"></i>
+          <div class="header">
+            Cette plateforme n'est pas prise en charge!
+          </div>
+          <ul class="list">
+            <li>Aller sur X, TikTok, LinkedIn, Instagram ou Facebook</li>
+          </ul>
+        </div>
+        <!-- Data not getted error message -->
+        <div class="ui error message" style="display: none;" id="dataGetErrorsMessage">
+          <i class="close icon" id="dataGetErrorsMessageClose"></i>
+          <div class="header">
+            Oops! Des erreurs se sont glissées dans votre envoi.
+          </div>
+          <p>Veuillez rafraîchir la page et réessayer.</p>
+        </div>
+      </span>
+      <!-- Get data and add to list container -->
 
-        <div></div>
-        <!-- This platform Info message -->
-        <span>
-          <!-- Profil saved successfully  message -->
-          <div class="ui success message" style="display: none; margin: 1rem 0;" id="dataGetSuccessMessage">
-            <i class="close icon" id="dataGetSuccessMessageCLose"></i>
-            <div class="header">
-              Vos données ont été sauvegardées avec succès.
+      <div class="card getDataContainer" style="display: none; margin: 10px; height: 100px; justify-content: center; align-items: center; gap: 10px; padding-top: 5px;">
+        <span style="margin: 27px; margin-top: 15px;">Veuillez choisir votre liste et cliquer sur enregistré.</span>
+        <div class="ui form mini" style="margin-top: 15px;">
+          <div class="fields" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+            <div class="field" style="width: 250px;">
+              <select id="listSelection">
+                <option value="" disabled selected>Choisissez une liste</option>
+              </select>
             </div>
-            <p>Vous pouvez maintenant les consulter dans votre tableau de bord ou l'utiliser pour créer une liste.</p>
-          </div>
-          <!-- This platform is not supported message -->
-          <div class="ui info message" style="display: none;" id="notSupportedMessage">
-            <i class="close icon" id="notSupportedMessageClose"></i>
-            <div class="header">
-              Cette plateforme n'est pas prise en charge!
-            </div>
-            <ul class="list">
-              <li>Aller sur X, TikTok, LinkedIn, Instagram ou Facebook</li>
-            </ul>
-          </div>
-          <!-- Data not getted error message -->
-          <div class="ui error message" style="display: none;" id="dataGetErrorsMessage">
-            <i class="close icon" id="dataGetErrorsMessageClose"></i>
-            <div class="header">
-              Oops! Des erreurs se sont glissées dans votre envoi.
-            </div>
-            <p>Veuillez rafraîchir la page et réessayer.</p>
-          </div>
-        </span>
-        <div>
-          <div style="margin-top: 10px;">
-            <!-- No scrapped profile data found message -->
-            <div class="ui negative message" id="noProfileListData" style="display: none;">
-              <!-- <i class="close icon"></i> -->
-              <div class="header">
-                Désolé !, vous n'avez pas de données liste.
-              </div>
-              <p>Veuillez cliquer sur le bouton <b>Créé liste</b> pour créer une liste avec vos données.
-              </p>
-            </div>
-          </div>
-          <div style="margin-top: 5px;" id="profileListData">
-            <table class="ui celled table unstackable" id="userListsProfiles">
-              <thead>
-                <tr>
-                  <th>
-                    <div class="ui checked checkbox"><input type="checkbox" id="selectAllProfilesLists"><label></label>
-                    </div>
-                  </th>
-                  <th>Nom</th>
-                  <th>Followers</th>
-                  <th>Following</th>
-                  <th>Platefome</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Profile list data will appear there -->
-              </tbody>
-            </table>
-            <!-- Pagination Controls -->
-            <div class="ui mini right floated pagination menu" style="margin-bottom: 5px;">
-              <a class="icon item" id="listPrevBtn">
-                <i class="left chevron icon"></i>
-              </a>
-              <a class="item" id="listPageInfo"></a>
-              <a class="icon item" id="listNextBtn">
-                <i class="right chevron icon"></i>
-              </a>
+            <div class="field">
+              <button id="scrapeButton" class="mini ui button green">Enregistré</button>
             </div>
           </div>
         </div>
-
-        <div>
-          <div class="ui card" style="width: 100%; box-shadow: non; margin-top: 60px;">
-            <div class="content" style="margin-top: 5px;">
-              <div class="" style="text-align: center;">Statistiques</div>
-              <div class="meta"></div>
-              <div class="description">
-                <p></p>
-                <p></p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div style="text-align: center; margin: 15px;">
-          Vos Données
-        </div>
-
-        <div>
-          <div>
-            <!-- No scrapped profile data found message -->
-            <div class="ui negative message" id="noScrappedData" style="display: none;">
-              <i class="close icon"></i>
-              <div class="header">
-                We're sorry we can't apply that discount
-              </div>
-              <p>That offer has expired
-              </p>
-            </div>
-          </div>
-          <div id="scrappedData">
-            <table class="ui selectable celled table unstackable" id="scrappedDataTable">
-              <thead>
-                <tr>
-                  <th>Nom</th>
-                  <th>Followers</th>
-                  <th>Following</th>
-                  <th>Plateforme</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Scrapped data will appear there -->
-              </tbody>
-            </table>
-            <!-- Pagination Controls -->
-            <div class="ui mini right floated pagination menu">
-              <a class="icon item" id="prevBtn">
-                <i class="left chevron icon"></i>
-              </a>
-              <a class="item" id="pageInfo"></a>
-              <a class="icon item" id="nextBtn">
-                <i class="right chevron icon"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-
       </div>
-      <!-- <div class="ui divider" style="margin: 0"></div> -->
-      <section>
-
-        <span>
-          <!-- Popup -->
-          <div id="popup"
-            style=" width: 30rem; display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
-
-            <button class="circular ui icon button mini" id="closePopupBtn"
-              style="position: absolute; top: -31px; right: 0px;">
-              <i class="icon close"></i>
-            </button>
-
-            <div class="ui form segment" style="margin-top: 0.5px;">
-              <p style="color: #008080;">Pour créer une liste vous devez définir un <b>nom</b> et choisir <b>un ou
-                  plusieurs profiles</b> dans le menu déroulant.</p>
-              <div class="two fields">
-                <div class="field">
-                  <div id="listCreateSuccess" style="display: none;">Liste créée avec succès !</div>
-                  <div id="listCreateError" style="display: none;">Veuillez remplir tous les champs.</div>
-
-                  <label>Nomme la liste.</label>
-                  <input placeholder="Ex: Ma liste" name="name" type="text" id="listName">
-                </div>
-                <div class="field">
-                  <label for="profiles">Choisir le/les profiles.</label>
-                  <div class="dropdown">
-                    <button class="ui basic button" id="dropdownBtn"
-                      style="position: relative; padding: 13px 1px 13px 1em">Profiles<i class="dropdown icon"
-                        style="margin-left: 293px;"></i></button>
-                    <div id="profilesDropdown" class="dropdown-content ui card" style="display: none; width: 100%;">
-
-                      <!-- Scrapped data will appear there -->
-                      <div class="ui checkbox" id="profilesCheckboxContainer"></div>
-                    </div>
+      <div>
+        <div style="margin-top: 10px;">
+          <!-- No scrapped profile data found message -->
+          <div class="ui negative message" id="noProfileListData" style="display: none;">
+            <!-- <i class="close icon"></i> -->
+            <div class="header">
+              Désolé !, vous n'avez pas de données liste.
+            </div>
+            <p>Veuillez cliquer sur le bouton <b>Créé liste</b> pour créer une liste avec vos données.
+            </p>
+          </div>
+        </div>
+        <div style="margin-top: 5px;" id="profileListData">
+          <table class="ui celled table unstackable" id="userListsProfiles">
+            <thead>
+              <tr>
+                <th>
+                  <div class="ui checked checkbox"><input type="checkbox" id="selectAllProfilesLists"><label></label>
                   </div>
-                  <div class="ui teal submit button" id="createListSubmitBtn" style="margin-top: 15px;">Créer</div>
-                  <div class="ui error message"></div>
+                </th>
+                <th>Nom</th>
+                <th>Followers</th>
+                <th>Following</th>
+                <th>Platefome</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Profile list data will appear there -->
+            </tbody>
+          </table>
+          <!-- Pagination Controls -->
+          <div class="ui mini right floated pagination menu" style="margin-bottom: 5px;">
+            <a class="icon item" id="listPrevBtn">
+              <i class="left chevron icon"></i>
+            </a>
+            <a class="item" id="listPageInfo"></a>
+            <a class="icon item" id="listNextBtn">
+              <i class="right chevron icon"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="ui card" style="width: 100%; box-shadow: non; margin-top: 60px;">
+          <div class="content" style="margin-top: 5px;">
+            <div class="" style="text-align: center;">Statistiques</div>
+            <div class="meta"></div>
+            <div class="description">
+              <p></p>
+              <p></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin: 15px;">
+        Vos Données
+      </div>
+
+      <div>
+        <div>
+          <!-- No scrapped profile data found message -->
+          <div class="ui negative message" id="noScrappedData" style="display: none;">
+            <i class="close icon"></i>
+            <div class="header">
+              We're sorry we can't apply that discount
+            </div>
+            <p>That offer has expired
+            </p>
+          </div>
+        </div>
+        <div id="scrappedData">
+          <table class="ui selectable celled table unstackable" id="scrappedDataTable">
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Followers</th>
+                <th>Following</th>
+                <th>Plateforme</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Scrapped data will appear there -->
+            </tbody>
+          </table>
+          <!-- Pagination Controls -->
+          <div class="ui mini right floated pagination menu">
+            <a class="icon item" id="prevBtn">
+              <i class="left chevron icon"></i>
+            </a>
+            <a class="item" id="pageInfo"></a>
+            <a class="icon item" id="nextBtn">
+              <i class="right chevron icon"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- <div class="ui divider" style="margin: 0"></div> -->
+    <section>
+
+      <span>
+        <!-- Popup -->
+        <div id="popup"
+          style=" width: 30rem; display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
+
+          <button class="circular ui icon button mini" id="closePopupBtn"
+            style="position: absolute; top: -31px; right: 0px;">
+            <i class="icon close"></i>
+          </button>
+
+          <div class="ui form segment" style="margin-top: 0.5px;">
+            <p style="color: #008080;">Pour créer une liste vous devez définir un <b>nom</b> et choisir <b>un ou
+                plusieurs profiles</b> dans le menu déroulant.</p>
+            <div class="two fields">
+              <div class="field">
+                <div id="listCreateSuccess" style="display: none;">Liste créée avec succès !</div>
+                <div id="listCreateError" style="display: none;">Veuillez remplir tous les champs.</div>
+
+                <label>Nomme la liste.</label>
+                <input placeholder="Ex: Ma liste" name="name" type="text" id="listName">
+              </div>
+              <div class="field">
+                <label for="profiles">Choisir profile.</label>
+                <div class="dropdown">
+                  <button class="ui basic button" id="dropdownBtn"
+                    style="position: relative; padding: 13px 1px 13px 1em">Profiles<i class="dropdown icon"
+                      style="margin-left: 293px;"></i></button>
+                  <div id="profilesDropdown" class="dropdown-content ui card" style="display: none; width: 100%;">
+
+                    <!-- Scrapped data will appear there -->
+                    <div class="ui checkbox" id="profilesCheckboxContainer"></div>
+                  </div>
                 </div>
+                <div class="ui teal submit button" id="createListSubmitBtn" style="margin-top: 15px;">Créer</div>
+                <div class="ui error message"></div>
               </div>
             </div>
           </div>
-          <div id="overlay"
-            style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #26262623; z-index: 999;">
-          </div>
+        </div>
+        <div id="overlay"
+          style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #26262623; z-index: 999;">
+        </div>
 
-        </span>
+      </span>
 
-        <!-- <div>
+      <!-- <div>
           ok
         </div>
 
@@ -258,19 +261,19 @@
           ok
         </div> -->
 
-      </section>
-    </div>
-
-    <section>
-
-
     </section>
+  </div>
 
-    <script src="sidebar.js"></script>
-    <script src="../libs/bootstrap.bundle.min.js"></script>
-    <script src="../libs/jquery-3.6.0.min.js"></script>
-    <script src="../libs/semantic.min.js"></script>
-    <script src="../libs/xlsx.full.min.js"></script>
+  <section>
+
+
+  </section>
+
+  <script src="sidebar.js"></script>
+  <script src="../libs/bootstrap.bundle.min.js"></script>
+  <script src="../libs/jquery-3.6.0.min.js"></script>
+  <script src="../libs/semantic.min.js"></script>
+  <script src="../libs/xlsx.full.min.js"></script>
 </body>
 
 </html>

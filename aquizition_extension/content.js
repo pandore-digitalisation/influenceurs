@@ -21,111 +21,111 @@ function getElementByXPath(xpath) {
 }
 
 // Fonction pour injecter un bouton
-function injectButton(platform) {
-  let targetElement = null;
+// function injectButton(platform) {
+//   let targetElement = null;
 
-  try {
-    if (platform === "Facebook") {
-      const facebookXPath =
-        "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]";
-      targetElement = getElementByXPath(facebookXPath);
-    } else if (platform === "Instagram") {
-      const instagramXPath =
-        "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[4]/div";
-      targetElement = getElementByXPath(instagramXPath);
-    } else if (platform === "X") {
-      const xXPath =
-        "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[3]";
-      targetElement = getElementByXPath(xXPath);
-    } else if (platform === "LinkedIn") {
-      const linkedinXPath =
-        "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/div[2]";
-      targetElement = getElementByXPath(linkedinXPath);
-    } else if (platform === "TikTok") {
-      const tiktokXPath =
-        "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h2";
-      targetElement = getElementByXPath(tiktokXPath);
-    }
+//   try {
+//     if (platform === "Facebook") {
+//       const facebookXPath =
+//         "/html/body/div[1]/div/div[1]/div/div[3]/div/div/div[1]/div[1]/div/div/div[1]/div[2]/div/div/div/div[3]/div/div/div[2]";
+//       targetElement = getElementByXPath(facebookXPath);
+//     } else if (platform === "Instagram") {
+//       const instagramXPath =
+//         "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[4]/div";
+//       targetElement = getElementByXPath(instagramXPath);
+//     } else if (platform === "X") {
+//       const xXPath =
+//         "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[3]";
+//       targetElement = getElementByXPath(xXPath);
+//     } else if (platform === "LinkedIn") {
+//       const linkedinXPath =
+//         "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/div[2]";
+//       targetElement = getElementByXPath(linkedinXPath);
+//     } else if (platform === "TikTok") {
+//       const tiktokXPath =
+//         "/html/body/div[1]/div[2]/div[2]/div/div/div[1]/div[2]/div[3]/h2";
+//       targetElement = getElementByXPath(tiktokXPath);
+//     }
 
-    // Si l'élément cible existe, on ajoute le bouton
-    if (targetElement && !document.getElementById("getData")) {
-      const button = document.createElement("button");
-      button.id = "getData";
-      button.textContent = `Get ${platform} Data`;
-      button.style.padding = "10px 15px";
-      button.style.backgroundColor =
-        platform === "X"
-          ? "#1da1f2"
-          : platform === "Instagram"
-          ? "#E1306C"
-          : platform === "Facebook"
-          ? "#1877F2"
-          : platform === "LinkedIn"
-          ? "#0077B5"
-          : platform === "TikTok"
-          ? "#FE2C55"
-          : "#000";
-      button.style.width = platform === "TikTok" ? "150px" : "";
-      button.style.display = "block";
-      button.style.color = "#fff";
-      button.style.border = "none";
-      button.style.borderRadius = "5px";
-      button.style.cursor = "pointer";
-      button.style.marginTop = "10px";
+//     // Si l'élément cible existe, on ajoute le bouton
+//     if (targetElement && !document.getElementById("getData")) {
+//       const button = document.createElement("button");
+//       button.id = "getData";
+//       button.textContent = `Get ${platform} Data`;
+//       button.style.padding = "10px 15px";
+//       button.style.backgroundColor =
+//         platform === "X"
+//           ? "#1da1f2"
+//           : platform === "Instagram"
+//           ? "#E1306C"
+//           : platform === "Facebook"
+//           ? "#1877F2"
+//           : platform === "LinkedIn"
+//           ? "#0077B5"
+//           : platform === "TikTok"
+//           ? "#FE2C55"
+//           : "#000";
+//       button.style.width = platform === "TikTok" ? "150px" : "";
+//       button.style.display = "block";
+//       button.style.color = "#fff";
+//       button.style.border = "none";
+//       button.style.borderRadius = "5px";
+//       button.style.cursor = "pointer";
+//       button.style.marginTop = "10px";
 
-      button.addEventListener("mouseenter", () => {
-        button.style.backgroundColor =
-          platform === "X"
-            ? "#1a91da"
-            : platform === "Instagram"
-            ? "#c82357"
-            : platform === "Facebook"
-            ? "#155cbd"
-            : platform === "LinkedIn"
-            ? "#005f8e"
-            : platform === "TikTok"
-            ? "#EA284E"
-            : "#333";
-      });
+//       button.addEventListener("mouseenter", () => {
+//         button.style.backgroundColor =
+//           platform === "X"
+//             ? "#1a91da"
+//             : platform === "Instagram"
+//             ? "#c82357"
+//             : platform === "Facebook"
+//             ? "#155cbd"
+//             : platform === "LinkedIn"
+//             ? "#005f8e"
+//             : platform === "TikTok"
+//             ? "#EA284E"
+//             : "#333";
+//       });
 
-      button.addEventListener("mouseleave", () => {
-        button.style.backgroundColor =
-          platform === "X"
-            ? "#1da1f2"
-            : platform === "Instagram"
-            ? "#E1306C"
-            : platform === "Facebook"
-            ? "#1877F2"
-            : platform === "LinkedIn"
-            ? "#0077B5"
-            : platform === "TikTok"
-            ? "#FE2C55"
-            : "#000";
-      });
+//       button.addEventListener("mouseleave", () => {
+//         button.style.backgroundColor =
+//           platform === "X"
+//             ? "#1da1f2"
+//             : platform === "Instagram"
+//             ? "#E1306C"
+//             : platform === "Facebook"
+//             ? "#1877F2"
+//             : platform === "LinkedIn"
+//             ? "#0077B5"
+//             : platform === "TikTok"
+//             ? "#FE2C55"
+//             : "#000";
+//       });
 
-      button.addEventListener("click", () => {
-        console.log(`Fetching ${platform} data...`);
-        button.textContent = "Getting...";
-        chrome.runtime.sendMessage(
-          { action: "fetchData", platform: platform },
-          (response) => {
-            if (response && response.message) {
-              console.log(response.message);
-              button.textContent = `Get ${platform} Data`;
-            } else {
-              console.log("No response received or message is undefined.");
-              button.textContent = "Retry";
-            }
-          }
-        );
-      });
+//       button.addEventListener("click", () => {
+//         console.log(`Fetching ${platform} data...`);
+//         button.textContent = "Getting...";
+//         chrome.runtime.sendMessage(
+//           { action: "fetchData", platform: platform },
+//           (response) => {
+//             if (response && response.message) {
+//               console.log(response.message);
+//               button.textContent = `Get ${platform} Data`;
+//             } else {
+//               console.log("No response received or message is undefined.");
+//               button.textContent = "Retry";
+//             }
+//           }
+//         );
+//       });
 
-      targetElement.appendChild(button);
-    }
-  } catch (error) {
-    console.error(`Error injecting button for ${platform}: `, error);
-  }
-}
+//       targetElement.appendChild(button);
+//     }
+//   } catch (error) {
+//     console.error(`Error injecting button for ${platform}: `, error);
+//   }
+// }
 
 // Écoute les messages envoyés par le bacground.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -143,29 +143,29 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 // Observer les changements dans le DOM pour injecter le bouton après mutation
-function observeDOM(platform) {
-  const observer = new MutationObserver(() => {
-    injectButton(platform);
-  });
+// function observeDOM(platform) {
+//   const observer = new MutationObserver(() => {
+//     injectButton(platform);
+//   });
 
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-  });
+//   observer.observe(document.body, {
+//     childList: true,
+//     subtree: true,
+//   });
 
-  // Injecte initialement
-  injectButton(platform);
-}
+//   // Injecte initialement
+//   injectButton(platform);
+// }
 
 // Exécution principale
-const platform = detectPlatform();
-if (platform) {
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => observeDOM(platform));
-  } else {
-    observeDOM(platform);
-  }
-}
+// const platform = detectPlatform();
+// if (platform) {
+//   if (document.readyState === "loading") {
+//     document.addEventListener("DOMContentLoaded", () => observeDOM(platform));
+//   } else {
+//     observeDOM(platform);
+//   }
+// }
 
 // Envoie des données utilisateur à background.js
 window.addEventListener("message", (event) => {
