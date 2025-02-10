@@ -88,7 +88,7 @@
     following:
       "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[5]/div[1]/a/span[1]/span",
     profileImage:
-      "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[1]/div[2]/div[1]/div[1]/div[2]/div/div[2]/div/a/div[4]/div",
+      "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[1]/div/div[1]/div[1]/div[2]/div/div[2]/div/a/div[3]/div/div[2]/div/img",
   };
 
   let followers = getXPathText(xPaths.followers);

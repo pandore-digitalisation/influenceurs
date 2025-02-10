@@ -59,7 +59,8 @@
     following:
       "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[3]/div/a/span/span",
     profileImage:
-      "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/div/span/img",
+      "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/span/div/div/span/img",
+    profileImage_1: "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/span/div/div/a/img",
   };
 
   let followers = getXPathText(xPaths.followers);
@@ -71,7 +72,7 @@
     followers: cleanNumber(followers) || "0",
     following: cleanNumber(following) || "0",
     posts: cleanNumber(posts) || "0",
-    profileImage: getXPathText(xPaths.profileImage, "src") || " ",
+    profileImage: getXPathText(xPaths.profileImage, "src") || getXPathText(xPaths.profileImage_1, "src") || " ",
     profileUrl: window.location.href,
     plateform: "Instagram",
   };
