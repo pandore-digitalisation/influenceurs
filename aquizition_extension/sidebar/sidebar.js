@@ -867,7 +867,7 @@ createListSubmitBtn.addEventListener("click", async () => {
 
     setTimeout(() => {
       listCreateError.style.display = "none";
-    }, 500);
+    }, 3000);
 
     return;
   }
@@ -915,7 +915,7 @@ createListSubmitBtn.addEventListener("click", async () => {
       setTimeout(() => {
         listCreateSuccess.style.display = "none";
         closePopup();
-      }, 10000);
+      }, 2000);
 
       loader.style.display = "flex";
       refreshSidebar();
