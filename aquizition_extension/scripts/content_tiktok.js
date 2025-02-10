@@ -25,16 +25,16 @@
 
     // Si la valeur se termine par "M"
     if (cleanedValue.endsWith("M")) {
-      return parseFloat(cleanedValue.replace("M", "")) * 1000000;
+      return Math.round(parseFloat(cleanedValue.replace("M", "")) * 1000000);
     }
 
     // Si la valeur se termine par "K"
     if (cleanedValue.endsWith("K")) {
-      return parseFloat(cleanedValue.replace("K", "")) * 1000;
+      return Math.round(parseFloat(cleanedValue.replace("K", "")) * 1000);
     }
 
     // Si la valeur n'a ni "M" ni "K", retour du nombre tel quel
-    return parseFloat(cleanedValue);
+    return Math.round(parseFloat(cleanedValue));
   }
 
   // function cleanNumber(value) {

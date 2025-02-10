@@ -287,50 +287,7 @@ function showMainContent() {
 
 //------------- END OF UI SIDEBAR  -------------//
 
-//-------------  GET SCRAPPED DATA  -------------//
-
-// Bouton Scraper
-// document.getElementById("scrapeBtn").addEventListener("click", () => {
-//   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-//     const url = new URL(tabs[0].url);
-//     // Détecter la plateforme actuelle
-//     let scriptFile;
-//     if (url.hostname.includes("x.com")) {
-//       scriptFile = "./scripts/content_x.js";
-//     } else if (url.hostname.includes("instagram.com")) {
-//       scriptFile = "./scripts/content_instagram.js";
-//     } else if (url.hostname.includes("facebook.com")) {
-//       scriptFile = "./scripts/content_facebook.js";
-//     } else if (url.hostname.includes("linkedin.com")) {
-//       scriptFile = "./scripts/content_linkedin.js";
-//     } else if (url.hostname.includes("tiktok.com")) {
-//       scriptFile = "./scripts/content_tiktok.js";
-//     } else {
-//       const notSupportedMessage = document.getElementById(
-//         "notSupportedMessage"
-//       );
-//       notSupportedMessage.style.display = "block";
-//       document.getElementById("scrapeBtn").style.display = "none";
-//       const notSupportedMessageClose = document.getElementById(
-//         "notSupportedMessageClose"
-//       );
-//       notSupportedMessageClose.addEventListener("click", () => {
-//         notSupportedMessage.style.display = "none";
-//         document.getElementById("scrapeBtn").style.display = "flex";
-//         document.getElementById("scrapeBtn").textContent = "Obtenir";
-//         // window.location.reload();
-//       });
-//     }
-
-//     // Injecter et exécuter le script correspondant
-//     chrome.scripting.executeScript({
-//       target: { tabId: tabs[0].id },
-//       files: [scriptFile],
-//     });
-//   });
-
-//   document.getElementById("scrapeBtn").textContent = "En cours...";
-// });
+//-------------  CONTENT.JS MESSAGE  -------------//
 
 // Écouter les messages envoyés par le content.js
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -390,7 +347,7 @@ document
     usePlatformsAlert.style.display = "none";
   });
 
-//------------- END GET SCRAPPED DATA  -------------//
+//------------- END GET CONTENT.JS MESSAGE   -------------//
 
 //-------------  GET SCRAPPED PROFILE DATA BY USER CONNECTED  -------------//
 let scrappedData = [];

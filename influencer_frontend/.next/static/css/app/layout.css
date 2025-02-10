@@ -1488,13 +1488,6 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
 }
-.bg-red-700 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(185 28 28 / var(--tw-bg-opacity));
-}
-.bg-\[FF6600\] {
-  background-color: FF6600;
-}
 .fill-current {
   fill: currentColor;
 }

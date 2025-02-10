@@ -22,7 +22,7 @@ export default function LoginPage() {
           <p className="text-4xl font-bold">Accompagner les entreprises,</p>
           <p className="text-4xl font-bold">Élever les créateurs</p>
 
-          <div></div>
+          <div>ok</div>
         </div>
       </div>
     </div>
