@@ -17,7 +17,7 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
-      <div className="relative hidden bg-muted lg:block w-full h-screen bg-[#FF6600]">
+      <div className="relative hidden lg:block w-full h-screen bg-[#FF6600]">
         <div className="flex flex-col gap-4 p-6 md:p-10 text-white">
           <p className="text-4xl font-bold">Accompagner les entreprises,</p>
           <p className="text-4xl font-bold">Élever les créateurs</p>

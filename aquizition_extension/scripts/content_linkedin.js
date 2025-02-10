@@ -16,14 +16,33 @@
         : node[attr]
       : null;
   }
-
   function cleanNumber(value) {
     if (!value) return " ";
-    let cleanedValue = value.replace(/[^\dKM]/g, ""); // Supprime tout sauf chiffres, "K" et "M"
-    if (cleanedValue.endsWith("M")) return cleanedValue.replace("M", "000000");
-    if (cleanedValue.endsWith("K")) return cleanedValue.replace("K", "000");
-    return cleanedValue;
+
+    // Retirer tous les caractères non numériques, sauf 'K' et 'M'
+    let cleanedValue = value.replace(/[^\d.KM]/g, "");
+
+    // Si la valeur se termine par "M"
+    if (cleanedValue.endsWith("M")) {
+      return parseFloat(cleanedValue.replace("M", "")) * 1000000;
+    }
+
+    // Si la valeur se termine par "K"
+    if (cleanedValue.endsWith("K")) {
+      return parseFloat(cleanedValue.replace("K", "")) * 1000;
+    }
+
+    // Si la valeur n'a ni "M" ni "K", retour du nombre tel quel
+    return parseFloat(cleanedValue);
   }
+
+  // function cleanNumber(value) {
+  //   if (!value) return " ";
+  //   let cleanedValue = value.replace(/[^\dKM]/g, ""); // Supprime tout sauf chiffres, "K" et "M"
+  //   if (cleanedValue.endsWith("M")) return cleanedValue.replace("M", "000000");
+  //   if (cleanedValue.endsWith("K")) return cleanedValue.replace("K", "000");
+  //   return cleanedValue;
+  // }
 
   const xPaths = {
     name: "/html/body/div[6]/div[3]/div/div/div[2]/div/div/main/section[1]/div[2]/div[2]/div[1]/div[1]/span[1]/a/h1",

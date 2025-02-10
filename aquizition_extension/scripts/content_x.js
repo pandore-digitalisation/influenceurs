@@ -18,33 +18,53 @@
   }
 
   function cleanNumber(value) {
-    if (!value) return "None";
-
-    let cleanedValue = value.replace(/[^\dKM.]/g, "");
-    let suffix = "";
-
-    if (cleanedValue.endsWith("M") || cleanedValue.endsWith("K")) {
-      suffix = cleanedValue.slice(-1);
-      cleanedValue = cleanedValue.slice(0, -1);
+    if (!value) return " ";
+  
+    // Retirer tous les caractères non numériques, sauf 'K' et 'M'
+    let cleanedValue = value.replace(/[^\d.KM]/g, "");
+  
+    // Si la valeur se termine par "M"
+    if (cleanedValue.endsWith("M")) {
+      return parseFloat(cleanedValue.replace("M", "")) * 1000000;
     }
-
-    if (cleanedValue.includes(".")) {
-      cleanedValue = cleanedValue.split(".")[0];
+  
+    // Si la valeur se termine par "K"
+    if (cleanedValue.endsWith("K")) {
+      return parseFloat(cleanedValue.replace("K", "")) * 1000;
     }
-
-    cleanedValue = cleanedValue + suffix;
-
-    if (suffix === "M") {
-      return (
-        parseFloat(cleanedValue.replace("M", "").replace(",", "")) * 1000000
-      );
-    }
-    if (suffix === "K") {
-      return parseFloat(cleanedValue.replace("K", "").replace(",", "")) * 1000;
-    }
-
-    return parseFloat(cleanedValue) || cleanedValue;
+  
+    // Si la valeur n'a ni "M" ni "K", retour du nombre tel quel
+    return parseFloat(cleanedValue);
   }
+  
+  // function cleanNumber(value) {
+  //   if (!value) return "None";
+
+  //   let cleanedValue = value.replace(/[^\dKM.]/g, "");
+  //   let suffix = "";
+
+  //   if (cleanedValue.endsWith("M") || cleanedValue.endsWith("K")) {
+  //     suffix = cleanedValue.slice(-1);
+  //     cleanedValue = cleanedValue.slice(0, -1);
+  //   }
+
+  //   if (cleanedValue.includes(".")) {
+  //     cleanedValue = cleanedValue.split(".")[0];
+  //   }
+
+  //   cleanedValue = cleanedValue + suffix;
+
+  //   if (suffix === "M") {
+  //     return (
+  //       parseFloat(cleanedValue.replace("M", "").replace(",", "")) * 1000000
+  //     );
+  //   }
+  //   if (suffix === "K") {
+  //     return parseFloat(cleanedValue.replace("K", "").replace(",", "")) * 1000;
+  //   }
+
+  //   return parseFloat(cleanedValue) || cleanedValue;
+  // }
 
   // function cleanNumber(value) {
   //   if (!value) return "None";

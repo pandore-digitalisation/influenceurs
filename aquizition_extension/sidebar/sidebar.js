@@ -39,13 +39,23 @@ async function fetchUserLists(userId, token) {
     });
     const lists = await response.json();
 
+    console.log("liste", lists);
+
     listDropdown.innerHTML = "";
-    lists.forEach((list) => {
-      const option = document.createElement("option");
-      option.value = list._id;
-      option.textContent = list.name;
-      listDropdown.appendChild(option);
-    });
+    if (lists.length === 0) {
+      const nullOption = document.createElement("option");
+      nullOption.textContent = "Vous n'avez pas de liste";
+      listDropdown.appendChild(nullOption);
+      scrapeButton.disabled = true;
+    } else {
+      lists.forEach((list) => {
+        scrapeButton.disabled = false;
+        const option = document.createElement("option");
+        option.value = list._id;
+        option.textContent = list.name;
+        listDropdown.appendChild(option);
+      });
+    }
   } catch (error) {
     console.error("Erreur lors de la récupération des listes :", error);
     return [];
@@ -103,11 +113,9 @@ scrapeButton.addEventListener("click", () => {
     });
   });
   scrapeButton.textContent = "En cours...";
-
 });
 
 //-------------  END OF GET SCRAPPED DATA AND ADD TO LIST -------------//
-
 
 //-------------  UI SIDEBAR  -------------//
 
@@ -279,7 +287,6 @@ function showMainContent() {
 
 //------------- END OF UI SIDEBAR  -------------//
 
-
 //-------------  GET SCRAPPED DATA  -------------//
 
 // Bouton Scraper
@@ -383,8 +390,7 @@ document
     usePlatformsAlert.style.display = "none";
   });
 
-  //------------- END GET SCRAPPED DATA  -------------//
-
+//------------- END GET SCRAPPED DATA  -------------//
 
 //-------------  GET SCRAPPED PROFILE DATA BY USER CONNECTED  -------------//
 let scrappedData = [];
@@ -494,15 +500,13 @@ async function displayScrappedData(dataToShow) {
 
 //------------- END OF GET SCRAPPED PROFILE DATA BY USER CONNECTED  -------------//
 
+//-------------  GET AND EXPORT LIST DATA  -------------//
 
-//-------------  GET LIST DATA  -------------//
 let lists = [];
 let filteredListData = [];
 const listFilter = document.getElementById("listFilter");
 const exportBtn = document.getElementById("exportBtn");
-const selectAllProfilesLists = document.getElementById(
-  "selectAllProfilesLists"
-);
+const selectAllProfilesLists = document.getElementById("selectAllProfilesLists");
 
 // Fonction pour récupérer les listes depuis l'API
 async function fetchProfiles(userId, token) {
@@ -667,6 +671,7 @@ async function displayProfiles(data) {
     listPageInfo.textContent = `${currentPage}/${Math.ceil(
       profiles.length / rowsPerPage
     )}`;
+
     listPrevBtn.disabled = currentPage === 1;
     listNextBtn.disabled =
       currentPage === Math.ceil(profiles.length / rowsPerPage);
@@ -708,9 +713,10 @@ async function displayProfiles(data) {
 // Fonction d'export vers Excel en fonction de la sélection
 
 function exportToExcel() {
-  const selectedProfiles = [
-    ...document.querySelectorAll("input.profileCheckbox:checked"),
-  ].map((checkbox) => profiles[checkbox.dataset.index]);
+  // const selectedProfiles = [
+  //   ...document.querySelectorAll("input.profileCheckbox:checked"),
+  // ].map((checkbox) => profiles[checkbox.dataset.index]);
+    const selectedProfiles = profiles.filter(profile => profile.isSelected);
 
   const dataToExport = [
     ["Nom Complet", "Followers", "Following", "Plateforme", "URL du Profil"],
@@ -735,15 +741,33 @@ function exportToExcel() {
 
 // Gestion du "Select All"
 selectAllProfilesLists?.addEventListener("change", () => {
-  const checkboxes = document.querySelectorAll("input.profileCheckbox");
-  checkboxes.forEach(
-    (checkbox) => (checkbox.checked = selectAllProfilesLists.checked)
-  );
+  const isChecked = selectAllProfilesLists.checked;
+
+  // Mettre à jour un attribut dans les données et pas juste dans le DOM
+  profiles.forEach(profile => profile.isSelected = isChecked);
+
+  // Mettre à jour les cases visibles seulement
+  document.querySelectorAll("input.profileCheckbox").forEach(checkbox => {
+    checkbox.checked = isChecked;
+  });
+
   updateExportButtonState();
 });
+// selectAllProfilesLists?.addEventListener("change", () => {
+//   const checkboxes = document.querySelectorAll("input.profileCheckbox");
+//   checkboxes.forEach(
+//     (checkbox) => (checkbox.checked = selectAllProfilesLists.checked)
+//   );
+//   updateExportButtonState();
+// });
 
 // Gestion du bouton d'export
 exportBtn?.addEventListener("click", exportToExcel);
+
+
+//-------------  END OF GET AND EXPORT LIST DATA  -------------//
+
+//-------------  POPUP TO CREATE LISTE  -------------//
 
 const openPopupBtn = document.getElementById("createListBtn");
 // const closePopupBtn = document.getElementById("closePopupBtn");
@@ -786,6 +810,8 @@ function closePopup() {
   overlay.style.display = "none";
   profilesCheckboxContainer.innerHTML = "";
   profilesDropdown.style.display = "none";
+  loader.style.display = "flex";
+  refreshSidebar();
 }
 
 // Fermer le popup
@@ -883,6 +909,8 @@ createListSubmitBtn.addEventListener("click", async () => {
 
     if (response.ok) {
       listCreateSuccess.style.display = "block";
+      loader.style.display = "flex";
+      refreshSidebar();
 
       setTimeout(() => {
         listCreateSuccess.style.display = "none";
@@ -897,8 +925,9 @@ createListSubmitBtn.addEventListener("click", async () => {
       throw new Error("Erreur lors de la création de la liste.");
     }
   } catch (error) {
-
     console.error("Erreur :", error);
     alert("Une erreur s'est produite.");
   }
 });
+
+//------------- END OF POPUP TO CREATE LISTE  -------------//

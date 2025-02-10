@@ -39,7 +39,7 @@
         </div>
       </div>
       <span class="right" style="gap: 2px;">
-        <div class="ui mini form" style="width: 100px;">
+        <div class="ui mini form" style="width: 180px;">
           <div class="field">
             <select id="listFilter">
               <option value="">Votre Listes</option>
@@ -84,23 +84,7 @@
           <p>Veuillez rafraîchir la page et réessayer.</p>
         </div>
       </span>
-      <!-- Get data and add to list container -->
 
-      <div class="card getDataContainer" style="display: none; margin: 10px; height: 100px; justify-content: center; align-items: center; gap: 10px; padding-top: 5px;">
-        <span style="margin: 27px; margin-top: 15px;">Veuillez choisir votre liste et cliquer sur enregistré.</span>
-        <div class="ui form mini" style="margin-top: 15px;">
-          <div class="fields" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-            <div class="field" style="width: 250px;">
-              <select id="listSelection">
-                <option value="" disabled selected>Choisissez une liste</option>
-              </select>
-            </div>
-            <div class="field">
-              <button id="scrapeButton" class="mini ui button green">Enregistré</button>
-            </div>
-          </div>
-        </div>
-      </div>
       <div>
         <div style="margin-top: 10px;">
           <!-- No scrapped profile data found message -->
@@ -113,6 +97,29 @@
             </p>
           </div>
         </div>
+
+        <!-- Get data and add to list container -->
+
+        <div class="card getDataContainer"
+          style="display: none; margin: 10px; height: 105px; justify-content: center; align-items: center; gap: 10px; padding-top: 5px;">
+          <div style="margin: 5px 2px 0px 35px; margin-top: 5px;">
+            <span>Veuillez choisir votre liste et cliquer sur enregistré.</span> <br>
+          </div>
+          <div class="ui form mini" style="margin-top: 15px;">
+            <div class="fields" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+              <div class="field" style="width: 250px;">
+                <select id="listSelection">
+                  <option value="" disabled selected>Vous n'avez pas de liste</option>
+                </select>
+              </div>
+              <div class="field">
+                <button id="scrapeButton" class="mini ui button green">Enregistré</button>
+              </div>
+            </div>
+            <span id="statusMessage" style="margin: 5px 2px 0px 35px; margin-top: 5px;"></span>
+          </div>
+        </div>
+
         <div style="margin-top: 5px;" id="profileListData">
           <table class="ui celled table unstackable" id="userListsProfiles">
             <thead>
@@ -222,8 +229,10 @@
                 <div id="listCreateSuccess" style="display: none;">Liste créée avec succès !</div>
                 <div id="listCreateError" style="display: none;">Veuillez remplir tous les champs.</div>
 
-                <label>Nomme la liste.</label>
-                <input placeholder="Ex: Ma liste" name="name" type="text" id="listName">
+                <div class="required field">
+                  <label>Nomme la liste.</label>
+                  <input placeholder="Ex: Ma liste" name="name" type="text" id="listName">
+                </div>
               </div>
               <div class="field">
                 <label for="profiles">Choisir profile.</label>
