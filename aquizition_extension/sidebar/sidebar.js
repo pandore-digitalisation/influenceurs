@@ -1,7 +1,7 @@
-// const BASE_URL = "https://influenceur-list.onrender.com";
-// const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
-const FRONT_BASE_URL = "http://localhost:3001";
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://influenceur-list.onrender.com";
+const FRONT_BASE_URL = "https://pandoreinfluencerfrontend.vercel.app";
+// const FRONT_BASE_URL = "http://localhost:3001";
+// const BASE_URL = "http://localhost:3000";
 
 let tokenGlobal;
 let userData;
@@ -293,15 +293,13 @@ function showMainContent() {
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.success) {
     document.getElementById("dataGetSuccessMessage").style.display = "block";
-    scrapeButton.disabled = true;
-    // document.getElementById("scrapeBtn").style.display = "none";
     loader.style.display = "flex";
     refreshSidebar();
-    document
-      .getElementById("dataGetSuccessMessageCLose")
-      .addEventListener("click", () => {
+    scrapeButton.textContent = "Enregistré";
+
+    // document.getElementById("scrapeBtn").style.display = "none";
+    document.getElementById("dataGetSuccessMessageCLose").addEventListener("click", () => {
         document.getElementById("dataGetSuccessMessage").style.display = "none";
-        scrapeButton.textContent = "Enregistré";
         scrapeButton.disabled = false;
         // document.getElementById("scrapeBtn").style.display = "flex";
         // document.getElementById("scrapeBtn").textContent = "Obtenir";
@@ -368,7 +366,7 @@ async function fetchScrappedProfiles(userId) {
       profile.userId.includes(userId)
     );
 
-    console.log("Profils filtrés :", scrappedProfiles);
+    // console.log("Profils filtrés :", scrappedProfiles);
     scrappedData = scrappedProfiles;
     displayScrappedData(scrappedData);
     return scrappedProfiles;
@@ -387,9 +385,10 @@ async function displayScrappedData(dataToShow) {
   const prevBtn = document.getElementById("prevBtn");
   const nextBtn = document.getElementById("nextBtn");
   const pageInfo = document.getElementById("pageInfo");
+  const noScrappedData = document.getElementById("noScrappedData");
 
-  if (dataToShow.lenght === 0) {
-    const noScrappedData = document.getElementById("noScrappedData");
+
+  if (dataToShow.length === 0) {
     noScrappedData.style.display = "block";
     scrappedDataBlock.style.display = "none";
     return;
@@ -408,24 +407,27 @@ async function displayScrappedData(dataToShow) {
     const paginatedData = dataToShow.slice(start, end);
 
     function truncateName(name) {
-      return name.length > 12 ? name.slice(0, 12) + "..." : name;
+      return name.length > 6 ? name.slice(0, 6) + "..." : name;
     }
 
     paginatedData.forEach((item) => {
       const row = document.createElement("tr");
       const name = truncateName(item.name);
       const followers = item.followers;
-      const following = item.following;
-      const connection = item.connection;
+      const following = item.following || "-";
       const profileUrl = item.profileUrl;
       const plateform = item.plateform;
+      const profileImage = encodeURIComponent(item.profileImage);
+
 
       row.innerHTML = `
-        <td><a href="${profileUrl}" target="_blanc" style="text-decoration="none" title=${name}>${name}</a></td>
+        <td><img class="ui avatar image" src="${BASE_URL}/proxy?url=${profileImage}"></td>
+        <td><a href="${profileUrl}" target="_blanc" style="text-decoration: none" title=${name}>${name}</a></td>
         <td>${followers}</td>
-        <td>${following || "-" || " "}</td>
+        <td>${following}</td>
         <td>${plateform}</td>
       `;
+
       scrappedData.appendChild(row);
     });
 
@@ -463,7 +465,9 @@ let lists = [];
 let filteredListData = [];
 const listFilter = document.getElementById("listFilter");
 const exportBtn = document.getElementById("exportBtn");
-const selectAllProfilesLists = document.getElementById("selectAllProfilesLists");
+const selectAllProfilesLists = document.getElementById(
+  "selectAllProfilesLists"
+);
 
 // Fonction pour récupérer les listes depuis l'API
 async function fetchProfiles(userId, token) {
@@ -673,7 +677,7 @@ function exportToExcel() {
   // const selectedProfiles = [
   //   ...document.querySelectorAll("input.profileCheckbox:checked"),
   // ].map((checkbox) => profiles[checkbox.dataset.index]);
-    const selectedProfiles = profiles.filter(profile => profile.isSelected);
+  const selectedProfiles = profiles.filter((profile) => profile.isSelected);
 
   const dataToExport = [
     ["Nom Complet", "Followers", "Following", "Plateforme", "URL du Profil"],
@@ -701,10 +705,10 @@ selectAllProfilesLists?.addEventListener("change", () => {
   const isChecked = selectAllProfilesLists.checked;
 
   // Mettre à jour un attribut dans les données et pas juste dans le DOM
-  profiles.forEach(profile => profile.isSelected = isChecked);
+  profiles.forEach((profile) => (profile.isSelected = isChecked));
 
   // Mettre à jour les cases visibles seulement
-  document.querySelectorAll("input.profileCheckbox").forEach(checkbox => {
+  document.querySelectorAll("input.profileCheckbox").forEach((checkbox) => {
     checkbox.checked = isChecked;
   });
 
@@ -720,7 +724,6 @@ selectAllProfilesLists?.addEventListener("change", () => {
 
 // Gestion du bouton d'export
 exportBtn?.addEventListener("click", exportToExcel);
-
 
 //-------------  END OF GET AND EXPORT LIST DATA  -------------//
 

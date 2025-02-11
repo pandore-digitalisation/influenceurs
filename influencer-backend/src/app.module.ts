@@ -11,6 +11,7 @@ import { AllModule } from './all/all.module';
 import { AuthModule } from './auth/auth.module';
 import { TiktokModule } from './tiktok/tiktok.module';
 import { ConfigModule } from '@nestjs/config';
+import { ImageProxyController } from './proxy/image-proxy.controller';
 
 @Module({
   imports: [
@@ -29,7 +30,7 @@ import { ConfigModule } from '@nestjs/config';
     AuthModule,
     TiktokModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, ImageProxyController],
   providers: [AppService],
 })
 export class AppModule {}

@@ -1,6 +1,6 @@
 (async () => {
-  // const BASE_URL = "https://influenceur-list.onrender.com";
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = "https://influenceur-list.onrender.com";
+  // const BASE_URL = "http://localhost:3000";
 
   function getXPathText(xpath, attr = "textContent") {
     const node = document.evaluate(
@@ -18,7 +18,7 @@
   }
 
   function cleanNumber(value) {
-    if (!value) return " ";
+    if (!value) return "None";
   
     // Retirer tous les caractères non numériques, sauf 'K' et 'M'
     let cleanedValue = value.replace(/[^\d.KM]/g, "");
