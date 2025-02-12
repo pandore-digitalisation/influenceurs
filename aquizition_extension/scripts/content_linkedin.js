@@ -162,7 +162,7 @@
   const isValidData = ({ name, followers, connection, following }) =>
     name !== "None" &&
     followers !== "None" &&
-    connection !== "None" &&
+    connection !== "" &&
     following !== "None";
 
   if (isValidData(extractedData)) {

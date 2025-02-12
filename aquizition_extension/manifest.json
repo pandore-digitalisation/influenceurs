@@ -15,7 +15,8 @@
     "https://influenceur-list.onrender.com/*",
     "http://127.0.0.1:5001/*",
     "http://localhost:3000/*",
-    "http://localhost:3001/*"
+    "http://localhost:3001/*",
+    "https://www.youtube.com/*"
  
   ],
   "background": {
@@ -37,7 +38,8 @@
         "https://x.com/*",
         "https://www.tiktok.com/*",
         "http://localhost:3001/*",
-        "https://pandoreinfluencerfrontend.vercel.app/*"
+        "https://pandoreinfluencerfrontend.vercel.app/*",
+        "https://www.youtube.com/*"
       ],
       "js": ["content.js"]
     }
@@ -66,7 +68,8 @@
         "https://x.com/*",
         "https://www.tiktok.com/*",
         "http://localhost:3001/*",
-        "https://pandoreinfluencerfrontend.vercel.app/*"
+        "https://pandoreinfluencerfrontend.vercel.app/*",
+        "https://www.youtube.com/*"
       ]
     }
   ],

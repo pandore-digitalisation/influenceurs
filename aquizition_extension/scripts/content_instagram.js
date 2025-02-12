@@ -180,6 +180,7 @@
       const success = response.ok;
       console.log("Success:", success);
       chrome.runtime.sendMessage({ success });
+      
     } catch (error) {
       console.error("Network error:", error);
       chrome.runtime.sendMessage({ networkError });
