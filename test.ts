@@ -373,3 +373,24 @@ function handleUnsupportedPlatform() {
 }
 
 //-------------  END OF GET SCRAPPED DATA AND ADD TO LIST -------------//
+
+
+
+res.cookie('auth_token', token, {
+  httpOnly: true,
+  secure: true, // uniquement en HTTPS
+  sameSite: 'Strict', // pour éviter les attaques CSRF
+});
+res.redirect(`${this.BASE_URL}/dashboard`);
+
+import { cookies } from 'next/headers';
+
+const getTokenFromCookies = () => {
+  const cookieString = document.cookie.split('; ').find(row => row.startsWith('auth_token='));
+  return cookieString ? cookieString.split('=')[1] : null;
+};
+
+useEffect(() => {
+  const token = getTokenFromCookies();
+}, []);
+

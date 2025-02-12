@@ -24,6 +24,9 @@ import {
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut } from "lucide-react";
+import Cookies from "js-cookie";
+import { Loader } from "@/components/loaders/Loader";
+ 
 
 export default function Dashboard() {
   const BASE_URL = "http://localhost:3000";
@@ -41,10 +44,17 @@ export default function Dashboard() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  useEffect(() => {
-    const token = searchParams.get("token");
+ // Fonction pour récupérer le token depuis les cookies
+ const getTokenFromCookies = () => {
+  if (typeof document === "undefined") return null; // Vérification côté client
+  const cookieString = document.cookie.split("; ").find(row => row.startsWith("auth_token="));
+  return cookieString ? cookieString.split("=")[1] : null;
+};
 
-    // console.log("Token récupéré:", token);
+  useEffect(() => {
+    // const token = searchParams.get("token");
+    const token = getTokenFromCookies();
+    console.log("Token récupéré:", token);
 
     if (token) {
       localStorage.setItem("token", token);
@@ -111,12 +121,18 @@ export default function Dashboard() {
       };
 
       fetchUserData();
+    } else {
+      console.log("ok");
+      window.location.href = "/login";
     }
 
     const handleLogoutUser = (event: any) => {
       if (event.data.action === "logoutUser") {
         console.log("Déconnexion détectée depuis l'extension.");
         localStorage.removeItem("token");
+        sessionStorage.clear();
+        Cookies.remove("auth_token");
+        
         window.location.href = "/login";
       }
     };
@@ -157,6 +173,8 @@ export default function Dashboard() {
       if (response.ok) {
         localStorage.removeItem("auth_token");
         sessionStorage.clear();
+        Cookies.remove("auth_token");
+
 
         window.postMessage({ action: "logoutUser", token }, "*");
 
@@ -173,7 +191,7 @@ export default function Dashboard() {
   };
 
   if (loading) {
-    return <div>Chargement...</div>;
+    return <Loader/>;
   }
 
   if (error) {
