@@ -1,20 +1,18 @@
 "use client";
 
+import { AppSidebar } from "@/components/sidebar/sidebar";
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import Cookies from "js-cookie";
+import { Loader } from "@/components/loaders/Loader";
+
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -22,11 +20,18 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { LogOut } from "lucide-react";
-import Cookies from "js-cookie";
-import { Loader } from "@/components/loaders/Loader";
- 
+import SearchComponent from "@/components/influencer/SearchComponent";
+import Statistics from "@/components/statistics/statistics";
+import Lists from "@/components/lists/lists";
 
 export default function Dashboard() {
   const BASE_URL = "http://localhost:3000";
@@ -40,21 +45,28 @@ export default function Dashboard() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeComponent, setActiveComponent] = useState<string | null>(
+    "search"
+  );
 
-  const searchParams = useSearchParams();
   const router = useRouter();
 
- // Fonction pour récupérer le token depuis les cookies
- const getTokenFromCookies = () => {
-  if (typeof document === "undefined") return null; // Vérification côté client
-  const cookieString = document.cookie.split("; ").find(row => row.startsWith("auth_token="));
-  return cookieString ? cookieString.split("=")[1] : null;
-};
+  // Fonction pour récupérer le token depuis les cookies
+  const getTokenFromCookies = () => {
+    if (typeof document === "undefined") return null; // Vérification côté client
+    const cookieString = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("auth_token="));
+    return cookieString ? cookieString.split("=")[1] : null;
+  };
 
   useEffect(() => {
-    // const token = searchParams.get("token");
     const token = getTokenFromCookies();
     console.log("Token récupéré:", token);
+
+    const handleMenuSelection = (event: CustomEvent) => {
+      setActiveComponent(event.detail);
+    };
 
     if (token) {
       localStorage.setItem("token", token);
@@ -78,6 +90,7 @@ export default function Dashboard() {
 
           const data = await response.json();
           setUser(data);
+          localStorage.setItem("userId", data.data.userId);
 
           // sendDataToExtension(data, token);
           const fetchUserLists = async () => {
@@ -122,25 +135,33 @@ export default function Dashboard() {
 
       fetchUserData();
     } else {
-      console.log("ok");
       window.location.href = "/login";
     }
 
     const handleLogoutUser = (event: any) => {
       if (event.data.action === "logoutUser") {
         console.log("Déconnexion détectée depuis l'extension.");
+        localStorage.clear();
         localStorage.removeItem("token");
         sessionStorage.clear();
         Cookies.remove("auth_token");
-        
+
         window.location.href = "/login";
       }
     };
 
     window.addEventListener("message", handleLogoutUser);
+    window.addEventListener(
+      "menuSelection",
+      handleMenuSelection as EventListener
+    );
 
     return () => {
       window.removeEventListener("message", handleLogoutUser);
+      window.removeEventListener(
+        "menuSelection",
+        handleMenuSelection as EventListener
+      );
     };
   }, []);
 
@@ -172,9 +193,9 @@ export default function Dashboard() {
 
       if (response.ok) {
         localStorage.removeItem("auth_token");
+        localStorage.clear();
         sessionStorage.clear();
         Cookies.remove("auth_token");
-
 
         window.postMessage({ action: "logoutUser", token }, "*");
 
@@ -191,7 +212,7 @@ export default function Dashboard() {
   };
 
   if (loading) {
-    return <Loader/>;
+    return <Loader />;
   }
 
   if (error) {
@@ -207,17 +228,26 @@ export default function Dashboard() {
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex h-16 items-center gap-2 px-4">
-          <SidebarTrigger />
-          <Separator orientation="vertical" className="h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/">Aquizition by Pandore</BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-          <div className="ml-auto">
+        <header className="flex h-12 shrink-0 items-center gap-2 border-b sticky top-0 bg-white z-50">
+          <div className="flex items-center gap-2 px-3">
+            <SidebarTrigger />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            {/* <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="#">
+                    Building Your Application
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb> */}
+          </div>
+
+          <div className="ml-auto pr-5">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Avatar
@@ -225,7 +255,6 @@ export default function Dashboard() {
                   style={{ cursor: "pointer" }}
                 >
                   <AvatarImage src={user?.data.picture} alt={"PI"} />
-                  <AvatarFallback>PI</AvatarFallback>
                 </Avatar>
               </DropdownMenuTrigger>
               <DropdownMenuContent
@@ -248,159 +277,26 @@ export default function Dashboard() {
             </DropdownMenu>
           </div>
         </header>
-
-        <div className="flex flex-1 flex-col gap-4 pt-0">
-          <span className="p-4 pb-0 pt-0">
-            <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-              <div className="aspect-video rounded-xl bg-muted/50" />
-              <div className="aspect-video rounded-xl bg-muted/50" />
-              <div className="aspect-video rounded-xl bg-muted/50" />
-            </div>
-          </span>
-          {/* <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" /> */}
-          <span className="flex h-screen overflow-hidden">
-            <aside
-              className={`bg-[#FAFAFA] text-[#000000] transition-all duration-300 ${
-                sidebarExpanded ? "w-64" : "w-16"
-              }`}
+        <nav className="flex h-12 shrink-0 items-center gap-2 border-b sticky top-0 bg-white z-40">
+          <div className="flex items-center gap-2 px-3"></div>
+          <div className="ml-auto pr-5">
+            {" "}
+            <a
+              href="#"
+              className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 p-1 rounded"
             >
-              <div className="p-4 flex items-center justify-between">
-                <span
-                  className={`${
-                    !sidebarExpanded ? "hidden" : "block"
-                  } text-lg font-semibold`}
-                >
-                  Mes Listes
-                </span>
-                <button
-                  onClick={toggleSidebar}
-                  className="text-[#D9E4FF] focus:outline-none hover:bg-gray-700 p-2 rounded"
-                >
-                  {sidebarExpanded ? "←" : "→"}
-                </button>
-              </div>
-              <ul className="space-y-2 p-4">
-                {lists.length > 0 ? (
-                  lists.map((list) => (
-                    <li
-                      key={list._id}
-                      className={`p-2 cursor-pointer hover:bg-[#F4F4F5] rounded ${
-                        selectedListId === list._id ? "bg-[#F4F4F5]" : ""
-                      }`}
-                      onClick={() => handleSelectList(list)}
-                    >
-                      {sidebarExpanded ? list.name : list.name[0]}{" "}
-                      {/* Affichage compact */}
-                    </li>
-                  ))
-                ) : (
-                  <li>Aucune liste disponible.</li>
-                )}
-              </ul>
-            </aside>
-            {/* Main Content */}
-            <main
-              className={`flex-1 ml-${
-                sidebarExpanded ? "64" : "16"
-              } transition-all duration-300 p-4 pt-0 overflow-y-auto`}
-            >
-              <h2 className="text-2xl font-bold mb-4">Profils sélectionnés</h2>
+              + Créer une nouvelle liste
+            </a>
+          </div>
+        </nav>
 
-              {selectedProfiles.length > 0 ? (
-                <div className="relative overflow-x-auto border sm:rounded-lg">
-                  <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                      <tr>
-                        <th scope="col" className="p-4">
-                          <div className="flex items-center">
-                            <input
-                              id="checkbox-all-search"
-                              type="checkbox"
-                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            />
-                            <label
-                              htmlFor="checkbox-all-search"
-                              className="sr-only"
-                            >
-                              checkbox
-                            </label>
-                          </div>
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                          Name
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                          Followers
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                          Following
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                          Plateform
-                        </th>
-                        <th scope="col" className="px-6 py-3">
-                          Url
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedProfiles.map(
-                        (profile: {
-                          _id: string;
-                          name: string;
-                          plateform: string;
-                          followers: string;
-                          posts: string;
-                          following: string;
-                          profileUrl: string;
-                        }) => (
-                          <tr className="bg-white border-b hover:bg-gray-50">
-                            <td className="w-4 p-4">
-                              <div className="flex items-center">
-                                <input
-                                  id="checkbox-table-search-1"
-                                  type="checkbox"
-                                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                />
-                                <label
-                                  htmlFor="checkbox-table-search-1"
-                                  className="sr-only"
-                                >
-                                  checkbox
-                                </label>
-                              </div>
-                            </td>
-                            <th
-                              scope="row"
-                              className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                            >
-                              {profile.name}
-                            </th>
-                            <td className="px-6 py-4">{profile.followers}</td>
-                            <td className="px-6 py-4">{profile.following}</td>
-                            <td className="px-6 py-4">{profile.plateform}</td>
-                            <td className="px-6 py-4">
-                              <a
-                                href={profile.profileUrl}
-                                target="_blank"
-                                className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                              >
-                                v
-                              </a>
-                            </td>
-                          </tr>
-                        )
-                      )}{" "}
-                    </tbody>{" "}
-                  </table>
-                </div>
-              ) : (
-                <p>
-                  Sélectionnez une liste pour afficher les profils associés.
-                </p>
-              )}
-            </main>
-          </span>
+        <div className="flex flex-col gap-4 p-2">
+          <div className="grid auto-rows-min gap-4">
+            {/* <SearchComponent /> */}
+            {activeComponent === "search" && <SearchComponent />}
+            {activeComponent === "statistics" && <Statistics />}
+            {activeComponent === "list" && <Lists />}
+          </div>
         </div>
       </SidebarInset>
     </SidebarProvider>
