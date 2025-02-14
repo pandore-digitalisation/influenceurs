@@ -1,0 +1,77 @@
+{
+  "manifest_version": 3,
+  "name": "Aquizition",
+  "version": "0.1.4",
+  "description": "Get X, Instagram, Facebook, Linkedin, Tiktok page data and export in csv format",
+  "permissions": ["activeTab", "scripting", "storage", "tabs"],
+  "host_permissions": [
+    "https://pandoreinfluencerfrontend.vercel.app/*",
+    "https://x.com/*",
+    "https://www.linkedin.com/*",
+    "https://www.tiktok.com/*",
+    "https://www.facebook.com/*",
+    "https://www.instagram.com/*",
+    "https://influenceurs.onrender.com/*",
+    "https://influenceur-list.onrender.com/*",
+    "http://127.0.0.1:5001/*",
+    "http://localhost:3000/*",
+    "http://localhost:3001/*"
+ 
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Pandore Aquizition Extension",
+    "default_icon": {
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.facebook.com/*",
+        "https://www.instagram.com/*",
+        "https://www.linkedin.com/*",
+        "https://x.com/*",
+        "https://www.tiktok.com/*",
+        "http://localhost:3001/*",
+        "https://pandoreinfluencerfrontend.vercel.app/*"
+      ],
+      "js": ["content.js"]
+    }
+  ],
+  "side_panel": {
+    "default_path": "sidebar/sidebar.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "scripts/content_facebook.js",
+        "scripts/content_instagram.js",
+        "scripts/content_tiktok.js",
+        "scripts/content_linkedin.js",
+        "scripts/content_x.js",
+        "sidebar/sidebar.css",
+        "sidebar/sidebar.js",
+        "sidebar/sidebar.html",
+        "libs/bootstrap.min.css",
+        "libs/bootstrap.bundle.min.js"
+      ],
+      "matches": [
+        "https://www.facebook.com/*",
+        "https://www.instagram.com/*",
+        "https://www.linkedin.com/*",
+        "https://x.com/*",
+        "https://www.tiktok.com/*",
+        "http://localhost:3001/*",
+        "https://pandoreinfluencerfrontend.vercel.app/*"
+      ]
+    }
+  ],
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

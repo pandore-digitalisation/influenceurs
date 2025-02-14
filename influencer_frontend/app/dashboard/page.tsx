@@ -6,14 +6,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { Loader } from "@/components/loaders/Loader";
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
@@ -32,6 +25,7 @@ import { LogOut } from "lucide-react";
 import SearchComponent from "@/components/influencer/SearchComponent";
 import Statistics from "@/components/statistics/statistics";
 import Lists from "@/components/lists/lists";
+import Profiles from "@/components/lists/profiles";
 
 export default function Dashboard() {
   const BASE_URL = "http://localhost:3000";
@@ -292,10 +286,11 @@ export default function Dashboard() {
 
         <div className="flex flex-col gap-4 p-2">
           <div className="grid auto-rows-min gap-4">
-            {/* <SearchComponent /> */}
             {activeComponent === "search" && <SearchComponent />}
             {activeComponent === "statistics" && <Statistics />}
             {activeComponent === "list" && <Lists />}
+            {activeComponent === "profiles" && <Profiles />}
+
           </div>
         </div>
       </SidebarInset>

@@ -862,7 +862,7 @@ createListSubmitBtn.addEventListener("click", async () => {
       },
       body: JSON.stringify({
         name: listName,
-        profiles: profilesData,
+        profiles: profilesData || [],
         userId: userId,
       }),
     });

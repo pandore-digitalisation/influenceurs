@@ -1,0 +1,146 @@
+body {
+  max-width: 100%;
+  width: 800px;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+section {
+  padding: 15px;
+}
+
+.input:focus {
+  outline: none;
+  box-shadow: none;
+  border-color:gray;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  /* align-items: center; */
+}
+
+.left {
+  font-size: 17px;
+  color: #ed7e11;
+  font-weight: bolder;
+}
+
+.right {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.center {
+  display: flex;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+button {
+  padding: 0px 0px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+#scrapeBtn {
+  background-color: #ff683e;
+  color: white;
+}
+
+#exportCsvBtn:hover {
+  background-color: #0000CC;
+}
+
+#scrapeBtn:hover {
+  background-color: #cc5432;
+}
+
+.spinner-border {
+  color: #ed7e11;
+}
+
+#createList, #createListSubmit, #createProfileList {
+  background-color: green;
+  color: white;
+}
+
+#createList:hover, #createListSubmit:hover {
+  background-color: #006600;
+}
+
+#downloadBtn {
+  display: none;
+  background-color: #2e7d32;
+  color: white;
+}
+#status, #savedData /*#status-download*/ {
+  margin-top: 5px;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  text-align: center;
+  font-size: 14px;
+  min-height: 20px;
+  color: #25d366;
+}
+
+#authStatus {
+  text-align: center;
+  color: rgb(216, 42, 42);
+}
+
+.title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.buttons {
+  padding-left: 0px;
+}
+#createListForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#auth {
+  margin-left: auto;
+}
+
+.formsBlock {
+  display: flex;
+  margin-bottom: 8px;
+}
+
+.version {
+  justify-content: flex-end;
+  display: flex;
+}
+
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+}

@@ -23,6 +23,8 @@
     // Retirer tous les caractères non numériques, sauf 'K' et 'M'
     let cleanedValue = value.replace(/[^\d.KM]/g, "");
 
+    cleanedValue = cleanedValue.replace(",", ".");
+
     // Si la valeur se termine par "M"
     if (cleanedValue.endsWith("M")) {
       return Math.round(parseFloat(cleanedValue.replace("M", "")) * 1000000);

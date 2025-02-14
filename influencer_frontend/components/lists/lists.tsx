@@ -2,13 +2,8 @@
 
 import { Loader } from "@/components/loaders/Loader";
 import { useEffect, useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-} from "../ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 const BASE_URL = "http://localhost:3000";
 // const BASE_URL = "https://influenceur-list.onrender.com";
 const ITEMS_PER_PAGE = 12;
@@ -42,7 +37,7 @@ export default function Lists() {
 
         const listsData = await listsResponse.json();
         setLists(listsData);
-        console.log("l", listsData);
+        // console.log("l", listsData);
       } catch (error) {
         console.error("Erreur de récupération des listes:", error);
       } finally {
@@ -83,9 +78,24 @@ export default function Lists() {
                 <span>{list.name}</span>
               </CardHeader>
               <CardContent className="h-1/2 p-0 min-h-[80px]">
-                <p className="text-sm text-muted-foreground">
-                  ok
-                </p>
+                <span className="text-sm text-muted-foreground flex gap-2">
+                  <svg
+                    className="h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 448 512"
+                  >
+                    <path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512l388.6 0c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304l-91.4 0z" />
+                  </svg>
+                  {list.profiles.length}{" "}
+                  {list.profiles.slice(0, 3).map((profile: any) => (
+                    <img
+                      key={profile._id}
+                      className="w-5 h-5 rounded-full"
+                      src={`${BASE_URL}/proxy?url=${encodeURIComponent(profile.profileImage)}`}
+                      alt={profile.name}
+                    />
+                  ))}
+                </span>
               </CardContent>
               <CardFooter className="h-1/4 p-0 gap-2">
                 <button
@@ -128,9 +138,9 @@ export default function Lists() {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="M5 1 1 5l4 4"
                   />
                 </svg>
@@ -157,9 +167,9 @@ export default function Lists() {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="m1 9 4-4-4-4"
                   />
                 </svg>

@@ -19,6 +19,19 @@ import {
 
 const data = {
   navMain: [
+    // {
+    //   title: "Tableau de board d'admin",
+    //   items: [
+    //     {
+    //       title: "Statistiques admin",
+    //       key: "statAdmin",
+    //     },
+    //     {
+    //       title: "Gestion des données",
+    //       key: "adminManage",
+    //     },
+    //   ],
+    // },
     {
       title: "Tableau de board",
       items: [

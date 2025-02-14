@@ -393,3 +393,28 @@
 // useEffect(() => {
 //   const token = getTokenFromCookies();
 // }, []);
+
+
+// function cleanNumber(value) {
+//     if (!value) return "None";
+  
+//     // Retirer tous les caractères non numériques, sauf 'K' et 'M'
+//     let cleanedValue = value.replace(/[^\d.,KM]/g, "");
+  
+//     // Remplacer la virgule par un point pour le séparateur décimal en français
+//     cleanedValue = cleanedValue.replace(",", ".");
+  
+//     // Si la valeur se termine par "M"
+//     if (cleanedValue.endsWith("M")) {
+//       return Math.round(parseFloat(cleanedValue.replace("M", "")) * 1000000);
+//     }
+  
+//     // Si la valeur se termine par "K"
+//     if (cleanedValue.endsWith("K")) {
+//       return Math.round(parseFloat(cleanedValue.replace("K", "")) * 1000);
+//     }
+  
+//     // Si la valeur n'a ni "M" ni "K", retour du nombre tel quel
+//     return Math.round(parseFloat(cleanedValue));
+//   }
+  
