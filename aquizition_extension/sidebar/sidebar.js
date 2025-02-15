@@ -129,7 +129,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "sync" && changes.auth_token) {
     console.log("Token modifié, rafraîchissement du sidebar...");
     refreshSidebar();
-    fetchOtherSidebarData(tokenGlobal);
+    // fetchOtherSidebarData(tokenGlobal);
   }
 });
 
@@ -165,7 +165,7 @@ function refreshSidebar() {
 
 // Récupérer toutes les données nécessaires au sidebar
 function fetchAllSidebarData(token) {
-  Promise.all([fetchUserData(token), fetchOtherSidebarData(token)])
+  Promise.all([fetchUserData(token), /*fetchOtherSidebarData(token)*/])
     .then(() => console.log("Toutes les données ont été chargées."))
     .catch((error) =>
       console.error("Erreur lors du chargement des données :", error)
@@ -199,21 +199,21 @@ async function fetchUserData(token) {
 }
 
 // Autres données à charger (remplace ou ajoute d'autres appels API)
-async function fetchOtherSidebarData(token) {
-  try {
-    const response = await fetch(`${BASE_URL}/other-data`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const data = await response.json();
-    // console.log("Autres données du sidebar :", data);
-    displayOtherSidebarData(data);
-  } catch (error) {
-    return console.error("Erreur récupération autres données :", error);
-  }
-}
+// async function fetchOtherSidebarData(token) {
+//   try {
+//     const response = await fetch(`${BASE_URL}/other-data`, {
+//       method: "GET",
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+//     const data = await response.json();
+//     // console.log("Autres données du sidebar :", data);
+//     displayOtherSidebarData(data);
+//   } catch (error) {
+//     return console.error("Erreur récupération autres données :", error);
+//   }
+// }
 
 function displayUserData(user) {
   const userProfil = document.getElementById("auth");

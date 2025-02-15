@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import { useState, useEffect } from "react";
 import { Login } from "@/components/login/login-form";
 import { Loader } from "@/components/loaders/Loader";

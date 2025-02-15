@@ -33,7 +33,7 @@ export default function Dashboard() {
 
   const [user, setUser] = useState<any>(null);
   const [lists, setLists] = useState<any[]>([]);
-  const [selectedListId, setSelectedListId] = useState<string | null>(null); // Nouvelle état
+  const [selectedListId, setSelectedListId] = useState<string | null>(null);
   const [selectedProfiles, setSelectedProfiles] = useState<any[]>([]);
 
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
@@ -56,7 +56,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const token = getTokenFromCookies();
-    console.log("Token récupéré:", token);
+    // console.log("Token récupéré:", token);
 
     const handleMenuSelection = (event: CustomEvent) => {
       setActiveComponent(event.detail);
@@ -85,6 +85,7 @@ export default function Dashboard() {
           const data = await response.json();
           setUser(data);
           localStorage.setItem("userId", data.data.userId);
+          localStorage.setItem('userData', JSON.stringify(data));
 
           // sendDataToExtension(data, token);
           const fetchUserLists = async () => {
@@ -197,6 +198,7 @@ export default function Dashboard() {
         // window.postMessage({ action: "logoutUser",  }, "*");
 
         window.location.href = "/login";
+
       } else {
         throw new Error("Erreur lors de la déconnexion.");
       }
@@ -271,7 +273,7 @@ export default function Dashboard() {
             </DropdownMenu>
           </div>
         </header>
-        <nav className="flex h-12 shrink-0 items-center gap-2 border-b sticky top-0 bg-white z-40">
+        <nav className="flex h-12 shrink-0 items-center gap-2 border-b sticky top-12 bg-white z-40">
           <div className="flex items-center gap-2 px-3"></div>
           <div className="ml-auto pr-5">
             {" "}
@@ -290,7 +292,6 @@ export default function Dashboard() {
             {activeComponent === "statistics" && <Statistics />}
             {activeComponent === "list" && <Lists />}
             {activeComponent === "profiles" && <Profiles />}
-
           </div>
         </div>
       </SidebarInset>

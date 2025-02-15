@@ -88,8 +88,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {data.navMain.map((item) => (
-              <SidebarMenuItem key={item.title}>
+            {data.navMain.map((item, index) => (
+              <SidebarMenuItem key={`main-${index}`}>
                 <SidebarMenuButton asChild>
                   <a  className="font-medium">
                     {item.title}
@@ -97,13 +97,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenuButton>
                 {item.items?.length ? (
                   <SidebarMenuSub>
-                    {item.items.map((item) => (
-                      <SidebarMenuSubItem key={item.key}>
-                        <SidebarMenuSubButton asChild onClick={() => handleMenuClick(item.key)} isActive={activeKey === item.key}
+                    {item.items.map((subItem, subIdex) => (
+                      <SidebarMenuSubItem key={`sub-${index}-${subIdex}`}>
+                        <SidebarMenuSubButton asChild onClick={() => handleMenuClick(subItem.key)} isActive={activeKey === subItem.key}
                         >
                           <a style={{cursor: "pointer"}} className={
-                              activeKey === item.key ? "text-blue-600" : ""
-                            }>{item.title}</a>
+                              activeKey === subItem.key ? "text-blue-600" : ""
+                            }>{subItem.title}</a>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}

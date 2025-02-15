@@ -418,3 +418,133 @@
 //     return Math.round(parseFloat(cleanedValue));
 //   }
   
+
+
+// {list.profiles.length > 3 && (
+//     <img
+//       key="extra"
+//       className="w-7 h-7 border-2 rounded-full border-white z-0"
+//       src={`${BASE_URL}/proxy?url=${encodeURIComponent(list.profiles[3].profileImage)}`}
+//       alt="extra profile"
+//     />
+//   )}
+
+
+
+
+
+
+// "use client";
+
+// import { Loader } from "@/components/loaders/Loader";
+// import { useEffect, useState } from "react";
+
+// const BASE_URL = "http://localhost:3000";
+// // const BASE_URL = "https://influenceur-list.onrender.com";
+
+// export default function Profiles() {
+//   const [loading, setLoading] = useState(true);
+//   const [profiles, setProfiles] = useState<any[]>([]);
+
+
+//   useEffect(() => {
+//     const userId = localStorage.getItem("userId");
+
+//     const fetchUserProfiles = async () => {
+//       try {
+//         const profilesResponse = await fetch(`${BASE_URL}/platforms/all`, {
+//           method: "GET",
+//         });
+
+//         const profilesData = await profilesResponse.json();
+
+//         const scrappedProfiles = profilesData.filter((profile: any) =>
+//           profile.userId.includes(userId)
+//         );
+
+//         setProfiles(scrappedProfiles);
+//         console.log("p", scrappedProfiles);
+
+//       } catch (error) {
+//         console.error("Erreur de récupération des profiles:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchUserProfiles();
+//   }, []);
+
+//   if (loading) {
+//     return (
+//       <div className="flex items-center justify-center h-64">
+//         <Loader />
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div>
+//       <div className="flex flex-1 flex-col gap-4 p-4 mx-auto">
+//         <span>
+          
+//         </span>
+//         {profiles.map((profile) => (
+//             <div key={profile._id}>
+//                 {profile.name}
+//             </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// }
+
+// const handleExportToXLSX = () => {
+//     const selectedRows = table.getSelectedRowModel().rows.map(row => row.original);
+  
+//     if (selectedRows.length === 0) {
+//       alert("Veuillez sélectionner au moins une ligne à exporter.");
+//       return;
+//     }
+  
+//     const ws = XLSX.utils.json_to_sheet(selectedRows);
+//     const wb = XLSX.utils.book_new();
+//     XLSX.utils.book_append_sheet(wb, ws, "Données Exportées");
+  
+//     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+//     const data = new Blob([excelBuffer], { type: "application/octet-stream" });
+  
+//     saveAs(data, "exported_data.xlsx");
+//   };
+  
+//   return (
+//     <div className="flex items-center gap-3">
+//       {table.getSelectedRowModel().rows.length > 0 && (
+//         <Button className="ml-auto" variant="outline" onClick={handleExportToXLSX}>
+//           <CloudDownload className="-ms-1 me-2 opacity-60" size={16} strokeWidth={2} aria-hidden="true" />
+//           Exporter en Xls
+//           <span className="-me-1 ms-3 inline-flex h-5 max-h-full items-center rounded border border-border bg-background px-1 font-[inherit] text-[0.625rem] font-medium text-muted-foreground/70">
+//             {table.getSelectedRowModel().rows.length}
+//           </span>
+//         </Button>
+//       )}
+//     </div>
+//   );
+
+
+
+
+
+// if (token) {
+//   try {
+//     await chrome.storage.sync.set({
+//       auth_token: token,
+//       userData: userData,
+//     });
+//     console.log("Token sauvegardé dans l'extension.", token);
+//   } catch (error) {
+//     console.error("Erreur lors de la sauvegarde du token :", error);
+//   }
+// }
+
+  

@@ -297,7 +297,7 @@ function handleButtonHover(button) {
 // Fonction pour écouter les messages du côté du parent et du background
 function listenForMessages(sidebar) {
   // Écouter les messages envoyés par la sidebar pour le fermer
-  window.addEventListener("message", (event) => {
+  window.addEventListener("message", async (event) => {
     if (event.data === "close-sidebar") {
       closeSidebar(sidebar);
     }
@@ -307,12 +307,16 @@ function listenForMessages(sidebar) {
       localStorage.setItem("auth_token", token);
 
       if (token) {
-        chrome.storage.sync.set(
-          { auth_token: token, userData: userData },
-          () => {
-            console.log("Token sauvegardé dans l'extension.", token);
-          }
-        );
+        try {
+          await chrome.storage.sync.set(
+            { auth_token: token, userData: userData },
+            () => {
+              console.log("Token sauvegardé dans l'extension.", token);
+            }
+          );
+        } catch (error) {
+          console.error("Erreur lors de la sauvegarde du token :", error);
+        } 
       }
     }
 
