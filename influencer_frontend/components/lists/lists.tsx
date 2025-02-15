@@ -5,7 +5,9 @@ import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
   // const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-  const BASE_URL = "https://influenceur-list.onrender.com";
+  // const BASE_URL = "https://influenceur-list.onrender.com";
+  const BASE_URL = "http://localhost:3000";
+
 
   const ITEMS_PER_PAGE = 12;
 
