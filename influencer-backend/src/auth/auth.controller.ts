@@ -35,11 +35,11 @@ export class AuthController {
       console.log('user /console controller', user);
 
       // Rediriger l'utilisateur vers le tableau de bord avec le token en paramètre
-      res.cookie('auth_token', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'strict',
-      });
+      // res.cookie('auth_token', token, {
+      //   httpOnly: true,
+      //   secure: true,
+      //   sameSite: 'strict',
+      // });
       res.redirect(`${this.BASE_URL}/dashboard`);
     } catch (error) {
       console.error("Erreur lors de l'authentification Google :", error);
