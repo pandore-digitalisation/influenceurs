@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
-const BASE_URL = "http://localhost:3000";
-// // const BASE_URL = "https://influenceur-list.onrender.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 
 export function Login({
   className,

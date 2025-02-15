@@ -22,25 +22,33 @@ import { LogOut, ExternalLink } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { Loader } from "@/components/loaders/Loader";
 
 export default function Home() {
-  const BASE_URL = "http://localhost:3000";
-  // const BASE_URL = "https://influenceur-list.onrender.com";
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   const router = useRouter();
 
-  function getDataFromLocalStorage(key: any) {
-    const userData = localStorage.getItem(key);
-    if (userData) {
-      return JSON.parse(userData);
-    } else {
-      return null;
-    }
-  }
-
   useEffect(() => {
+    function getDataFromLocalStorage(key: any) {
+      try {
+        const userData = localStorage.getItem(key);
+
+        if (userData) {
+          return JSON.parse(userData);
+        } else {
+          return null;
+        }
+      } catch (error) {
+        console.error("Erreur de récupération de use data", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+
     const userData = getDataFromLocalStorage("userData");
     setUser(userData);
   }, []);
@@ -105,7 +113,12 @@ export default function Home() {
             )}
           </div>
           <div className="ml-auto pr-5">
-            {user ? (
+            {loading ? (
+              <span>
+                {" "}
+                <Loader />{" "}
+              </span>
+            ) : user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar

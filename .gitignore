@@ -1,3 +1,11 @@
-influencer_frontend/node_modules/
-influencer_backend/node_modules/
-test/
+# Ignorer les dossiers node_modules
+influencer_frontend/node_modules
+influencer_backend/node_modules
+
+# Ignorer les fichiers .env
+influencer_frontend/.env.local
+influencer_frontend/.env.production
+influencer_frontend/.env
+
+# Ignorer le fichier de test
+test
