@@ -28,11 +28,9 @@ import Lists from "@/components/lists/lists";
 import Profiles from "@/components/lists/profiles";
 
 export default function Dashboard() {
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-  // const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   // const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   // const BASE_URL = "http://localhost:3000";
-  // const BASE_URL = "https://influenceur-list.onrender.com";
+  const BASE_URL = "https://influenceur-list.onrender.com";
 
 
   const [user, setUser] = useState<any>(null);

@@ -25,7 +25,8 @@ import Cookies from "js-cookie";
 import { Loader } from "@/components/loaders/Loader";
 
 export default function Home() {
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = "https://influenceur-list.onrender.com";
+
 
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);

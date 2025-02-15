@@ -91,7 +91,9 @@ type Item = {
   balance: number;
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+// const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const BASE_URL = "https://influenceur-list.onrender.com";
+
 
 // Custom filter function for multi-column searching
 const multiColumnFilterFn: FilterFn<Item> = (row, columnId, filterValue) => {
