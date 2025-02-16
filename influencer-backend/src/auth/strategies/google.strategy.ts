@@ -21,5 +21,3 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     return this.authService.validateUser(profile);
   }
 }
-
-// callbackURL: 'https://influenceurs.onrender.com/auth/google/callback',

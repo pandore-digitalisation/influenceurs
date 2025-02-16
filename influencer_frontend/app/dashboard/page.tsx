@@ -55,6 +55,7 @@ export default function Dashboard() {
       .find((row) => row.startsWith("auth_token="));
     return cookieString ? cookieString.split("=")[1] : null;
   };
+  
 
   useEffect(() => {
     const token = getTokenFromCookies();
