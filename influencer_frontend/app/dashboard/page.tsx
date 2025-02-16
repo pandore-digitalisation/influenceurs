@@ -49,13 +49,13 @@ export default function Dashboard() {
 
   // Fonction pour récupérer le token depuis les cookies
   const getTokenFromCookies = () => {
-    if (typeof document === "undefined") return null; // Vérification côté client
+    if (typeof document === "undefined") return null;
+    document.cookie = "auth_token=; path=/; SameSite=None; Secure";
     const cookieString = document.cookie
       .split("; ")
       .find((row) => row.startsWith("auth_token="));
     return cookieString ? cookieString.split("=")[1] : null;
   };
-  
 
   useEffect(() => {
     const token = getTokenFromCookies();

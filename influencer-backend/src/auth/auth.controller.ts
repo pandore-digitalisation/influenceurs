@@ -8,8 +8,8 @@ import { JwtAuthGuard } from './jwt-auth.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  BASE_URL = 'http://localhost:3001';
-  // BASE_URL = 'https://pandoreinfluencerfrontend.vercel.app';
+  // BASE_URL = 'http://localhost:3001';
+  BASE_URL = 'https://pandoreinfluencerfrontend.vercel.app';
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
@@ -32,18 +32,23 @@ export class AuthController {
 
       console.log('user /console controller', user);
 
-      // res.cookie('auth_token', token, {
-      //   httpOnly: true,
-      //   secure: process.env.NODE_ENV === 'production',
-      //   sameSite: 'strict',
-      // });
+      res.setHeader(
+        'Access-Control-Allow-Origin',
+        'https://pandoreinfluencerfrontend.vercel.app',
+      );
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
 
       res.cookie('auth_token', token, {
-        httpOnly: false,
-        secure: false,
+        httpOnly: true,
+        secure: true,
         sameSite: 'none',
-        domain: '.pandoreinfluencerfrontend.vercel.app',
       });
+
+      // res.cookie('auth_token', token, {
+      //   httpOnly: false,
+      //   secure: false,
+      //   // sameSite: 'none',
+      // });
 
       res.redirect(`${this.BASE_URL}/dashboard`);
     } catch (error) {
