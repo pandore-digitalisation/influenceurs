@@ -28,7 +28,6 @@ import Lists from "@/components/lists/lists";
 import Profiles from "@/components/lists/profiles";
 
 export default function Dashboard() {
-  // const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const BASE_URL = "http://localhost:3000";
   // const BASE_URL = "https://influenceur-list.onrender.com";
 
@@ -50,7 +49,6 @@ export default function Dashboard() {
   // Fonction pour récupérer le token depuis les cookies
   const getTokenFromCookies = () => {
     if (typeof document === "undefined") return null;
-    document.cookie = "auth_token=; path=/; SameSite=None; Secure";
     const cookieString = document.cookie
       .split("; ")
       .find((row) => row.startsWith("auth_token="));
