@@ -3,8 +3,8 @@ import { Strategy } from 'passport-google-oauth20';
 import { Injectable } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 
-// const BASE_URL = 'http://localhost:3000';
-const BASE_URL = 'https://influenceur-list.onrender.com';
+const BASE_URL = 'http://localhost:3000';
+// const BASE_URL = 'https://influenceur-list.onrender.com';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
@@ -21,5 +21,3 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     return this.authService.validateUser(profile);
   }
 }
-
-// callbackURL: 'https://influenceurs.onrender.com/auth/google/callback',
