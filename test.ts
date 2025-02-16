@@ -546,17 +546,3 @@
 //     console.error("Erreur lors de la sauvegarde du token :", error);
 //   }
 // }
-
-  
-  
-const getTokenFromCookies = () => {
-    if (typeof document === "undefined") return null; // Vérification côté client
-    // Forcer les cookies avec SameSite=None et Secure
-    document.cookie = "auth_token=; path=/; SameSite=None; Secure";
-    
-    const cookieString = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("auth_token="));
-  
-    return cookieString ? cookieString.split("=")[1] : null;
-  }  

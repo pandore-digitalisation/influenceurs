@@ -6,7 +6,6 @@ import { useSearchParams, useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { Loader } from "@/components/loaders/Loader";
 
-
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
@@ -31,7 +30,6 @@ export default function Dashboard() {
   const BASE_URL = "http://localhost:3000";
   // const BASE_URL = "https://influenceur-list.onrender.com";
 
-
   const [user, setUser] = useState<any>(null);
   const [lists, setLists] = useState<any[]>([]);
   const [selectedListId, setSelectedListId] = useState<string | null>(null);
@@ -46,18 +44,19 @@ export default function Dashboard() {
 
   const router = useRouter();
 
-  // Fonction pour récupérer le token depuis les cookies
-  const getTokenFromCookies = () => {
-    if (typeof document === "undefined") return null;
-    const cookieString = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("auth_token="));
-    return cookieString ? cookieString.split("=")[1] : null;
-  };
+  // // Fonction pour récupérer le token depuis les cookies
+  // const getTokenFromCookies = () => {
+  //   if (typeof document === "undefined") return null;
+  //   const cookieString = document.cookie
+  //     .split("; ")
+  //     .find((row) => row.startsWith("auth_token="));
+  //   return cookieString ? cookieString.split("=")[1] : null;
+  // };
+
 
   useEffect(() => {
-    const token = getTokenFromCookies();
-    // console.log("Token récupéré:", token);
+ 
+    const token = new URLSearchParams(window.location.search).get('token');
 
     const handleMenuSelection = (event: CustomEvent) => {
       setActiveComponent(event.detail);
@@ -65,8 +64,6 @@ export default function Dashboard() {
 
     if (token) {
       localStorage.setItem("token", token);
-
-      // window.postMessage({ action: "userLoggedIn", token }, "*");
 
       const fetchUserData = async () => {
         try {
@@ -86,7 +83,7 @@ export default function Dashboard() {
           const data = await response.json();
           setUser(data);
           localStorage.setItem("userId", data.data.userId);
-          localStorage.setItem('userData', JSON.stringify(data));
+          localStorage.setItem("userData", JSON.stringify(data));
 
           // sendDataToExtension(data, token);
           const fetchUserLists = async () => {
@@ -199,7 +196,6 @@ export default function Dashboard() {
         // window.postMessage({ action: "logoutUser",  }, "*");
 
         window.location.href = "/login";
-
       } else {
         throw new Error("Erreur lors de la déconnexion.");
       }

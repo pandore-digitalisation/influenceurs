@@ -14,17 +14,18 @@ export default function Lists() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const getTokenFromCookies = () => {
-    if (typeof document === "undefined") return null;
-    const cookieString = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("auth_token="));
-    return cookieString ? cookieString.split("=")[1] : null;
-  };
+  // const getTokenFromCookies = () => {
+  //   if (typeof document === "undefined") return null;
+  //   const cookieString = document.cookie
+  //     .split("; ")
+  //     .find((row) => row.startsWith("auth_token="));
+  //   return cookieString ? cookieString.split("=")[1] : null;
+  // };
 
   useEffect(() => {
-    const token = getTokenFromCookies();
+    const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
+    // const token = getTokenFromCookies();
 
     const fetchUserLists = async () => {
       try {

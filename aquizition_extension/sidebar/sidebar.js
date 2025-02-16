@@ -8,6 +8,18 @@ let userData;
 let userId;
 const loader = document.getElementById("loader");
 
+//-------------  LOADER FUNCION -------------//
+
+function showLoader() {
+  document.getElementById("load").style.display = "block";
+}
+
+function hideLoader() {
+  document.getElementById("load").style.display = "none";
+}
+
+//-------------  END OF LOADER FUNCION -------------//
+
 //-------------  GET SCRAPPED DATA AND ADD TO LIST -------------//
 
 const scrapeButton = document.getElementById("scrapeButton");
@@ -127,7 +139,7 @@ document.getElementById("close-sidebar-btn").addEventListener("click", () => {
 // Écouter les changements dans chrome.storage.sync
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area === "sync" && changes.auth_token) {
-    console.log("Token modifié, rafraîchissement du sidebar...");
+    // console.log("Token modifié, rafraîchissement du sidebar...");
     refreshSidebar();
     // fetchOtherSidebarData(tokenGlobal);
   }
@@ -138,34 +150,48 @@ document.addEventListener("DOMContentLoaded", refreshSidebar);
 
 function refreshSidebar() {
   console.log("Rafraîchissement du sidebar...");
+  showLoader();
 
   chrome.storage.sync.get(["auth_token", "userData"], (result) => {
     if (result.auth_token) {
       tokenGlobal = result.auth_token;
-
-      // console.log("Token récupéré :", tokenGlobal);
-      showMainContent();
-      fetchAllSidebarData(tokenGlobal);
-
       userData = result.userData;
       userId = userData.data.userId;
 
-      fetchProfiles(userId, tokenGlobal);
-      fetchUserLists(userId, tokenGlobal);
-      fetchScrappedProfiles(userId);
-      // console.log("userData", userData)
-      fetchUserLists(userId, tokenGlobal);
+      Promise.all([
+        fetchAllSidebarData(tokenGlobal),
+        fetchProfiles(userId, tokenGlobal),
+        fetchUserLists(userId, tokenGlobal),
+        fetchScrappedProfiles(userId),
+      ]).then(() => {
+          hideLoader();
+          showMainContent();
+        }).catch((error) => {
+          console.error("Erreur lors du chargement des données :", error);
+          hideLoader();
+        });
+      // fetchAllSidebarData(tokenGlobal);
+
+      // userData = result.userData;
+      // userId = userData.data.userId;
+
+      // fetchProfiles(userId, tokenGlobal);
+      // fetchUserLists(userId, tokenGlobal);
+      // fetchScrappedProfiles(userId);
+      // // console.log("userData", userData)
+      // fetchUserLists(userId, tokenGlobal);
+      // showMainContent();
     } else {
+      hideLoader();
       displayLoggedOutState();
       showWelcomeScreen();
-      // console.warn("Aucun token trouvé, utilisateur déconnecté.");
     }
   });
 }
 
 // Récupérer toutes les données nécessaires au sidebar
 function fetchAllSidebarData(token) {
-  Promise.all([fetchUserData(token), /*fetchOtherSidebarData(token)*/])
+  Promise.all([fetchUserData(token) /*fetchOtherSidebarData(token)*/])
     .then(() => console.log("Toutes les données ont été chargées."))
     .catch((error) =>
       console.error("Erreur lors du chargement des données :", error)
@@ -298,7 +324,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     scrapeButton.textContent = "Enregistré";
 
     // document.getElementById("scrapeBtn").style.display = "none";
-    document.getElementById("dataGetSuccessMessageCLose").addEventListener("click", () => {
+    document
+      .getElementById("dataGetSuccessMessageCLose")
+      .addEventListener("click", () => {
         document.getElementById("dataGetSuccessMessage").style.display = "none";
         scrapeButton.disabled = false;
         // document.getElementById("scrapeBtn").style.display = "flex";
@@ -387,7 +415,6 @@ async function displayScrappedData(dataToShow) {
   const pageInfo = document.getElementById("pageInfo");
   const noScrappedData = document.getElementById("noScrappedData");
 
-
   if (dataToShow.length === 0) {
     noScrappedData.style.display = "block";
     scrappedDataBlock.style.display = "none";
@@ -418,7 +445,6 @@ async function displayScrappedData(dataToShow) {
       const profileUrl = item.profileUrl;
       const plateform = item.plateform;
       const profileImage = encodeURIComponent(item.profileImage);
-
 
       row.innerHTML = `
         <td><img class="ui avatar image" src="${BASE_URL}/proxy?url=${profileImage}"></td>
