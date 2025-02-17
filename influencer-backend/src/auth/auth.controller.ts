@@ -30,9 +30,11 @@ export class AuthController {
 
       // res.json({ token });
 
-      // res.cookie('auth_token', token);
+      res.cookie('auth_token', token);
 
-      res.redirect(`${this.BASE_URL}/dashboard?token=${token}`);
+      res.redirect(`${this.BASE_URL}/dashboard`);
+
+      // res.redirect(`${this.BASE_URL}/dashboard?token=${token}`);
     } catch (error) {
       console.error("Erreur lors de l'authentification Google :", error);
       res.redirect(`${this.BASE_URL}/error`);

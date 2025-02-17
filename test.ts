@@ -532,17 +532,203 @@
 //   );
 
 
+import { AppSidebar } from "@/components/sidebar/sidebar";
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query"; // Importer useQuery
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
+import { Loader } from "@/components/loaders/Loader";
 
+import { Separator } from "@/components/ui/separator";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { LogOut } from "lucide-react";
+import SearchComponent from "@/components/influencer/SearchComponent";
+import Statistics from "@/components/statistics/statistics";
+import Lists from "@/components/lists/lists";
+import Profiles from "@/components/lists/profiles";
 
+export default function Dashboard() {
+  const BASE_URL = "http://localhost:3000";
+  // const BASE_URL = "https://influenceur-list.onrender.com";
+  const router = useRouter();
 
-// if (token) {
-//   try {
-//     await chrome.storage.sync.set({
-//       auth_token: token,
-//       userData: userData,
-//     });
-//     console.log("Token sauvegardé dans l'extension.", token);
-//   } catch (error) {
-//     console.error("Erreur lors de la sauvegarde du token :", error);
-//   }
-// }
+  const [sidebarExpanded, setSidebarExpanded] = useState(true);
+  const [activeComponent, setActiveComponent] = useState<string | null>("search");
+
+  const getTokenFromCookies = () => {
+    if (typeof document === "undefined") return null;
+    const cookieString = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("auth_token="));
+    return cookieString ? cookieString.split("=")[1] : null;
+  };
+
+  const token = getTokenFromCookies();
+
+  // Utilisation de useQuery pour récupérer les données utilisateur
+  const { data: userData, error: userError, isLoading: isUserLoading } = useQuery(
+    ["user", token],
+    async () => {
+      const response = await fetch(`${BASE_URL}/auth/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) throw new Error("Erreur lors de la récupération des données.");
+      const data = await response.json();
+      return data;
+    },
+    {
+      enabled: !!token, // S'assurer que la requête ne se lance que si le token est présent
+    }
+  );
+
+  // Utilisation de useQuery pour récupérer les listes de l'utilisateur
+  const { data: listsData, error: listsError, isLoading: isListsLoading } = useQuery(
+    ["userLists", userData?.data?.userId],
+    async () => {
+      const response = await fetch(
+        `${BASE_URL}/lists/user/${userData?.data?.userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) throw new Error("Erreur de récupération des listes.");
+      const lists = await response.json();
+      return lists;
+    },
+    {
+      enabled: !!userData, // Ne lancer la requête que lorsque l'utilisateur est récupéré
+    }
+  );
+
+  const handleSelectList = (list: any) => {
+    // Logique pour gérer la sélection de la liste
+  };
+
+  const toggleSidebar = () => {
+    setSidebarExpanded(!sidebarExpanded);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await fetch(`${BASE_URL}/auth/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        localStorage.removeItem("auth_token");
+        sessionStorage.clear();
+        Cookies.remove("auth_token");
+
+        window.location.href = "/login";
+      } else {
+        throw new Error("Erreur lors de la déconnexion.");
+      }
+    } catch (error) {
+      console.error("Erreur pendant la déconnexion:", error);
+    }
+  };
+
+  if (isUserLoading || isListsLoading) {
+    return <Loader />;
+  }
+
+  if (userError || listsError) {
+    return <div>Erreur: {userError?.message || listsError?.message}</div>;
+  }
+
+  if (!userData) {
+    router.push("/login");
+    return null;
+  }
+
+  return (
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-12 shrink-0 items-center gap-2 border-b sticky top-0 bg-white z-50">
+          <div className="flex items-center gap-2 px-3">
+            <SidebarTrigger />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+          </div>
+          <div className="ml-auto pr-5">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar
+                  className="h-8 w-8 rounded-full"
+                  style={{ cursor: "pointer" }}
+                >
+                  <AvatarImage src={userData?.data?.picture} alt={"PI"} />
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-60 px-3 py-5 my-2"
+                style={{ marginLeft: "-210px" }}
+              >
+                <div className="pb-5 text-sm font-semibold">
+                  {userData?.data?.email}
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleLogout}
+                  style={{ cursor: "pointer" }}
+                  className="gap-2"
+                >
+                  <LogOut size={18} />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        </header>
+        <nav className="flex h-12 shrink-0 items-center gap-2 border-b sticky top-12 bg-white z-40">
+          <div className="flex items-center gap-2 px-3"></div>
+          <div className="ml-auto pr-5">
+            <a
+              href="#"
+              className="text-blue-500 hover:text-blue-700 hover:bg-blue-50 p-1 rounded"
+            >
+              + Créer une nouvelle liste
+            </a>
+          </div>
+        </nav>
+
+        <div className="flex flex-col gap-4 p-2">
+          <div className="grid auto-rows-min gap-4">
+            {activeComponent === "search" && <SearchComponent />}
+            {activeComponent === "statistics" && <Statistics />}
+            {activeComponent === "list" && <Lists />}
+            {activeComponent === "profiles" && <Profiles />}
+          </div>
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  );
+}

@@ -25,6 +25,7 @@ import SearchComponent from "@/components/influencer/SearchComponent";
 import Statistics from "@/components/statistics/statistics";
 import Lists from "@/components/lists/lists";
 import Profiles from "@/components/lists/profiles";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Dashboard() {
   const BASE_URL = "http://localhost:3000";
@@ -44,19 +45,18 @@ export default function Dashboard() {
 
   const router = useRouter();
 
-  // // Fonction pour récupérer le token depuis les cookies
-  // const getTokenFromCookies = () => {
-  //   if (typeof document === "undefined") return null;
-  //   const cookieString = document.cookie
-  //     .split("; ")
-  //     .find((row) => row.startsWith("auth_token="));
-  //   return cookieString ? cookieString.split("=")[1] : null;
-  // };
-
-
   useEffect(() => {
- 
-    const token = new URLSearchParams(window.location.search).get('token');
+    // Fonction pour récupérer le token depuis les cookies
+    const getTokenFromCookies = () => {
+      if (typeof document === "undefined") return null;
+      const cookieString = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("auth_token="));
+      return cookieString ? cookieString.split("=")[1] : null;
+    };
+
+    // const token = new URLSearchParams(window.location.search).get('token');
+    const token = getTokenFromCookies();
 
     const handleMenuSelection = (event: CustomEvent) => {
       setActiveComponent(event.detail);
