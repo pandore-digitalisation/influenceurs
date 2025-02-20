@@ -47,6 +47,8 @@ export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [lists, setLists] = useState<any[]>([]);
   const [refreshLists, setRefreshLists] = useState(false);
+  const [listCreated, setListCreated] = useState(false);
+  const [listNameRequired, setlistNameRequired] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -169,9 +171,14 @@ export default function Dashboard() {
     }
   }, []);
 
-  const handleCreateList = async () => {
+  const handleCreateList = async (e: React.FormEvent) => {
+    e.preventDefault();
+
     if (!listName.trim()) {
-      alert("Le nom de la liste est obligatoire.");
+      setlistNameRequired(true);
+      setTimeout(() => {
+        setlistNameRequired(false);
+      }, 3000);
       return;
     }
     const token = localStorage.getItem("token");
@@ -179,11 +186,10 @@ export default function Dashboard() {
     const userData = userDataString ? JSON.parse(userDataString) : null;
     const userId = userData?.data.userId || null;
 
-
-  if (!token || !userId) {
-    alert("Utilisateur non authentifié. Veuillez vous reconnecter.");
-    return;
-  }
+    if (!token || !userId) {
+      alert("Utilisateur non authentifié. Veuillez vous reconnecter.");
+      return;
+    }
 
     let profileObjects = [];
     if (profiles.trim()) {
@@ -219,11 +225,13 @@ export default function Dashboard() {
       if (!response.ok) {
         throw new Error("Erreur lors de la création de la liste.");
       }
-      alert("Liste créée avec succès !");
-      setRefreshLists((prev) => !prev);
+      setListCreated(true);
       setListName("");
       setProfiles("");
-      closeForm();
+      setTimeout(() => {
+        closeForm();
+        setListCreated(false);
+      }, 3000);
     } catch (error) {
       console.error("Erreur:", error);
       alert("Une erreur est survenue.");
@@ -327,7 +335,6 @@ export default function Dashboard() {
     return null;
   }
 
-
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -408,7 +415,16 @@ export default function Dashboard() {
                     <DialogTitle className="mb-5">
                       Créez votre liste
                     </DialogTitle>
-                    <span>ok</span>
+                    {listCreated && (
+                      <span className="text-green-800">
+                        Liste créée avec succès !
+                      </span>
+                    )}
+                    {listNameRequired && (
+                      <span className="text-red-800">
+                        Le nom de la liste est obligatoire.
+                      </span>
+                    )}
                     <Alert variant="default">
                       <Info className="h-4 w-4" />
                       <AlertDescription>
@@ -418,41 +434,40 @@ export default function Dashboard() {
                       </AlertDescription>
                     </Alert>
                   </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid w-full max-w-sm items-center gap-1.5 mb-10">
-                      <Label htmlFor="email">Nom de la liste*</Label>
-                      <Input
-                        type="text"
-                        id="listname"
-                        value={listName}
-                        onChange={(e) => setListName(e.target.value)}
-                        placeholder="Ex: Ma liste"
-                      />
-                    </div>
 
-                    {/* <div className="grid w-full max-w-sm items-center gap-1.5">
+                  <form onSubmit={handleCreateList}>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid w-full max-w-sm items-center gap-1.5 mb-10">
+                        <Label htmlFor="email">Nom de la liste*</Label>
+                        <Input
+                          type="text"
+                          id="listname"
+                          value={listName}
+                          onChange={(e) => setListName(e.target.value)}
+                          placeholder="Ex: Ma liste"
+                        />
+                      </div>
+
+                      {/* <div className="grid w-full max-w-sm items-center gap-1.5">
                       <Label htmlFor="email">Choisir le profile.</Label>
                       <Input value={profiles} onChange={(e) => {setProfiles(e.target.value)}} id="email" placeholder="Profile" />
                     </div> */}
-                  </div>
-                  <DialogFooter className="flex justify-between w-ful">
-                    <DialogClose asChild>
-                      <Button
-                        type="button"
-                        variant="secondary"
-                        className="px-3 py-2 ml-50 mr-auto"
-                      >
-                        Annuler
+                    </div>
+                    <DialogFooter className="flex justify-between w-ful">
+                      <DialogClose asChild>
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          className="px-3 py-2 ml-50 mr-auto"
+                        >
+                          Annuler
+                        </Button>
+                      </DialogClose>
+                      <Button type="submit" className="px-3 py-2">
+                        Créer une liste
                       </Button>
-                    </DialogClose>
-                    <Button
-                      type="submit"
-                      onClick={handleCreateList}
-                      className="px-3 py-2"
-                    >
-                      Créer une liste
-                    </Button>
-                  </DialogFooter>
+                    </DialogFooter>
+                  </form>
                 </DialogContent>
               </Dialog>
             </span>

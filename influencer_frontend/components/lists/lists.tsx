@@ -1,56 +1,46 @@
 "use client";
 
 import { Loader } from "@/components/loaders/Loader";
-import { useEffect, useState } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { useState } from "react";
 
-// const BASE_URL = "https://influenceur-list.onrender.com";
 const BASE_URL = "http://localhost:3000";
-
 const ITEMS_PER_PAGE = 8;
 
 export default function Lists() {
-  const [lists, setLists] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  const userId =
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+
+  const fetchUserLists = async () => {
+    const response = await fetch(`${BASE_URL}/lists/user/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Erreur de récupération des listes");
+    }
+
+    const data = await response.json();
+    return data.sort(
+      (a: any, b: any) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+  };
+
+  const { data: lists = [], isLoading } = useQuery({
+    queryKey: ["userLists", userId],
+    queryFn: fetchUserLists,
+    enabled: !!userId, // Exécuter seulement si userId est défini
+  });
+
   const [currentPage, setCurrentPage] = useState(1);
-
-  // const getTokenFromCookies = () => {
-  //   if (typeof document === "undefined") return null;
-  //   const cookieString = document.cookie
-  //     .split("; ")
-  //     .find((row) => row.startsWith("auth_token="));
-  //   return cookieString ? cookieString.split("=")[1] : null;
-  // };
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
-    // const token = getTokenFromCookies();
-
-    const fetchUserLists = async () => {
-      try {
-        const listsResponse = await fetch(`${BASE_URL}/lists/user/${userId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const listsData = await listsResponse.json();
-        setLists(listsData);
-        // console.log("l", listsData);
-      } catch (error) {
-        console.error("Erreur de récupération des listes:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserLists();
-  }, []);
-
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedLists = lists.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   const totalPages = Math.ceil(lists.length / ITEMS_PER_PAGE);
@@ -63,31 +53,23 @@ export default function Lists() {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex items-center justify-center h-64">
-  //       <Loader />
-  //     </div>
-  //   );
-  // }
-
   return (
     <div>
       <div className="flex flex-1 flex-col gap-4 p-4 mx-auto">
         <div>Nombre total de listes : {lists.length}</div>
 
-        {loading ? (
+        {isLoading ? (
           <div className="flex items-center justify-center h-64">
             <Loader />
           </div>
-        ) : lists.length == 0 ? (
+        ) : lists.length === 0 ? (
           <div className="flex items-center justify-center h-64">
             Vous n'avez pas de liste.
           </div>
         ) : (
           <span>
             <div className="grid auto-rows-min gap-4 md:grid-cols-4 grid-cols-1">
-              {paginatedLists.map((list) => (
+              {paginatedLists.map((list: any) => (
                 <Card className="aspect-video rounded-xl p-3" key={list._id}>
                   <CardHeader className="p-0 min-h-[50px]">
                     <span>{list.name}</span>
@@ -152,6 +134,7 @@ export default function Lists() {
             </div>
           </span>
         )}
+
         <nav className="flex justify-end">
           <ul className="flex items-center -space-x-px h-8 text-sm">
             <li>
