@@ -71,7 +71,7 @@ export default function SearchComponent() {
             <div className="text-center text-muted-foreground">
               {searchQuery
                 ? "No influencers found. Try adjusting your search or filters."
-                : "Start searching to find influencers."}
+                : "Commencez à chercher des influenceurs..."}
             </div>
           )}
         </div>

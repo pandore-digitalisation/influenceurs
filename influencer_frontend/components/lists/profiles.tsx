@@ -80,6 +80,7 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Loader } from "@/components/loaders/Loader";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { ProfileSkeleton } from "../skeletons/profileSkeleton";
 
 type Item = {
   id: string;
@@ -94,8 +95,6 @@ type Item = {
 // const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 // const BASE_URL = "https://influenceur-list.onrender.com";
 const BASE_URL = "http://localhost:3000";
-
-
 
 // Custom filter function for multi-column searching
 const multiColumnFilterFn: FilterFn<Item> = (row, columnId, filterValue) => {
@@ -361,18 +360,19 @@ export default function Profiles() {
       ?.setFilterValue(newFilterValue.length ? newFilterValue : undefined);
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <Loader />
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex items-center justify-center h-64">
+  //       <Loader />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="overflow-x-auto max-w-full">
       <div className="flex flex-1 flex-col gap-4 p-4 mx-auto">
         {/* Filters */}
+
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             {/* Filter by name */}
@@ -496,9 +496,10 @@ export default function Profiles() {
                   })}
               </DropdownMenuContent>
             </DropdownMenu>
+            <span>Nombre total de profiles: {data.length}</span>
           </div>
           <div className="flex items-center gap-3">
-            {/* Delete button */}
+            {/* DExport button */}
             {table.getSelectedRowModel().rows.length > 0 && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -526,102 +527,115 @@ export default function Profiles() {
 
         {/* Table */}
         <div className="overflow-hidden rounded-lg border border-border bg-background">
-          <Table className="table-fixed">
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id} className="hover:bg-transparent">
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead
-                        key={header.id}
-                        style={{ width: `${header.getSize()}px` }}
-                        className="h-11"
-                      >
-                        {header.isPlaceholder ? null : header.column.getCanSort() ? (
-                          <div
-                            className={cn(
-                              header.column.getCanSort() &&
-                                "flex h-full cursor-pointer select-none items-center justify-between gap-2"
-                            )}
-                            onClick={header.column.getToggleSortingHandler()}
-                            onKeyDown={(e) => {
-                              // Enhanced keyboard handling for sorting
-                              if (
+          {loading ? (
+            <div>
+              <ProfileSkeleton />
+            </div>
+          ) : data.length == 0 ? (
+              <span className="h-24 text-center flex items-center justify-center">
+                Vous n'avez pas de données scraper.
+              </span>
+          ) : (
+            <Table className="table-fixed">
+              <TableHeader>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <TableRow
+                    key={headerGroup.id}
+                    className="hover:bg-transparent"
+                  >
+                    {headerGroup.headers.map((header) => {
+                      return (
+                        <TableHead
+                          key={header.id}
+                          style={{ width: `${header.getSize()}px` }}
+                          className="h-11"
+                        >
+                          {header.isPlaceholder ? null : header.column.getCanSort() ? (
+                            <div
+                              className={cn(
                                 header.column.getCanSort() &&
-                                (e.key === "Enter" || e.key === " ")
-                              ) {
-                                e.preventDefault();
-                                header.column.getToggleSortingHandler()?.(e);
+                                  "flex h-full cursor-pointer select-none items-center justify-between gap-2"
+                              )}
+                              onClick={header.column.getToggleSortingHandler()}
+                              onKeyDown={(e) => {
+                                // Enhanced keyboard handling for sorting
+                                if (
+                                  header.column.getCanSort() &&
+                                  (e.key === "Enter" || e.key === " ")
+                                ) {
+                                  e.preventDefault();
+                                  header.column.getToggleSortingHandler()?.(e);
+                                }
+                              }}
+                              tabIndex={
+                                header.column.getCanSort() ? 0 : undefined
                               }
-                            }}
-                            tabIndex={
-                              header.column.getCanSort() ? 0 : undefined
-                            }
-                          >
-                            {flexRender(
+                            >
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                              {{
+                                asc: (
+                                  <ChevronUp
+                                    className="shrink-0 opacity-60"
+                                    size={16}
+                                    strokeWidth={2}
+                                    aria-hidden="true"
+                                  />
+                                ),
+                                desc: (
+                                  <ChevronDown
+                                    className="shrink-0 opacity-60"
+                                    size={16}
+                                    strokeWidth={2}
+                                    aria-hidden="true"
+                                  />
+                                ),
+                              }[header.column.getIsSorted() as string] ?? null}
+                            </div>
+                          ) : (
+                            flexRender(
                               header.column.columnDef.header,
                               header.getContext()
-                            )}
-                            {{
-                              asc: (
-                                <ChevronUp
-                                  className="shrink-0 opacity-60"
-                                  size={16}
-                                  strokeWidth={2}
-                                  aria-hidden="true"
-                                />
-                              ),
-                              desc: (
-                                <ChevronDown
-                                  className="shrink-0 opacity-60"
-                                  size={16}
-                                  strokeWidth={2}
-                                  aria-hidden="true"
-                                />
-                              ),
-                            }[header.column.getIsSorted() as string] ?? null}
-                          </div>
-                        ) : (
-                          flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )
-                        )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id} className="last:py-0">
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
+                            )
+                          )}
+                        </TableHead>
+                      );
+                    })}
                   </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No results.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+                ))}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      data-state={row.getIsSelected() && "selected"}
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <TableCell key={cell.id} className="last:py-0">
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      Aucun résultat.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          )}
         </div>
 
         {/* Pagination */}

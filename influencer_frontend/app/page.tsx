@@ -145,7 +145,7 @@ export default function Home() {
                     className="gap-2"
                   >
                     <LogOut size={18} />
-                    Logout
+                    Déconnexion
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
