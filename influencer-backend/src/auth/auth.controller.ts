@@ -30,6 +30,12 @@ export class AuthController {
 
       // res.json({ token });
 
+      // res.cookie('auth_token', token, {
+      //   httpOnly: true,
+      //   secure: process.env.NODE_ENV === 'production', // Utiliser 'secure' en production
+      //   sameSite: 'none', // Nécessaire pour le cross-site cookies
+      // });
+
       res.cookie('auth_token', token);
 
       res.redirect(`${this.BASE_URL}/dashboard`);

@@ -1,6 +1,6 @@
 (async () => {
-  // const BASE_URL = "https://influenceur-list.onrender.com";
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = "https://influenceur-list.onrender.com";
+  // const BASE_URL = "http://localhost:3000";
 
   function getXPathText(xpath, attr = "textContent") {
     const node = document.evaluate(
@@ -21,7 +21,7 @@
     if (!value) return "None";
 
     // Retirer tous les caractères non numériques, sauf 'K' et 'M'
-    let cleanedValue = value.replace(/[^\d.,KM]/g, "");
+    let cleanedValue = value.replace(/[^\d.KM]/g, "");
 
     cleanedValue = cleanedValue.replace(",", ".");
 
@@ -53,16 +53,16 @@
   // }
 
   const xPaths = {
-    name: "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[2]/div/div/div[1]/div/a/h2/span",
+    name: "//section/main//header//section[2]//a/h2/span",
     posts:
-      "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[1]/div/span/span",
+      "//section/main//header//section[3]//ul/li[1]//span[last()]",
     followers:
-      "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[2]/div/a/span/span",
+      "//section/main//header//section[3]//ul/li[2]//a/span/span/span",
     following:
-      "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[3]/ul/li[3]/div/a/span/span",
+      "//section/main//header//section[3]//ul/li[3]//a/span/span/span",
     profileImage:
-      "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/span/div/div/span/img",
-    profileImage_1: "/html/body/div[2]/div/div/div[2]/div/div/div[1]/div[2]/div/div[1]/section/main/div/header/section[1]/div/span/div/div/a/img",
+      "//section/main//header//section[1]//a/img",
+    profileImage_1: "//section/main//header//section[1]//img",
   };
 
   let followers = getXPathText(xPaths.followers);
@@ -148,7 +148,7 @@
     name !== "None" &&
     followers !== "None" &&
     following !== "None" &&
-    posts !== "None";
+    posts !== "";
 
   if (isValidData(extractedData)) {
     try {

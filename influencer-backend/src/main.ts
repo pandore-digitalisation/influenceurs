@@ -16,7 +16,7 @@ async function bootstrap() {
       'chrome-extension://dnkjkcnopgdjhmkhapenjopjpiikaljc',
     ],
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
-    allowedHeaders: ['Content-Type, Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
   });
 
