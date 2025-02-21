@@ -1,6 +1,6 @@
 (async () => {
-  // const BASE_URL = "https://influenceur-list.onrender.com";
-  const BASE_URL = "http://localhost:3000";
+  const BASE_URL = "https://influenceur-list.onrender.com";
+  // const BASE_URL = "http://localhost:3000";
 
   function getXPathText(xpath, attr = "textContent") {
     const node = document.evaluate(
@@ -86,9 +86,9 @@
     description:
       "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div/div/div[3]",
     followers:
-      "//main//a/span[1]/span",
+      "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[1]/div/div[5]/div[2]/a/span[1]/span",
     following:
-      "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[1]/div/div[4]/div[2]/a/span[1]",
+      "//main//a/span[1]/span",
     profileImage:
       "/html/body/div[1]/div/div/div[2]/main/div/div/div/div[1]/div/div[3]/div/div/div[1]/div/div[1]/div[1]/div[2]/div/div[2]/div/a/div[3]/div/div[2]/div/img",
   };
