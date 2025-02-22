@@ -22,8 +22,8 @@ import {
 import { LogOut } from "lucide-react";
 import SearchComponent from "@/components/influencer/SearchComponent";
 import Statistics from "@/components/statistics/statistics";
-import Lists from "@/components/lists/lists";
-import Profiles from "@/components/lists/profiles";
+import Lists from "@/components/lists/Lists";
+import Profiles from "@/components/lists/Profiles";
 
 const BASE_URL = "http://localhost:3000";
 // const BASE_URL = "https://influenceur-list.onrender.com";

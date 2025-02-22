@@ -5,7 +5,6 @@ import {
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import React from "react";
 import {
@@ -27,8 +26,6 @@ import { Loader } from "@/components/loaders/Loader";
 export default function Home() {
   // const BASE_URL = "https://influenceur-list.onrender.com";
   const BASE_URL = "http://localhost:3000";
-
-
 
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -170,7 +167,19 @@ export default function Home() {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
-          <div className="min-h-[50vh] rounded-xl bg-[#FF6600]" />
+          <div className="min-h-[50vh] flex items-center justify-center rounded-xl bg-[#FF6600]">
+            <div className="mx-10 max-w-screen-xl">
+              <div className="">
+                <h1 className="md:text-3xl font-bold mb-2 text-white">
+                  La seule plateforme pour accédez à une liste d'influenceurs en
+                  Afrique et dans la diaspora pour promouvoir votre produit.
+                </h1>
+                <p className="text-lg font-normal text-white">
+                Touchez une audience pertinente grâce à des ambassadeurs crédibles et engagez efficacement votre cible.
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </SidebarInset>
     </SidebarProvider>

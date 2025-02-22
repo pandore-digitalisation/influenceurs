@@ -24,7 +24,7 @@ export class ListController {
     return this.listService.findAll();
   }
 
-  // Route pour obtenir une liste spécifique par son ID
+  // Route pour obtenir les profile par liste ID
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<List> {
     return this.listService.findOne(id);

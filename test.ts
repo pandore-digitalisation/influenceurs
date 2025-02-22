@@ -16,101 +16,67 @@
 
 // const [formVisible, setFormVisible] = useState(true);
 
+import { useQuery } from "@tanstack/react-query";
 
+const BASE_URL = "http://localhost:3000";
 
-import * as React from "react"
+// Typage de la réponse et des profils
+type Profile = {
+  profileUrl: string;
+  name: string;
+  followers: string;
+  following: string;
+  posts?: string;
+};
 
-import { cn } from "@/lib/utils"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { Button } from "@/components/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+const fetchProfiles = async (listId: string): Promise<Profile[]> => {
+  try {
+    const res = await fetch(`${BASE_URL}/lists/${listId}`);
+    if (!res.ok) throw new Error("Erreur lors du chargement des profils");
+    const data = await res.json();
+    console.log("Données de l'API:", data); // Ajout d'un log pour afficher les données
+    // Vérifier que 'profiles' est bien un tableau et que ce tableau contient des éléments
+    if (Array.isArray(data.profiles) && data.profiles.length > 0) {
+      return data.profiles;
+    }
+    console.log("Aucun profil trouvé");
+    return []; // Retourner un tableau vide si aucun profil n'est trouvé
+  } catch (error) {
+    console.error("Erreur lors de la récupération des profils", error);
+    throw error;
+  }
+};
 
-export function DrawerDialogDemo() {
-  const [open, setOpen] = React.useState(false)
-  const isDesktop = useMediaQuery("(min-width: 768px)")
+const ProfilesList = ({ listId }: { listId: string }) => {
+  const { data: profiles, isLoading, error } = useQuery({
+    queryKey: ["profiles", listId],
+    queryFn: () => fetchProfiles(listId),
+    enabled: !!listId, // Exécuter la requête seulement si listId est défini
+  });
 
-  if (isDesktop) {
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline">Edit Profile</Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when you're done.
-            </DialogDescription>
-          </DialogHeader>
-          <ProfileForm />
-        </DialogContent>
-      </Dialog>
-    )
+  if (isLoading) return <p>Chargement...</p>;
+  if (error instanceof Error) return <p>Une erreur est survenue : {error.message}</p>;
+
+  // Vérifier si profils est bien un tableau et qu'il contient des données
+  if (!Array.isArray(profiles) || profiles.length === 0) {
+    return <p>Aucun profil trouvé</p>;
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <Button variant="outline">Edit Profile</Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>Edit profile</DrawerTitle>
-          <DrawerDescription>
-            Make changes to your profile here. Click save when you're done.
-          </DrawerDescription>
-        </DrawerHeader>
-        <ProfileForm className="px-4" />
-        <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
-          </DrawerClose>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
-  )
-}
+    <div className="mt-4 p-4 border">
+      <h3>Profils de la liste {listId}</h3>
+      <ul>
+        {profiles.map((profile) => (
+          <li key={profile.name} className="border p-2 my-2">
+            <a href={profile.profileUrl} target="_blank" rel="noopener noreferrer">
+              {profile.name}
+            </a> - {profile.followers} followers
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
-function ProfileForm({ className }: React.ComponentProps<"form">) {
-  return (
-    <form className={cn("grid items-start gap-4", className)}>
-      <div className="grid gap-2">
-        <Label htmlFor="email">Email</Label>
-        <Input type="email" id="email" defaultValue="shadcn@example.com" />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="username">Username</Label>
-        <Input id="username" defaultValue="@shadcn" />
-      </div>
-      <Button type="submit">Save changes</Button>
-    </form>
-  )
-}
-allowedHeaders: ['Content-Type', 'Authorization'],
+export default ProfilesList;
 
-res.cookie('auth_token', token, {
-  httpOnly: true, 
-  secure: true,  // En prod, nécessite HTTPS
-  sameSite: 'none',  // Important si backend ≠ frontend
-  path: '/',
-  domain: 'pandoreinfluencerfrontend.vercel.app', // Assure-toi que le domaine est correct
-});

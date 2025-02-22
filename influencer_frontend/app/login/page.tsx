@@ -33,8 +33,7 @@ export default function LoginPage() {
       </div>
       <div className="relative hidden lg:block w-full h-screen bg-[#FF6600]">
         <div className="flex flex-col gap-4 p-6 md:p-10 text-white h-full">
-          <p className="text-4xl font-bold">Accompagner les entreprises,</p>
-          <p className="text-4xl font-bold">Élever les créateurs</p>
+          <p className="max-w-lg text-3xl font-bold ">Accompagner les entreprises, Élever les créateurs.</p>
 
           <div className="flex-grow flex"><img
               src="/images/home.jpg"
