@@ -384,21 +384,40 @@ export default function Lists() {
             </ul>
           </nav>
 
-          <Dialog
+          {/* <Dialog
             open={isProfileDialogOpen}
             onOpenChange={setIsProfileDialogOpen}
           >
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Liste des Profils</DialogTitle>
-              </DialogHeader>
-              <div className="p-4">
+            <DialogContent className="max-w-6xl h-[800px] flex flex-col">
+              <div>
                 {selectedListId ? (
                   <ProfilesList listId={selectedListId} />
                 ) : (
                   <p>Chargement des profils...</p>
                 )}
               </div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="secondary" onClick={closeProfileDialog}>
+                    Fermer
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog> */}
+          <Dialog
+            open={isProfileDialogOpen}
+            onOpenChange={setIsProfileDialogOpen}
+          >
+            <DialogContent className="w-full max-w-[90vw] sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-6xl h-[80vh] sm:h-[600px] md:h-[700px] lg:h-[800px] flex flex-col">
+              <div className="flex-1 overflow-y-auto">
+                {selectedListId ? (
+                  <ProfilesList listId={selectedListId} />
+                ) : (
+                  <p>Chargement des profils...</p>
+                )}
+              </div>
+
               <DialogFooter>
                 <DialogClose asChild>
                   <Button variant="secondary" onClick={closeProfileDialog}>

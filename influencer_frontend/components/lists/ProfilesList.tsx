@@ -310,6 +310,7 @@ export default function ProfilesList({listId}: {listId: string}) {
   ]);
 
   const [data, setData] = useState<Item[]>([]);
+  const [listName, setListName] = useState<string>("")
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -321,11 +322,8 @@ export default function ProfilesList({listId}: {listId: string}) {
           method: "GET",
         });
         const data = await res.json();
-        console.log("d", data)
-        
-        // const scrappedProfiles = data.filter((profile: any) =>
-        //   profile.userId.includes(userId)
-        // );
+        console.log("d", data.name)
+        setListName(data.name)
 
         if (Array.isArray(data.profiles)) {
           setData(data.profiles);
@@ -447,10 +445,13 @@ export default function ProfilesList({listId}: {listId: string}) {
 
   return (
     <div className="overflow-x-auto max-w-full">
-      <div className="flex flex-1 flex-col gap-4 p-4 mx-auto">
-        {/* Filters */}
 
+      <div className="flex flex-1 flex-col gap-4 mx-auto">
+      <h1>{listName ? `Liste : ${listName}` : "Chargement..."}</h1>
+
+        {/* Filters */}
         <div className="flex flex-wrap items-center justify-between gap-3">
+
           <div className="flex items-center gap-3">
             {/* Filter by name */}
             <div className="relative">
@@ -838,5 +839,64 @@ export default function ProfilesList({listId}: {listId: string}) {
         </div>
       </div>
     </div>
+  );
+}
+
+function RowActions({ row }: { row: Row<Item> }) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <div className="flex justify-end">
+          <Button
+            size="icon"
+            variant="ghost"
+            className="shadow-none"
+            aria-label="Edit item"
+          >
+            <Ellipsis size={16} strokeWidth={2} aria-hidden="true" />
+          </Button>
+        </div>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            <span>Edit</span>
+            <DropdownMenuShortcut>⌘E</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <span>Duplicate</span>
+            <DropdownMenuShortcut>⌘D</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem>
+            <span>Archive</span>
+            <DropdownMenuShortcut>⌘A</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>More</DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem>Move to project</DropdownMenuItem>
+                <DropdownMenuItem>Move to folder</DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>Advanced options</DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem>Share</DropdownMenuItem>
+          <DropdownMenuItem>Add to favorites</DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="text-destructive focus:text-destructive">
+          <span>Delete</span>
+          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
