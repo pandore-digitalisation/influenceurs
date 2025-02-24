@@ -13,10 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  SidebarInset,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Info } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
@@ -55,13 +52,19 @@ export default function Lists() {
     );
   };
 
-  const { data: lists = [], isLoading, refetch } = useQuery({
+  const {
+    data: lists = [],
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["userLists", userId],
     queryFn: fetchUserLists,
     enabled: !!userId, // Exécuter seulement si userId est défini
   });
 
   const [formVisible, setFormVisible] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState<any>(null);
+  const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [listNameRequired, setlistNameRequired] = useState(false);
   const [listCreated, setListCreated] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -85,6 +88,16 @@ export default function Lists() {
 
   const closeForm = () => {
     setFormVisible(false);
+  };
+
+  const openProfileDialog = (listId: any) => {
+    setSelectedListId(listId);
+    setIsProfileDialogOpen(true);
+  };
+
+  const closeProfileDialog = () => {
+    setSelectedListId(null);
+    setIsProfileDialogOpen(false);
   };
 
   const handleCreateList = async (e: React.FormEvent) => {
@@ -287,8 +300,8 @@ export default function Lists() {
                     </CardContent>
                     <CardFooter className="h-1/4 p-0 gap-2">
                       <button
-                        type="submit"
-                        onClick={() => setSelectedListId(list._id)}
+                        type="button"
+                        onClick={() => openProfileDialog(list._id)}
                         className="w-full py-2 px-3 text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-4 gap-2"
                       >
                         Voir les profiles
@@ -310,8 +323,6 @@ export default function Lists() {
                   </Card>
                 ))}
               </div>
-              {selectedListId && <ProfilesList listId={selectedListId} />}
-
             </span>
           )}
 
@@ -372,6 +383,33 @@ export default function Lists() {
               </li>
             </ul>
           </nav>
+
+          <Dialog
+            open={isProfileDialogOpen}
+            onOpenChange={setIsProfileDialogOpen}
+          >
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Liste des Profils</DialogTitle>
+              </DialogHeader>
+              <div className="p-4">
+                {selectedListId ? (
+                  <ProfilesList listId={selectedListId} />
+                ) : (
+                  <p>Chargement des profils...</p>
+                )}
+              </div>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="secondary" onClick={closeProfileDialog}>
+                    Fermer
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* {selectedListId && <ProfilesList listId={selectedListId} />} */}
         </div>
       </SidebarInset>
     </SidebarProvider>

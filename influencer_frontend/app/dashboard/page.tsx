@@ -180,9 +180,9 @@ export default function Dashboard() {
               <DropdownMenuContent className="w-60 px-3 py-5 my-2" style={{ marginLeft: "-210px" }}>
                 <div className="pb-5 text-sm font-semibold">{user?.data.email}</div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="gap-2">
+                <DropdownMenuItem onClick={handleLogout} className="gap-2 cursor-pointer">
                   <LogOut size={18} />
-                  Logout
+                  Déconnexion
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

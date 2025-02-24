@@ -101,7 +101,7 @@ export default function Home() {
               <Breadcrumb>
                 <BreadcrumbList>
                   <BreadcrumbItem className="hidden md:block">
-                    <BreadcrumbLink href="/dashboard">
+                    <BreadcrumbLink className="cursor-pointer" type="button"  onClick={() => router.push("/dashboard")}>
                       Tableau de board
                     </BreadcrumbLink>
                   </BreadcrumbItem>
@@ -138,8 +138,7 @@ export default function Home() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     onClick={handleLogout}
-                    style={{ cursor: "pointer" }}
-                    className="gap-2"
+                    className="gap-2 cursor-pointer"
                   >
                     <LogOut size={18} />
                     Déconnexion

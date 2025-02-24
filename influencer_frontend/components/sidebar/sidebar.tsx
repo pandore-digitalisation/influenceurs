@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   Sidebar,
@@ -63,6 +64,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [activeKey, setActiveKey] = useState("search");
+  const router = useRouter();
 
   const handleMenuClick = (key: string) => {
     setActiveKey(key);
@@ -75,12 +77,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <a href="/">
+              <button type="button" onClick={() => router.push("/")} >
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-bold">Aquizition</span>
+                  <span className="font-bold">Acquisition</span>
                   {/* <span className="">v0.1.4-beta</span> */}
                 </div>
-              </a>
+              </button>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
