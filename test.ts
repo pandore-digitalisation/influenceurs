@@ -16,67 +16,130 @@
 
 // const [formVisible, setFormVisible] = useState(true);
 
-import { useQuery } from "@tanstack/react-query";
 
-const BASE_URL = "http://localhost:3000";
 
-// Typage de la réponse et des profils
-type Profile = {
-  profileUrl: string;
-  name: string;
-  followers: string;
-  following: string;
-  posts?: string;
-};
 
-const fetchProfiles = async (listId: string): Promise<Profile[]> => {
-  try {
-    const res = await fetch(`${BASE_URL}/lists/${listId}`);
-    if (!res.ok) throw new Error("Erreur lors du chargement des profils");
-    const data = await res.json();
-    console.log("Données de l'API:", data); // Ajout d'un log pour afficher les données
-    // Vérifier que 'profiles' est bien un tableau et que ce tableau contient des éléments
-    if (Array.isArray(data.profiles) && data.profiles.length > 0) {
-      return data.profiles;
-    }
-    console.log("Aucun profil trouvé");
-    return []; // Retourner un tableau vide si aucun profil n'est trouvé
-  } catch (error) {
-    console.error("Erreur lors de la récupération des profils", error);
-    throw error;
-  }
-};
+<Dialog open={isUpdateListDialogOpen} onOpenChange={setIsUpdateListDialogOpen}>
+  <DialogContent className="w-full max-w-sm sm:max-w-md md:max-w-lg h-[75vh] flex flex-col mx-auto sm:px-6">
+    <div className="flex-1 overflow-y-auto">
+      <DialogTitle className="mb-5">Modifier votre liste</DialogTitle>
 
-const ProfilesList = ({ listId }: { listId: string }) => {
-  const { data: profiles, isLoading, error } = useQuery({
-    queryKey: ["profiles", listId],
-    queryFn: () => fetchProfiles(listId),
-    enabled: !!listId, // Exécuter la requête seulement si listId est défini
-  });
-
-  if (isLoading) return <p>Chargement...</p>;
-  if (error instanceof Error) return <p>Une erreur est survenue : {error.message}</p>;
-
-  // Vérifier si profils est bien un tableau et qu'il contient des données
-  if (!Array.isArray(profiles) || profiles.length === 0) {
-    return <p>Aucun profil trouvé</p>;
-  }
-
-  return (
-    <div className="mt-4 p-4 border">
-      <h3>Profils de la liste {listId}</h3>
-      <ul>
-        {profiles.map((profile) => (
-          <li key={profile.name} className="border p-2 my-2">
-            <a href={profile.profileUrl} target="_blank" rel="noopener noreferrer">
-              {profile.name}
-            </a> - {profile.followers} followers
-          </li>
-        ))}
-      </ul>
+      <Label>Nom de la liste*</Label>
+      <Input
+        type="text"
+        id="listname"
+        value={updatedName}
+        onChange={(e) => setUpdatedName(e.target.value)}
+        required
+        disabled={isSaving}
+      />
     </div>
-  );
+
+    <DialogFooter className="mt-4 flex justify-end gap-2 w-full">
+      <Button 
+        type="button" 
+        variant="destructive" 
+        onClick={deleteList} 
+        disabled={isDeleting}
+      >
+        {isDeleting ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Suppression...
+          </>
+        ) : (
+          "Supprimer"
+        )}
+      </Button>
+
+      <Button 
+        type="submit" 
+        variant="outline" 
+        onClick={updateList} 
+        disabled={isSaving}
+      >
+        {isSaving ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sauvegarde...
+          </>
+        ) : (
+          "Sauvegarder"
+        )}
+      </Button>
+
+      <DialogClose asChild onClick={closeUpdateListDialog}>
+        <Button variant="secondary" disabled={isDeleting || isSaving}>Annuler</Button>
+      </DialogClose>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
+
+
+const [isDeleting, setIsDeleting] = useState(false);
+const [isSaving, setIsSaving] = useState(false);
+
+const deleteList = async () => {
+  if (!selectedListId) {
+    console.error("Aucune liste sélectionnée pour la suppression.");
+    alert("Veuillez sélectionner une liste à supprimer.");
+    return;
+  }
+
+  setIsDeleting(true);
+  try {
+    const response = await fetch(`${BASE_URL}/lists/${selectedListId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Erreur lors de la suppression.");
+    }
+
+    await refetch();
+    setIsUpdateListDialogOpen(false);
+    console.log(`Liste ${selectedListId} supprimée avec succès.`);
+  } catch (error) {
+    console.error("Erreur lors de la suppression de la liste:", error);
+    alert(`Échec de la suppression de la liste : ${error.message}`);
+  } finally {
+    setIsDeleting(false);
+  }
 };
 
-export default ProfilesList;
+const updateList = async () => {
+  if (!updatedName.trim()) {
+    alert("Le nom de la liste ne peut pas être vide.");
+    return;
+  }
 
+  setIsSaving(true);
+  try {
+    const response = await fetch(`${BASE_URL}/lists/${selectedListId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ name: updatedName }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Erreur lors de la mise à jour.");
+    }
+
+    await refetch();
+    setIsUpdateListDialogOpen(false);
+    console.log("Liste mise à jour avec succès.");
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de la liste:", error);
+    alert(`Échec de la mise à jour de la liste : ${error.message}`);
+  } finally {
+    setIsSaving(false);
+  }
+};

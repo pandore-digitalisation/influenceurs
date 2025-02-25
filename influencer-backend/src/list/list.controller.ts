@@ -55,7 +55,7 @@ export class ListController {
     return this.listService.createDefaultForUser(userId);
   }
 
-  // Route pour mettre à jour une liste en ajoutant ou supprimant des profils
+  // Route pour mettre à jour une liste en ajoutant ou supprimant des profiles
   @Put(':id')
   async update(
     @Param('id') id: string,

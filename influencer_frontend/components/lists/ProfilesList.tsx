@@ -366,7 +366,7 @@ export default function ProfilesList({listId}: {listId: string}) {
     const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
     const data = new Blob([excelBuffer], { type: "application/octet-stream" });
 
-    saveAs(data, "aquizition_data.xlsx");
+    saveAs(data, "aqcuizition_data.xlsx");
   };
 
   const table = useReactTable({

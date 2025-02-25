@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { Info } from "lucide-react";
+import { Info, Loader2 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -63,13 +63,16 @@ export default function Lists() {
   });
 
   const [formVisible, setFormVisible] = useState(false);
-  const [selectedProfile, setSelectedProfile] = useState<any>(null);
+  const [isUpdateListDialogOpen, setIsUpdateListDialogOpen] = useState(false);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [listNameRequired, setlistNameRequired] = useState(false);
+const [isDeleting, setIsDeleting] = useState(false);
+const [isSaving, setIsSaving] = useState(false);
   const [listCreated, setListCreated] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [listName, setListName] = useState("");
   const [profiles, setProfiles] = useState("");
+  const [updatedName, setUpdatedName] = useState("");
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedLists = lists.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   const totalPages = Math.ceil(lists.length / ITEMS_PER_PAGE);
@@ -98,6 +101,75 @@ export default function Lists() {
   const closeProfileDialog = () => {
     setSelectedListId(null);
     setIsProfileDialogOpen(false);
+  };
+
+  const openUpdateListDialog = (listId: any, listName: string) => {
+    setSelectedListId(listId);
+    setUpdatedName(listName);
+    setIsUpdateListDialogOpen(true);
+  };
+
+  const closeUpdateListDialog = () => {
+    setSelectedListId(null);
+    setIsProfileDialogOpen(false);
+  };
+
+  const updateList = async () => {
+    if (!selectedListId || !updatedName.trim()) return;
+
+    setIsSaving(true);
+
+    try {
+      const response = await fetch(`${BASE_URL}/lists/${selectedListId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ name: updatedName }),
+      });
+
+      if (!response.ok) throw new Error("Erreur lors de la mise à jour");
+
+      await refetch();
+      setIsUpdateListDialogOpen(false);
+      setUpdatedName("");
+    } catch (error) {
+      console.error("Erreur:", error);
+      alert("Échec de la mise à jour de la liste.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const deleteList = async () => {
+    if (!selectedListId) {
+      // console.error("Aucune liste sélectionnée pour la suppression.");
+      alert("Veuillez sélectionner une liste à supprimer.");
+      return;
+    }
+    setIsDeleting(true);
+
+    try {
+      const response = await fetch(`${BASE_URL}/lists/${selectedListId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error("Erreur lors de la mise à jour");
+
+      await refetch();
+      setIsUpdateListDialogOpen(false);
+      // console.log(`Liste ${selectedListId} supprimée avec succès.`);
+    } catch (error) {
+      console.error("Erreur:", error);
+      alert("Échec de la mise à jour de la liste.");
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const handleCreateList = async (e: React.FormEvent) => {
@@ -226,15 +298,11 @@ export default function Lists() {
                     </div>
                     <DialogFooter className="flex justify-between w-ful">
                       <DialogClose asChild>
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          className="px-3 py-2 ml-50 mr-auto"
-                        >
+                        <Button type="button" variant="secondary" className="">
                           Annuler
                         </Button>
                       </DialogClose>
-                      <Button type="submit" className="px-3 py-2">
+                      <Button type="submit" className="">
                         Créer une liste
                       </Button>
                     </DialogFooter>
@@ -299,16 +367,29 @@ export default function Lists() {
                       </span>
                     </CardContent>
                     <CardFooter className="h-1/4 p-0 gap-2">
+                    
                       <button
                         type="button"
                         onClick={() => openProfileDialog(list._id)}
-                        className="w-full py-2 px-3 text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-4 gap-2"
+                        className="w-full py-2 px-3 text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-4 flex items-center gap-2 justify-center"
                       >
-                        Voir les profiles
+                        <span className="flex items-center gap-1">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 640 512"
+                            className="w-4 h-4"
+                          >
+                            <path d="M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192l42.7 0c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96c-.2 0-.4 0-.7 0L21.3 320C9.6 320 0 310.4 0 298.7zM405.3 320c-.2 0-.4 0-.7 0c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7l42.7 0C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3l-213.3 0zM224 224a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zM128 485.3C128 411.7 187.7 352 261.3 352l117.3 0C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7l-330.7 0c-14.7 0-26.7-11.9-26.7-26.7z" />
+                          </svg>
+                        </span>
+                        <span>Voir les profils</span>
                       </button>
 
                       <button
                         type="button"
+                        onClick={() =>
+                          openUpdateListDialog(list._id, list.name)
+                        }
                         className="w-50 py-2 px-3 text-xs font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 focus:z-10 focus:ring-4 "
                       >
                         <svg
@@ -384,27 +465,7 @@ export default function Lists() {
             </ul>
           </nav>
 
-          {/* <Dialog
-            open={isProfileDialogOpen}
-            onOpenChange={setIsProfileDialogOpen}
-          >
-            <DialogContent className="max-w-6xl h-[800px] flex flex-col">
-              <div>
-                {selectedListId ? (
-                  <ProfilesList listId={selectedListId} />
-                ) : (
-                  <p>Chargement des profils...</p>
-                )}
-              </div>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button variant="secondary" onClick={closeProfileDialog}>
-                    Fermer
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog> */}
+          {/* Popup of get lprofile data by list id */}
           <Dialog
             open={isProfileDialogOpen}
             onOpenChange={setIsProfileDialogOpen}
@@ -423,6 +484,54 @@ export default function Lists() {
                   <Button variant="secondary" onClick={closeProfileDialog}>
                     Fermer
                   </Button>
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* List update dialog */}
+
+          <Dialog
+            open={isUpdateListDialogOpen}
+            onOpenChange={setIsUpdateListDialogOpen}
+          >
+            <DialogContent className="w-full max-w-sm sm:max-w-md md:max-w-lg h-[75vh] flex flex-col mx-auto sm:px-6">
+              <div className="flex-1 overflow-y-auto">
+                <DialogTitle className="mb-5">Modifier votre liste</DialogTitle>
+
+                <Label>Nom de la liste*</Label>
+                <Input
+                  type="text"
+                  id="listname"
+                  value={updatedName}
+                  onChange={(e) => setUpdatedName(e.target.value)}
+                  required
+                  disabled={isSaving}
+                />
+              </div>
+
+              <DialogFooter className="mt-4 flex justify-end gap-2 w-full">
+                <Button type="button" variant="destructive" onClick={deleteList} disabled={isDeleting}>
+                  {isDeleting ? (
+                     <>
+                     <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Suppression...
+                   </>
+                  ) : (
+                    "Supprimer"
+                  )}
+                </Button>
+                <Button type="submit" variant="outline" onClick={updateList} disabled={isSaving}>
+                  {isSaving ? (
+                      <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sauvegarde...
+                    </>
+                  ) : (
+                    "Sauvegarder"
+                  )}
+                </Button>
+
+                <DialogClose asChild onClick={closeUpdateListDialog}>
+                  <Button variant="secondary">Annuler</Button>
                 </DialogClose>
               </DialogFooter>
             </DialogContent>
