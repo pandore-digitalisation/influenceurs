@@ -20,9 +20,12 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import ProfilesList from "./ProfilesList";
+import { toast, Toaster } from "sonner"
+
 
 const BASE_URL = "http://localhost:3000";
 const ITEMS_PER_PAGE = 8;
+
 
 export default function Lists() {
   const [selectedListId, setSelectedListId] = useState(null);
@@ -66,8 +69,8 @@ export default function Lists() {
   const [isUpdateListDialogOpen, setIsUpdateListDialogOpen] = useState(false);
   const [isProfileDialogOpen, setIsProfileDialogOpen] = useState(false);
   const [listNameRequired, setlistNameRequired] = useState(false);
-const [isDeleting, setIsDeleting] = useState(false);
-const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [listCreated, setListCreated] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [listName, setListName] = useState("");
@@ -76,6 +79,7 @@ const [isSaving, setIsSaving] = useState(false);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedLists = lists.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   const totalPages = Math.ceil(lists.length / ITEMS_PER_PAGE);
+
 
   const handlePrevious = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -114,6 +118,24 @@ const [isSaving, setIsSaving] = useState(false);
     setIsProfileDialogOpen(false);
   };
 
+  const listSucessCreated = () => {
+    toast.success(`Votre liste "${updatedName}" a été mise à jour !`, {
+      style: {
+        color: "#2C9F53",
+        background: "#ECFDF3",
+      },
+    });
+  }
+
+  const listSucessDeleted = () => {
+    toast.success(`Votre liste a été supprimer !`, {
+      style: {
+        color: "#2C9F53",
+        background: "#ECFDF3",
+      },
+    });
+  }
+
   const updateList = async () => {
     if (!selectedListId || !updatedName.trim()) return;
 
@@ -132,11 +154,10 @@ const [isSaving, setIsSaving] = useState(false);
       if (!response.ok) throw new Error("Erreur lors de la mise à jour");
 
       await refetch();
-      setIsUpdateListDialogOpen(false);
-      setUpdatedName("");
+      listSucessCreated();
+
     } catch (error) {
       console.error("Erreur:", error);
-      alert("Échec de la mise à jour de la liste.");
     } finally {
       setIsSaving(false);
     }
@@ -145,7 +166,7 @@ const [isSaving, setIsSaving] = useState(false);
   const deleteList = async () => {
     if (!selectedListId) {
       // console.error("Aucune liste sélectionnée pour la suppression.");
-      alert("Veuillez sélectionner une liste à supprimer.");
+      alert("Veuillez sélectionner une liste à supprimée.");
       return;
     }
     setIsDeleting(true);
@@ -162,8 +183,9 @@ const [isSaving, setIsSaving] = useState(false);
       if (!response.ok) throw new Error("Erreur lors de la mise à jour");
 
       await refetch();
+      listSucessDeleted();
       setIsUpdateListDialogOpen(false);
-      // console.log(`Liste ${selectedListId} supprimée avec succès.`);
+
     } catch (error) {
       console.error("Erreur:", error);
       alert("Échec de la mise à jour de la liste.");
@@ -367,7 +389,6 @@ const [isSaving, setIsSaving] = useState(false);
                       </span>
                     </CardContent>
                     <CardFooter className="h-1/4 p-0 gap-2">
-                    
                       <button
                         type="button"
                         onClick={() => openProfileDialog(list._id)}
@@ -466,6 +487,8 @@ const [isSaving, setIsSaving] = useState(false);
           </nav>
 
           {/* Popup of get lprofile data by list id */}
+          <Toaster richColors />
+
           <Dialog
             open={isProfileDialogOpen}
             onOpenChange={setIsProfileDialogOpen}
@@ -511,19 +534,31 @@ const [isSaving, setIsSaving] = useState(false);
               </div>
 
               <DialogFooter className="mt-4 flex justify-end gap-2 w-full">
-                <Button type="button" variant="destructive" onClick={deleteList} disabled={isDeleting}>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={deleteList}
+                  disabled={isDeleting}
+                >
                   {isDeleting ? (
-                     <>
-                     <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Suppression...
-                   </>
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                      Supprimer
+                    </>
                   ) : (
                     "Supprimer"
                   )}
                 </Button>
-                <Button type="submit" variant="outline" onClick={updateList} disabled={isSaving}>
+                <Button
+                  type="submit"
+                  variant="outline"
+                  onClick={updateList}
+                  disabled={isSaving}
+                >
                   {isSaving ? (
-                      <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sauvegarde...
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                      Sauvegarder
                     </>
                   ) : (
                     "Sauvegarder"

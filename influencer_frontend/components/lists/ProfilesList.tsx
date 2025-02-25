@@ -322,7 +322,6 @@ export default function ProfilesList({listId}: {listId: string}) {
           method: "GET",
         });
         const data = await res.json();
-        console.log("d", data.name)
         setListName(data.name)
 
         if (Array.isArray(data.profiles)) {
