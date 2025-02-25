@@ -64,11 +64,12 @@ export default function Dashboard() {
       }
 
       const data = await response.json();
+      console.log("ss", data)
       setUser(data);
       localStorage.setItem("userId", data.data.userId);
       localStorage.setItem("userData", JSON.stringify(data));
 
-      window.postMessage({ action: "userLoggedIn", token, data }, "*");
+      window.postMessage({ action: "userLoggedIn", token, userData: data }, "*");
     } catch (error) {
       console.error("Erreur:", error);
       window.location.href = "/login";

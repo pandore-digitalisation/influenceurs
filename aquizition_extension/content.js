@@ -312,6 +312,7 @@ function listenForMessages(sidebar) {
             { auth_token: token, userData: userData },
             () => {
               console.log("Token sauvegardé dans l'extension.", token);
+              console.log("user data.", userData);
             }
           );
         } catch (error) {

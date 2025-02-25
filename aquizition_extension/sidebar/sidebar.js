@@ -155,14 +155,16 @@ function refreshSidebar() {
   chrome.storage.sync.get(["auth_token", "userData"], (result) => {
     if (result.auth_token) {
       tokenGlobal = result.auth_token;
+      console.log("dd", tokenGlobal)
       userData = result.userData;
+      console.log("cc", userData);
       userId = userData.data.userId;
 
       Promise.all([
         fetchAllSidebarData(tokenGlobal),
+        fetchScrappedProfiles(userId),
         fetchProfiles(userId, tokenGlobal),
         fetchUserLists(userId, tokenGlobal),
-        fetchScrappedProfiles(userId),
       ]).then(() => {
           hideLoader();
           showMainContent();
