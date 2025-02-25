@@ -95,7 +95,7 @@ export default function Home() {
       <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 border-b sticky top-0 bg-white z-50">
           <div className="flex items-center gap-2 px-3">
-            <span className="font-bold">Aquizition.</span>
+            <span className="font-bold">OgaFast.</span>
             <Separator orientation="vertical" className="mr-2 h-4" />
             {user ? (
               <Breadcrumb>
